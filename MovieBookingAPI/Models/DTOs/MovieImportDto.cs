@@ -1,0 +1,19 @@
+﻿namespace MovieBookingAPI.Models.DTOs
+{
+    public class MovieImportDto
+    {
+        public string Title { get; set; }
+        public string StoryLine { get; set; }
+        public string Director { get; set; }
+        public int Duration { get; set; }
+        public int ReleaseYear { get; set; }
+        public string AgeRating { get; set; }
+        public double Rating { get; set; }
+        public string PosterUrl { get; set; }
+
+        // Danh sách thể loại và diễn viên
+        public List<string> Genres { get; set; }
+        public List<string> Casts { get; set; }
+    }
+}
+    

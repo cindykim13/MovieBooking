@@ -109,7 +109,20 @@ builder.Services.AddScoped<IShowtimeService, ShowtimeService>();
 // Đăng ký Module Booking (Mới)
 builder.Services.AddScoped<IBookingRepository, BookingRepository>();
 builder.Services.AddScoped<IBookingService, BookingService>();
+// Đăng ký Module Admin Movie (Mới)
+builder.Services.AddScoped<IAdminMovieRepository, AdminMovieRepository>();
+builder.Services.AddScoped<IAdminMovieService, AdminMovieService>();
+// Đăng ký Module Admin Showtimes (Mới)
+builder.Services.AddScoped<IAdminShowtimeRepository, AdminShowtimeRepository>();
+builder.Services.AddScoped<IAdminShowtimeService, AdminShowtimeService>();
+// Đăng ký Module Admin Rooms (Mới)
+builder.Services.AddScoped<IAdminRoomRepository, AdminRoomRepository>();
+builder.Services.AddScoped<IAdminRoomService, AdminRoomService>();
+
+
 var app = builder.Build();
+
+
 
 // --- Cấu hình HTTP Request Pipeline (Middleware) ---
 
