@@ -1,8 +1,8 @@
 ﻿namespace MovieBookingAPI.Models.DTOs
 {
-    public class GenreDto
+    public class GenreDTO
     {
         public int GenreId { get; set; }
-        public string GenreName { get; set; }
+        public string GenreName { get; set; } = string.Empty;
     }
 }

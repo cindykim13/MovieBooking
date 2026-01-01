@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using MovieBookingAPI.Services;
+using MovieBookingAPI.BUS;
 using Microsoft.AspNetCore.Authorization;
 
 namespace MovieBookingAPI.Controllers
@@ -8,9 +8,9 @@ namespace MovieBookingAPI.Controllers
     [ApiController]
     public class ShowtimesController : ControllerBase
     {
-        private readonly IShowtimeService _showtimeService;
+        private readonly IShowtimeBUS _showtimeService;
 
-        public ShowtimesController(IShowtimeService showtimeService)
+        public ShowtimesController(IShowtimeBUS showtimeService)
         {
             _showtimeService = showtimeService;
         }

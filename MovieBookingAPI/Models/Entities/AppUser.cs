@@ -4,24 +4,25 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MovieBookingAPI.Models.Entities
 {
-    [Table("AppUser")]
+    [Table("appuser")]
     public class AppUser
     {
-        [Key] 
+        [Key]
+        [Column("userid")]
         public int UserId { get; set; }
-
-        public string Username { get; set; }
-
-        public string PasswordHash { get; set; }
-
-        public string Email { get; set; }
-
-        public string FullName { get; set; }
-
-        public string PhoneNumber { get; set; }
-
-        public string Role { get; set; }
-
+        [Column("username")]
+        public string Username { get; set; } = string.Empty;
+        [Column("passwordhash")]
+        public string PasswordHash { get; set; } = string.Empty;
+        [Column("email")]
+        public string Email { get; set; } = string.Empty;
+        [Column("fullname")]
+        public string FullName { get; set; } = string.Empty;
+        [Column("phonenumber")]
+        public string? PhoneNumber { get; set; }
+        [Column("Role")]
+        public string Role { get; set; } = string.Empty;
+        [Column("createdat")]
         public DateTime CreatedAt { get; set; }
     }
 }

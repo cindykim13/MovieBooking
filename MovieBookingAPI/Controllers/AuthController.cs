@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MovieBookingAPI.Models.DTOs;
-using MovieBookingAPI.Services;
+using MovieBookingAPI.BUS;
 
 namespace MovieBookingAPI.Controllers
 {
@@ -8,16 +8,16 @@ namespace MovieBookingAPI.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        private readonly IAuthService _authService;
+        private readonly IAuthBUS _authService;
 
-        public AuthController(IAuthService authService)
+        public AuthController(IAuthBUS authService)
         {
             _authService = authService;
         }
 
         // POST: api/auth/register
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] RegisterRequestDto request)
+        public async Task<IActionResult> Register([FromBody] RegisterRequestDTO request)
         {
             // Kiểm tra Validation của DTO (ModelState)
             if (!ModelState.IsValid)
@@ -52,7 +52,7 @@ namespace MovieBookingAPI.Controllers
         }
         // POST: api/auth/login
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] LoginRequestDto request)
+        public async Task<IActionResult> Login([FromBody] LoginRequestDTO request)
         {
             if (!ModelState.IsValid)
             {

@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using MovieBookingAPI.Services;
+using MovieBookingAPI.BUS;
 
 namespace MovieBookingAPI.Controllers
 {
@@ -7,9 +7,9 @@ namespace MovieBookingAPI.Controllers
     [ApiController]
     public class MoviesController : ControllerBase
     {
-        private readonly IMovieService _movieService;
+        private readonly IMovieBUS _movieService;
 
-        public MoviesController(IMovieService movieService)
+        public MoviesController(IMovieBUS movieService)
         {
             _movieService = movieService;
         }

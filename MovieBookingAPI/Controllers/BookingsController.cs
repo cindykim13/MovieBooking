@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MovieBookingAPI.Models.DTOs;
-using MovieBookingAPI.Services;
+using MovieBookingAPI.BUS;
 using System.Security.Claims;
 
 namespace MovieBookingAPI.Controllers
@@ -11,16 +11,16 @@ namespace MovieBookingAPI.Controllers
     [Authorize] // Bắt buộc đăng nhập
     public class BookingsController : ControllerBase
     {
-        private readonly IBookingService _bookingService;
+        private readonly IBookingBUS _bookingService;
 
-        public BookingsController(IBookingService bookingService)
+        public BookingsController(IBookingBUS bookingService)
         {
             _bookingService = bookingService;
         }
 
         // POST: api/bookings
         [HttpPost]
-        public async Task<IActionResult> CreateBooking([FromBody] CreateBookingRequestDto request)
+        public async Task<IActionResult> CreateBooking([FromBody] CreateBookingRequestDTO request)
         {
             if (!ModelState.IsValid)
             {
@@ -60,7 +60,7 @@ namespace MovieBookingAPI.Controllers
 
         // POST: api/bookings/payment
         [HttpPost("payment")]
-        public async Task<IActionResult> ConfirmPayment([FromBody] PaymentRequestDto request)
+        public async Task<IActionResult> ConfirmPayment([FromBody] PaymentRequestDTO request)
         {
             if (!ModelState.IsValid)
             {

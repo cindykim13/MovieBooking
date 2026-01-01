@@ -1,0 +1,13 @@
+﻿using MovieBookingAPI.Models.DTOs;
+using System.Threading.Tasks;
+
+
+namespace MovieBookingAPI.BUS
+{
+    public interface IAdminShowtimeBUS
+    {
+        Task<int> CreateShowtimeAsync(CreateShowtimeRequestDTO request);
+        Task UpdateShowtimeAsync(int showtimeId, UpdateShowtimeRequestDTO request);
+        Task DeleteShowtimeAsync(int showtimeId);
+    }
+}

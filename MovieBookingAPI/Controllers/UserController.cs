@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MovieBookingAPI.Models.DTOs;
-using MovieBookingAPI.Services;
+using MovieBookingAPI.BUS;
 using System.Security.Claims;
 
 namespace MovieBookingAPI.Controllers
@@ -11,9 +11,9 @@ namespace MovieBookingAPI.Controllers
     [Authorize] // Yêu cầu phải có Token hợp lệ mới được truy cập
     public class UserController : ControllerBase
     {
-        private readonly IUserService _userService;
+        private readonly IUserBUS _userService;
 
-        public UserController(IUserService userService)
+        public UserController(IUserBUS userService)
         {
             _userService = userService;
         }
@@ -50,7 +50,7 @@ namespace MovieBookingAPI.Controllers
 
         // PUT: api/user/me
         [HttpPut("me")]
-        public async Task<IActionResult> UpdateProfile([FromBody] UpdateProfileRequestDto request)
+        public async Task<IActionResult> UpdateProfile([FromBody] UpdateProfileRequestDTO request)
         {
             if (!ModelState.IsValid)
             {
@@ -88,7 +88,7 @@ namespace MovieBookingAPI.Controllers
 
         // PUT: api/user/password
         [HttpPut("password")]
-        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequestDto request)
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequestDTO request)
         {
             if (!ModelState.IsValid)
             {

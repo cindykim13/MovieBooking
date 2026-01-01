@@ -2,12 +2,12 @@
 
 namespace MovieBookingAPI.Models.DTOs
 {
-    public class LoginRequestDto
+    public class LoginRequestDTO
     {
         [Required(ErrorMessage = "Vui lòng nhập tên đăng nhập hoặc email.")]
-        public string Username { get; set; }
+        public string Username { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Vui lòng nhập mật khẩu.")]
-        public string Password { get; set; }
+        public string Password { get; set; } = string.Empty;
     }
 }

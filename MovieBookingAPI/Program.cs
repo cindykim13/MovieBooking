@@ -2,17 +2,18 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using MovieBookingAPI.BUS;
+using MovieBookingAPI.DAO;
 using MovieBookingAPI.Data;
-using MovieBookingAPI.Repositories;
-using MovieBookingAPI.Services;
 using System.Text;
+using Npgsql;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // 1. Cấu hình kết nối Database (SQL Server)
 // Lấy chuỗi kết nối từ appsettings.json và đăng ký AppDbContext vào DI Container
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // 2. Thêm Controllers và cấu hình JSON Serializer
 // Sử dụng NewtonsoftJson để xử lý dữ liệu JSON phức tạp tốt hơn System.Text.Json mặc định
@@ -95,22 +96,31 @@ builder.Services.AddAuthentication(options =>
 });
 
 // Đăng ký Dependency Injection cho Repository và Service
-builder.Services.AddScoped<IAuthRepository, AuthRepository>();
-builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IAuthDAO, AuthDAO>();
+builder.Services.AddScoped<IAuthBUS, AuthBUS>();
 // Đăng ký mới
-builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IUserDAO, UserDAO>();
+builder.Services.AddScoped<IUserBUS, UserBUS>();
 // Đăng ký Module Movie
-builder.Services.AddScoped<IMovieRepository, MovieRepository>();
-builder.Services.AddScoped<IMovieService, MovieService>();
+builder.Services.AddScoped<IMovieDAO, MovieDAO>();
+builder.Services.AddScoped<IMovieBUS, MoviEBUS>();
 // Đăng ký Module Showtimes
-builder.Services.AddScoped<IShowtimeRepository, ShowtimeRepository>();
-builder.Services.AddScoped<IShowtimeService, ShowtimeService>();
+builder.Services.AddScoped<IShowtimeDAO, ShowtimeDAO>();
+builder.Services.AddScoped<IShowtimeBUS, ShowtimeBUS>();
 // Đăng ký Module Booking (Mới)
-builder.Services.AddScoped<IBookingRepository, BookingRepository>();
-builder.Services.AddScoped<IBookingService, BookingService>();
-var app = builder.Build();
+builder.Services.AddScoped<IBookingDAO, BookingDAO>();
+builder.Services.AddScoped<IBookingBUS, BookingService>();
+// Đăng ký Module Admin Movie (Mới)
+builder.Services.AddScoped<IAdminMovieDAO, AdminMovieDAO>();
+builder.Services.AddScoped<IAdminMovieBUS, AdminMovieBUS>();
+// Đăng ký Module Admin Showtimes (Mới)
+builder.Services.AddScoped<IAdminShowtimeDAO, AdminShowtimeDAO>();
+builder.Services.AddScoped<IAdminShowtimeBUS, AdminShowtimeBUS>();
+// Đăng ký Module Admin Rooms (Mới)
+builder.Services.AddScoped<IAdminRoomDAO, AdminRoomDAO>();
+builder.Services.AddScoped<IAdminRoomBUS, AdminRoomBUS>();
 
+var app = builder.Build();
 // --- Cấu hình HTTP Request Pipeline (Middleware) ---
 
 if (app.Environment.IsDevelopment())
