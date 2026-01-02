@@ -123,11 +123,9 @@ builder.Services.AddScoped<IAdminRoomBUS, AdminRoomBUS>();
 var app = builder.Build();
 // --- Cấu hình HTTP Request Pipeline (Middleware) ---
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+// Cho phép Swagger chạy trên mọi môi trường để tiện kiểm tra
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
 
