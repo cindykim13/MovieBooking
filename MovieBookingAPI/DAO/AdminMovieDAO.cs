@@ -22,23 +22,14 @@ namespace MovieBookingAPI.DAO
         // ==========================================
         public async Task<int> ImportMoviesAsync(string jsonMovies)
         {
-            // PostgreSQL: Dùng NpgsqlParameter và kiểu Jsonb hoặc Text cho JSON
-            var pJsonData = new NpgsqlParameter("@p_json_data", NpgsqlDbType.Jsonb)
-            {
-                Value = jsonMovies
-            };
+            // Sửa tên tham số và kiểu dữ liệu cho khớp
+            var p_jsondata = new NpgsqlParameter("p_jsondata", NpgsqlDbType.Jsonb) { Value = jsonMovies };
 
-            // Tăng timeout cho tác vụ nặng
             _context.Database.SetCommandTimeout(300);
 
-            // PostgreSQL: Gọi Procedure dùng lệnh 'CALL'.
-            // Lưu ý: Procedure trong PG không return giá trị trực tiếp qua SELECT như SQL Server.
-            // Để lấy số lượng insert, ta thường dùng Function trả về void hoặc int.
-            // Giả sử usp_import_movies_bulk là một FUNCTION trả về integer (số dòng insert).
-            // Cú pháp: SELECT * FROM func_name(...)
-
+            // Sửa tên function thành chữ thường và cú pháp gọi
             var result = await _context.Database
-                .SqlQueryRaw<int>("SELECT * FROM usp_import_movies_bulk(@p_json_data)", pJsonData)
+                .SqlQueryRaw<int>("SELECT * FROM usp_importmoviesbulk(@p_jsondata)", p_jsondata)
                 .ToListAsync();
 
             return result.FirstOrDefault();
@@ -52,29 +43,26 @@ namespace MovieBookingAPI.DAO
             string genresJson = JsonConvert.SerializeObject(movie.Genres);
             string actorsJson = JsonConvert.SerializeObject(movie.Casts);
 
-            // PostgreSQL: Định nghĩa tham số với NpgsqlParameter
-            // Lưu ý: Tên tham số trong PG thường viết thường (snake_case)
+            // Sửa tên tham số thành chữ thường và nhất quán
             var parameters = new[]
             {
-                new NpgsqlParameter("@p_title", movie.Title),
-                new NpgsqlParameter("@p_story_line", (object)movie.StoryLine ?? DBNull.Value),
-                new NpgsqlParameter("@p_director", (object)movie.Director ?? DBNull.Value),
-                new NpgsqlParameter("@p_duration", movie.Duration),
-                new NpgsqlParameter("@p_release_year", movie.ReleaseYear),
-                new NpgsqlParameter("@p_age_rating", (object)movie.AgeRating ?? DBNull.Value),
-                // PG: float trong C# tương ứng với double precision hoặc real
-                new NpgsqlParameter("@p_rating", NpgsqlDbType.Double) { Value = movie.Rating },
-                new NpgsqlParameter("@p_poster_url", (object)movie.PosterUrl ?? DBNull.Value),
-                new NpgsqlParameter("@p_status", movie.Status ?? "Coming Soon"),
-                // PG: JSON truyền vào dưới dạng Jsonb
-                new NpgsqlParameter("@p_genre_names_json", NpgsqlDbType.Jsonb) { Value = genresJson },
-                new NpgsqlParameter("@p_actor_names_json", NpgsqlDbType.Jsonb) { Value = actorsJson }
-            };
+        new NpgsqlParameter("p_title", movie.Title),
+        new NpgsqlParameter("p_storyline", (object)movie.StoryLine ?? DBNull.Value),
+        new NpgsqlParameter("p_director", (object)movie.Director ?? DBNull.Value),
+        new NpgsqlParameter("p_duration", movie.Duration),
+        new NpgsqlParameter("p_releaseyear", movie.ReleaseYear),
+        new NpgsqlParameter("p_agerating", (object)movie.AgeRating ?? DBNull.Value),
+        new NpgsqlParameter("p_rating", NpgsqlDbType.Double) { Value = movie.Rating },
+        new NpgsqlParameter("p_posterurl", (object)movie.PosterUrl ?? DBNull.Value),
+        new NpgsqlParameter("p_status", movie.Status ?? "Coming Soon"),
+        new NpgsqlParameter("p_genrenamesjson", NpgsqlDbType.Jsonb) { Value = genresJson },
+        new NpgsqlParameter("p_actornamesjson", NpgsqlDbType.Jsonb) { Value = actorsJson }
+    };
 
-            // Gọi Function trả về ID (Scalar)
+            // Sửa tên function thành chữ thường và cú pháp gọi SELECT
             var result = await _context.Database
                 .SqlQueryRaw<int>(
-                    "SELECT * FROM usp_add_movie(@p_title, @p_story_line, @p_director, @p_duration, @p_release_year, @p_age_rating, @p_rating, @p_poster_url, @p_status, @p_genre_names_json, @p_actor_names_json)",
+                    "SELECT usp_addmovie(@p_title, @p_storyline, @p_director, @p_duration, @p_releaseyear, @p_agerating, @p_rating, @p_posterurl, @p_status, @p_genrenamesjson, @p_actornamesjson)",
                     parameters
                 )
                 .ToListAsync();
@@ -90,25 +78,26 @@ namespace MovieBookingAPI.DAO
             string genresJson = JsonConvert.SerializeObject(movie.Genres);
             string actorsJson = JsonConvert.SerializeObject(movie.Casts);
 
+            // Sửa tên tham số cho nhất quán
             var parameters = new[]
             {
-                new NpgsqlParameter("@p_movie_id", movieId),
-                new NpgsqlParameter("@p_title", movie.Title),
-                new NpgsqlParameter("@p_story_line", (object)movie.StoryLine ?? DBNull.Value),
-                new NpgsqlParameter("@p_director", (object)movie.Director ?? DBNull.Value),
-                new NpgsqlParameter("@p_duration", movie.Duration),
-                new NpgsqlParameter("@p_release_year", movie.ReleaseYear),
-                new NpgsqlParameter("@p_age_rating", (object)movie.AgeRating ?? DBNull.Value),
-                new NpgsqlParameter("@p_rating", NpgsqlDbType.Double) { Value = movie.Rating },
-                new NpgsqlParameter("@p_poster_url", (object)movie.PosterUrl ?? DBNull.Value),
-                new NpgsqlParameter("@p_status", movie.Status ?? "Coming Soon"),
-                new NpgsqlParameter("@p_genre_names_json", NpgsqlDbType.Jsonb) { Value = genresJson },
-                new NpgsqlParameter("@p_actor_names_json", NpgsqlDbType.Jsonb) { Value = actorsJson }
-            };
+        new NpgsqlParameter("p_movieid", movieId),
+        new NpgsqlParameter("p_title", movie.Title),
+        new NpgsqlParameter("p_storyline", (object)movie.StoryLine ?? DBNull.Value),
+        new NpgsqlParameter("p_director", (object)movie.Director ?? DBNull.Value),
+        new NpgsqlParameter("p_duration", movie.Duration),
+        new NpgsqlParameter("p_releaseyear", movie.ReleaseYear),
+        new NpgsqlParameter("p_agerating", (object)movie.AgeRating ?? DBNull.Value),
+        new NpgsqlParameter("p_rating", movie.Rating), // Npgsql tự suy luận kiểu Double
+        new NpgsqlParameter("p_posterurl", (object)movie.PosterUrl ?? DBNull.Value),
+        new NpgsqlParameter("p_status", movie.Status ?? "Coming Soon"),
+        new NpgsqlParameter("p_genrenamesjson", NpgsqlDbType.Jsonb) { Value = genresJson },
+        new NpgsqlParameter("p_actornamesjson", NpgsqlDbType.Jsonb) { Value = actorsJson }
+    };
 
-            // PostgreSQL: Dùng CALL cho Procedure (không trả về dữ liệu)
+            // Sửa tên function và cú pháp gọi
             await _context.Database.ExecuteSqlRawAsync(
-                "CALL usp_update_movie(@p_movie_id, @p_title, @p_story_line, @p_director, @p_duration, @p_release_year, @p_age_rating, @p_rating, @p_poster_url, @p_status, @p_genre_names_json, @p_actor_names_json)",
+                "SELECT usp_updatemovie(@p_movieid, @p_title, @p_storyline, @p_director, @p_duration, @p_releaseyear, @p_agerating, @p_rating, @p_posterurl, @p_status, @p_genrenamesjson, @p_actornamesjson)",
                 parameters
             );
         }
@@ -118,10 +107,15 @@ namespace MovieBookingAPI.DAO
         // ==========================================
         public async Task DeleteMovieAsync(int movieId)
         {
-            var parameter = new NpgsqlParameter("@p_movie_id", movieId);
+            // Sửa tên tham số
+            var p_movieid = new NpgsqlParameter("p_movieid", movieId);
 
-            // PostgreSQL: Dùng CALL cho Procedure
-            await _context.Database.ExecuteSqlRawAsync("CALL usp_delete_movie(@p_movie_id)", parameter);
+            // Sửa cú pháp gọi Function trả về VOID
+            // Dùng SELECT thay vì CALL
+            await _context.Database.ExecuteSqlRawAsync(
+                "SELECT usp_deletemovie(@p_movieid)",
+                p_movieid
+            );
         }
     }
 }

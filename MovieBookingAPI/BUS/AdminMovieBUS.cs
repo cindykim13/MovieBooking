@@ -1,21 +1,21 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Data.SqlClient;
-using MovieBookingAPI.Models.DTOs;
 using MovieBookingAPI.DAO;
+using MovieBookingAPI.Models.DTOs;
 using Newtonsoft.Json;
+using Npgsql;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 namespace MovieBookingAPI.BUS
 {
-    public class AdminMovieBUS : IAdminMovieBUS
+   public class AdminMovieBUS : IAdminMovieBUS
     {
-        private readonly IAdminMovieDAO _adminMovieRepo;
+        private readonly IAdminMovieDAO _adminMovieDAO;
 
-
-        public AdminMovieBUS(IAdminMovieDAO adminMovieRepo)
+        public AdminMovieBUS(IAdminMovieDAO adminMovieDAO)
         {
-            _adminMovieRepo = adminMovieRepo;
+            _adminMovieDAO = adminMovieDAO;
         }
 
 
@@ -52,53 +52,57 @@ namespace MovieBookingAPI.BUS
             }
 
 
-            // 3. Serialize lại thành chuỗi JSON chuẩn để gửi xuống SQL
-            // Việc này giúp loại bỏ các khoảng trắng thừa hoặc lỗi định dạng tiềm ẩn trong file gốc
+            // 3. Serialize lại thành chuỗi JSON chuẩn
             string jsonForDb = JsonConvert.SerializeObject(movies);
 
-
-            // 4. Gọi Repository
-            return await _adminMovieRepo.ImportMoviesAsync(jsonForDb);
+            // 4. Gọi DAO và xử lý Exception
+            try
+            {
+                return await _adminMovieDAO.ImportMoviesAsync(jsonForDb);
+            }
+            catch (PostgresException ex) // Bắt đúng loại Exception của Npgsql
+            {
+                // Có thể thêm logic log lỗi chi tiết tại đây
+                throw new Exception("Lỗi cơ sở dữ liệu khi nhập liệu phim: " + ex.Message, ex);
+            }
         }
         public async Task<int> AddMovieAsync(AddMovieRequestDTO request)
         {
-            // Có thể thêm logic nghiệp vụ tại đây (VD: Kiểm tra URL ảnh hợp lệ, chuẩn hóa tên...)
-
             try
             {
-                return await _adminMovieRepo.AddMovieAsync(request);
+                return await _adminMovieDAO.AddMovieAsync(request);
             }
-            catch (SqlException ex)
+            catch (PostgresException ex) // Sửa thành PostgresException
             {
-                // Bắt lỗi nghiệp vụ từ SP (Lỗi trùng lặp 53001)
-                if (ex.Number == 53001)
+                // Bắt lỗi nghiệp vụ từ Function
+                if (ex.Message.Contains("Phim này đã tồn tại"))
                 {
                     throw new ArgumentException("Phim này đã tồn tại trong hệ thống (Trùng tên và năm phát hành).");
                 }
-                throw; // Lỗi khác ném tiếp cho Controller
+                throw new Exception("Lỗi cơ sở dữ liệu khi thêm phim.", ex);
             }
         }
         public async Task UpdateMovieAsync(int movieId, UpdateMovieRequestDTO request)
         {
             try
             {
-                await _adminMovieRepo.UpdateMovieAsync(movieId, request);
+                await _adminMovieDAO.UpdateMovieAsync(movieId, request);
             }
-            catch (SqlException ex)
+            catch (PostgresException ex) // Sửa thành PostgresException
             {
-                // Bắt lỗi nghiệp vụ từ SP (Lỗi không tồn tại 53002)
-                if (ex.Number == 53002)
+                // Bắt lỗi nghiệp vụ từ Function
+                if (ex.Message.Contains("Phim không tồn tại"))
                 {
                     throw new KeyNotFoundException($"Không tìm thấy phim với ID = {movieId}");
                 }
-                throw; // Lỗi khác
+                throw new Exception("Lỗi cơ sở dữ liệu khi cập nhật phim.", ex);
             }
         }
         public async Task DeleteMovieAsync(int movieId)
         {
             try
             {
-                await _adminMovieRepo.DeleteMovieAsync(movieId);
+                await _adminMovieDAO.DeleteMovieAsync(movieId);
             }
             catch (SqlException ex)
             {

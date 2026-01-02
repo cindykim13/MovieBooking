@@ -70,6 +70,31 @@ namespace MovieBookingAPI.Controllers
                 return StatusCode(500, new { Message = "Lỗi hệ thống: " + ex.Message });
             }
         }
+        // PUT: api/admin/movies/5
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateMovie(int id, [FromBody] UpdateMovieRequestDTO request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+
+            try
+            {
+                await _adminMovieService.UpdateMovieAsync(id, request);
+                return Ok(new { Message = "Cập nhật thông tin phim thành công." });
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { Message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Message = "Lỗi hệ thống: " + ex.Message });
+            }
+        }
+
         // DELETE: api/admin/movies/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteMovie(int id)

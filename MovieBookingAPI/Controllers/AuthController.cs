@@ -77,5 +77,29 @@ namespace MovieBookingAPI.Controllers
                 return StatusCode(500, new { Message = "Lỗi hệ thống: " + ex.Message });
             }
         }
+
+        // THÊM PHƯƠNG THỨC NÀY VÀO
+        // GET: api/auth/hash-password?password=your_password
+        [HttpGet("hash-password")]
+        public IActionResult HashPassword([FromQuery] string password)
+        {
+            // CẢNH BÁO BẢO MẬT: 
+            // API NÀY CHỈ DÙNG CHO MÔI TRƯỜNG DEVELOPMENT ĐỂ TẠO HASH.
+            // TUYỆT ĐỐI KHÔNG TRIỂN KHAI LÊN PRODUCTION.
+            if (string.IsNullOrEmpty(password))
+            {
+                return BadRequest("Vui lòng cung cấp mật khẩu qua query parameter 'password'.");
+            }
+
+            // Sử dụng thư viện BCrypt để tạo hash
+            string passwordHash = BCrypt.Net.BCrypt.HashPassword(password);
+
+            // Trả về kết quả để bạn có thể copy
+            return Ok(new
+            {
+                PlainPassword = password,
+                HashedPassword = passwordHash
+            });
+        }
     }
 }

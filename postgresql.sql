@@ -308,6 +308,24 @@ SELECT
     'Customer'
 FROM generate_series(1, 50) AS i;
 
+-- Chạy lệnh này trong pgAdmin hoặc DBeaver
+INSERT INTO AppUser (Username, PasswordHash, Email, FullName, PhoneNumber, "Role", CreatedAt)
+VALUES (
+    'admin_sql', 
+    '$2a$11$U95J8.7890123456789012345678901234567890123456789012', -- Đây là hash giả lập của 'admin123' (Lưu ý: Hash BCrypt thực tế mỗi lần mỗi khác, tốt nhất dùng cách C# ở trên)
+    'admin_sql@test.com', 
+    'SQL Admin', 
+    '0000000000', 
+    'Admin', 
+    NOW()
+);
+
+UPDATE appuser
+SET 
+    "Role" = 'Admin',
+    passwordhash = '$2a$11$e0QpHtBDE8nIyG86shz6PecviYTjDET/n0CqAdaJJKb0tQ/9a.NA6' -- Ví dụ: '$2a$11$abcdef...'
+WHERE 
+    username = 'admin';
 -- ================================================================
 -- BƯỚC D: TẠO DỮ LIỆU GIAO DỊCH (TRANSACTIONAL DATA)
 -- ================================================================
@@ -667,31 +685,40 @@ $$;
 -- ================================================================
 
 -- 3.1. Nhập liệu phim
-CREATE OR REPLACE FUNCTION usp_importmoviesbulk(p_jsondata JSON) RETURNS INT LANGUAGE plpgsql AS $$
+-- Sửa lại Function usp_importmoviesbulk
+CREATE OR REPLACE FUNCTION usp_importmoviesbulk(
+    p_jsondata JSONB -- Sửa từ JSON sang JSONB để tối ưu
+) RETURNS INT LANGUAGE plpgsql AS $$
 DECLARE v_insertedcount INT;
 BEGIN
-    CREATE TEMP TABLE StagingMovies ON COMMIT DROP AS SELECT * FROM json_populate_recordset(null::record, p_jsondata) AS (Title VARCHAR(255), StoryLine TEXT, Director VARCHAR(100), Duration INT, ReleaseYear INT, AgeRating VARCHAR(10), Rating REAL, PosterUrl VARCHAR(500), Genres JSON, Casts JSON);
-    INSERT INTO genre (genrename) SELECT DISTINCT TRIM(value::TEXT, '"') FROM StagingMovies, json_array_elements_text(Genres) ON CONFLICT (genrename) DO NOTHING;
-    INSERT INTO actor (actorname) SELECT DISTINCT TRIM(value::TEXT, '"') FROM StagingMovies, json_array_elements_text(Casts) ON CONFLICT (actorname) DO NOTHING;
+    CREATE TEMP TABLE StagingMovies ON COMMIT DROP AS SELECT * FROM jsonb_populate_recordset(null::record, p_jsondata) AS (Title VARCHAR(255), StoryLine TEXT, Director VARCHAR(100), Duration INT, ReleaseYear INT, AgeRating VARCHAR(10), Rating REAL, PosterUrl VARCHAR(500), Genres JSONB, Casts JSONB);
+    INSERT INTO genre (genrename) SELECT DISTINCT TRIM(value::TEXT, '"') FROM StagingMovies, jsonb_array_elements_text(Genres) ON CONFLICT (genrename) DO NOTHING;
+    INSERT INTO actor (actorname) SELECT DISTINCT TRIM(value::TEXT, '"') FROM StagingMovies, jsonb_array_elements_text(Casts) ON CONFLICT (actorname) DO NOTHING;
     INSERT INTO movie (title, storyline, director, duration, releaseyear, agerating, rating, posterurl, status) SELECT s.Title, s.StoryLine, s.Director, s.Duration, s.ReleaseYear, s.AgeRating, s.Rating, s.PosterUrl, CASE WHEN s.ReleaseYear < EXTRACT(YEAR FROM NOW()) THEN 'Ended' WHEN s.ReleaseYear = EXTRACT(YEAR FROM NOW()) THEN 'Now Showing' ELSE 'Coming Soon' END FROM StagingMovies s WHERE NOT EXISTS (SELECT 1 FROM movie m WHERE m.title = s.Title AND m.releaseyear = s.ReleaseYear);
     GET DIAGNOSTICS v_insertedcount = ROW_COUNT;
-    INSERT INTO moviegenre (movieid, genreid) SELECT DISTINCT m.movieid, g.genreid FROM StagingMovies s JOIN movie m ON m.title = s.Title AND m.releaseyear = s.ReleaseYear CROSS JOIN LATERAL json_array_elements_text(s.Genres) AS jg(name) JOIN genre g ON g.genrename = TRIM(jg.name, '"') ON CONFLICT (movieid, genreid) DO NOTHING;
-    INSERT INTO moviecast (movieid, actorid) SELECT DISTINCT m.movieid, a.actorid FROM StagingMovies s JOIN movie m ON m.title = s.Title AND m.releaseyear = s.ReleaseYear CROSS JOIN LATERAL json_array_elements_text(s.Casts) AS jc(name) JOIN actor a ON a.actorname = TRIM(jc.name, '"') ON CONFLICT (movieid, actorid) DO NOTHING;
+    INSERT INTO moviegenre (movieid, genreid) SELECT DISTINCT m.movieid, g.genreid FROM StagingMovies s JOIN movie m ON m.title = s.Title AND m.releaseyear = s.ReleaseYear CROSS JOIN LATERAL jsonb_array_elements_text(s.Genres) AS jg(name) JOIN genre g ON g.genrename = TRIM(jg.name, '"') ON CONFLICT (movieid, genreid) DO NOTHING;
+    INSERT INTO moviecast (movieid, actorid) SELECT DISTINCT m.movieid, a.actorid FROM StagingMovies s JOIN movie m ON m.title = s.Title AND m.releaseyear = s.ReleaseYear CROSS JOIN LATERAL jsonb_array_elements_text(s.Casts) AS jc(name) JOIN actor a ON a.actorname = TRIM(jc.name, '"') ON CONFLICT (movieid, actorid) DO NOTHING;
     RETURN v_insertedcount;
 END;
 $$;
 
 -- 3.2. Thêm phim
-CREATE OR REPLACE FUNCTION usp_addmovie(p_title VARCHAR(255), p_storyline TEXT, p_director VARCHAR(100), p_duration INT, p_releaseyear INT, p_agerating VARCHAR(10), p_rating REAL, p_posterurl VARCHAR(500), p_status VARCHAR(20), p_genrenamesjson JSON, p_actornamesjson JSON)
-RETURNS INT LANGUAGE plpgsql AS $$
+-- Sửa lại Function usp_addmovie
+CREATE OR REPLACE FUNCTION usp_addmovie(
+    p_title VARCHAR(255), p_storyline TEXT, p_director VARCHAR(100), p_duration INT, p_releaseyear INT,
+    p_agerating VARCHAR(10), p_rating DOUBLE PRECISION, -- Sửa từ REAL sang DOUBLE PRECISION
+    p_posterurl VARCHAR(500), p_status VARCHAR(20),
+    p_genrenamesjson JSONB,
+    p_actornamesjson JSONB
+) RETURNS INT LANGUAGE plpgsql AS $$
 DECLARE v_newmovieid INT;
 BEGIN
     IF EXISTS (SELECT 1 FROM movie WHERE title = p_title AND releaseyear = p_releaseyear) THEN RAISE EXCEPTION 'Phim này đã tồn tại.'; END IF;
     INSERT INTO movie (title, storyline, director, duration, releaseyear, agerating, rating, posterurl, status) VALUES (p_title, p_storyline, p_director, p_duration, p_releaseyear, p_agerating, p_rating, p_posterurl, p_status) RETURNING movieid INTO v_newmovieid;
-    INSERT INTO genre (genrename) SELECT DISTINCT TRIM(value::TEXT, '"') FROM json_array_elements_text(p_genrenamesjson) ON CONFLICT DO NOTHING;
-    INSERT INTO moviegenre (movieid, genreid) SELECT v_newmovieid, g.genreid FROM json_array_elements_text(p_genrenamesjson) j JOIN genre g ON g.genrename = TRIM(j.value::TEXT, '"');
-    INSERT INTO actor (actorname) SELECT DISTINCT TRIM(value::TEXT, '"') FROM json_array_elements_text(p_actornamesjson) ON CONFLICT DO NOTHING;
-    INSERT INTO moviecast (movieid, actorid) SELECT v_newmovieid, a.actorid FROM json_array_elements_text(p_actornamesjson) j JOIN actor a ON a.actorname = TRIM(j.value::TEXT, '"');
+    INSERT INTO genre (genrename) SELECT DISTINCT TRIM(value::TEXT, '"') FROM jsonb_array_elements_text(p_genrenamesjson) ON CONFLICT DO NOTHING;
+    INSERT INTO moviegenre (movieid, genreid) SELECT v_newmovieid, g.genreid FROM jsonb_array_elements_text(p_genrenamesjson) j JOIN genre g ON g.genrename = TRIM(j.value::TEXT, '"');
+    INSERT INTO actor (actorname) SELECT DISTINCT TRIM(value::TEXT, '"') FROM jsonb_array_elements_text(p_actornamesjson) ON CONFLICT DO NOTHING;
+    INSERT INTO moviecast (movieid, actorid) SELECT v_newmovieid, a.actorid FROM jsonb_array_elements_text(p_actornamesjson) j JOIN actor a ON a.actorname = TRIM(j.value::TEXT, '"');
     RETURN v_newmovieid;
 END;
 $$;
@@ -711,9 +738,18 @@ END;
 $$;
 
 -- 3.4. Xóa phim
-CREATE OR REPLACE FUNCTION usp_deletemovie(p_movieid INT) RETURNS VOID LANGUAGE plpgsql AS $$
+-- Sửa lại Function usp_deletemovie
+CREATE OR REPLACE FUNCTION usp_deletemovie(p_movieid INT) 
+RETURNS VOID LANGUAGE plpgsql AS $$
 BEGIN
-    IF EXISTS (SELECT 1 FROM showtime WHERE movieid = p_movieid) THEN RAISE EXCEPTION 'Không thể xóa phim này vì đã có lịch chiếu.'; END IF;
+    IF NOT EXISTS (SELECT 1 FROM movie WHERE movieid = p_movieid) THEN
+        RAISE EXCEPTION 'Phim không tồn tại.';
+    END IF;
+
+    IF EXISTS (SELECT 1 FROM showtime WHERE movieid = p_movieid) THEN
+        RAISE EXCEPTION 'Không thể xóa phim này vì đã có lịch chiếu.';
+    END IF;
+
     DELETE FROM movie WHERE movieid = p_movieid;
 END;
 $$;
@@ -814,3 +850,4 @@ BEGIN
     DELETE FROM screenroom WHERE roomid = p_roomid;
 END;
 $$;
+

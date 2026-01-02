@@ -1,0 +1,26 @@
+[
+  {
+    "Title": "Phim Test Import 01",
+    "StoryLine": "Mô tả phim test",
+    "Director": "Đạo diễn A",
+    "Duration": 120,
+    "ReleaseYear": 2025,
+    "AgeRating": "C13",
+    "Rating": 8.5,
+    "PosterUrl": "https://placehold.co/600x400",
+    "Genres": ["Hành động", "Phiêu lưu"],
+    "Casts": ["Diễn viên X", "Diễn viên Y"]
+  },
+  {
+    "Title": "Phim Test Import 02",
+    "StoryLine": "Mô tả phim test 2",
+    "Director": "Đạo diễn B",
+    "Duration": 90,
+    "ReleaseYear": 2024,
+    "AgeRating": "P",
+    "Rating": 7.0,
+    "PosterUrl": "https://placehold.co/600x400",
+    "Genres": ["Hài", "Tình cảm"],
+    "Casts": ["Diễn viên Z"]
+  }
+]
