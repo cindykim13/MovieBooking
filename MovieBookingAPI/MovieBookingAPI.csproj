@@ -19,4 +19,8 @@
     <Folder Include="Helpers\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\MovieBooking.Domain\MovieBooking.Domain.csproj" />
+  </ItemGroup>
+
 </Project>

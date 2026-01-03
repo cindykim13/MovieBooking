@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MovieBookingAPI.Data;
-using MovieBookingAPI.Models.DTOs;
+using MovieBooking.Domain.DTOs;
 using Newtonsoft.Json;
 using Npgsql; // Thư viện chính cho PostgreSQL
 using NpgsqlTypes; // Chứa các kiểu dữ liệu PostgreSQL

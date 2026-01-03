@@ -1,4 +1,4 @@
-﻿using MovieBookingAPI.Models.DTOs;
+﻿using MovieBooking.Domain.DTOs;
 using MovieBookingAPI.DAO;
 using BCrypt.Net;
 using Microsoft.Extensions.Configuration;

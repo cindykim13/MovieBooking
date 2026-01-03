@@ -1,7 +1,7 @@
 ﻿using Npgsql;
 using Microsoft.EntityFrameworkCore;
 using MovieBookingAPI.Data;
-using MovieBookingAPI.Models.DTOs;
+using MovieBooking.Domain.DTOs;
 using System.Data;
 using MovieBookingAPI.Models.Entities;
 
@@ -46,19 +46,20 @@ namespace MovieBookingAPI.DAO
                 PageSize = pageSize
             };
         }
-        public async Task<PagedResult<MovieDTO>> SearchMoviesAsync(string? keyword, int? genreId, int? year, int pageIndex, int pageSize)
+        public async Task<PagedResult<MovieDTO>> SearchMoviesAsync(string? keyword, string? status, int? genreId, int? year, int pageIndex, int pageSize)
         {
-            // Định nghĩa tham số cho Function của PostgreSQL
+            // Định nghĩa các tham số
             var p_keyword = new NpgsqlParameter("p_keyword", string.IsNullOrWhiteSpace(keyword) ? DBNull.Value : keyword);
+            var p_status = new NpgsqlParameter("p_status", string.IsNullOrWhiteSpace(status) ? DBNull.Value : status); // Thêm tham số status
             var p_genreid = new NpgsqlParameter("p_genreid", genreId.HasValue ? (object)genreId.Value : DBNull.Value);
             var p_releaseyear = new NpgsqlParameter("p_releaseyear", year.HasValue ? (object)year.Value : DBNull.Value);
             var p_pageindex = new NpgsqlParameter("p_pageindex", pageIndex);
             var p_pagesize = new NpgsqlParameter("p_pagesize", pageSize);
 
-            // Sử dụng FromSqlRaw để gọi Function và ánh xạ vào lớp tạm PagedMovieResult
+            // Cập nhật câu lệnh gọi
             var rawResult = await _context.Set<PagedMovieResult>()
-                 .FromSqlRaw("SELECT * FROM usp_searchmovies(@p_keyword, @p_genreid, @p_releaseyear, @p_pageindex, @p_pagesize)",
-                    p_keyword, p_genreid, p_releaseyear, p_pageindex, p_pagesize)
+                 .FromSqlRaw("SELECT * FROM usp_searchmovies(@p_keyword, @p_status, @p_genreid, @p_releaseyear, @p_pageindex, @p_pagesize)",
+                    p_keyword, p_status, p_genreid, p_releaseyear, p_pageindex, p_pagesize) // Thêm tham số status vào đây
                 .ToListAsync();
 
             // Chuyển đổi từ lớp tạm (với tên cột chữ thường) sang DTO (với tên thuộc tính PascalCase)

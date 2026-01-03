@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Data.SqlClient;
 using MovieBookingAPI.DAO;
-using MovieBookingAPI.Models.DTOs;
+using MovieBooking.Domain.DTOs;
 using Newtonsoft.Json;
 using Npgsql;
 using System.Collections.Generic;

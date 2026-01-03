@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using MovieBookingAPI.DAO;
 using MovieBookingAPI.Data;
-using MovieBookingAPI.Models.DTOs;
+using MovieBooking.Domain.DTOs;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;

@@ -452,27 +452,46 @@ $$;
 
 -- 1.2. Tìm kiếm và Lọc phim (usp_SearchMovies)
 CREATE OR REPLACE FUNCTION usp_searchmovies(
-    p_keyword VARCHAR(100) DEFAULT NULL, p_genreid INT DEFAULT NULL, p_releaseyear INT DEFAULT NULL,
-    p_pageindex INT DEFAULT 1, p_pagesize INT DEFAULT 20
-) RETURNS TABLE (movieid INT, title VARCHAR(255), duration INT, releaseyear INT, rating REAL, posterurl VARCHAR(500), status VARCHAR(20), genres TEXT, totalcount BIGINT)
+    p_keyword VARCHAR(100) DEFAULT NULL,
+    p_status VARCHAR(20) DEFAULT NULL, -- THÊM THAM SỐ NÀY
+    p_genreid INT DEFAULT NULL,
+    p_releaseyear INT DEFAULT NULL,
+    p_pageindex INT DEFAULT 1,
+    p_pagesize INT DEFAULT 20
+) 
+RETURNS TABLE (
+    movieid INT, title VARCHAR(255), duration INT, releaseyear INT, rating REAL, 
+    posterurl VARCHAR(500), status VARCHAR(20), genres TEXT, totalcount BIGINT
+)
 LANGUAGE plpgsql AS $$
-DECLARE v_searchterm VARCHAR(110);
+DECLARE 
+    v_searchterm VARCHAR(110);
 BEGIN
-    IF p_keyword IS NOT NULL AND TRIM(p_keyword) <> '' THEN v_searchterm := '%' || TRIM(p_keyword) || '%'; END IF;
+    IF p_keyword IS NOT NULL AND TRIM(p_keyword) <> '' THEN 
+        v_searchterm := '%' || TRIM(p_keyword) || '%';
+    END IF;
+
     RETURN QUERY
     WITH FilteredMovies AS (
         SELECT m.* FROM movie m
-        WHERE (v_searchterm IS NULL OR m.title ILIKE v_searchterm)
-          AND (p_releaseyear IS NULL OR m.releaseyear = p_releaseyear)
-          AND (p_genreid IS NULL OR EXISTS (SELECT 1 FROM moviegenre mg WHERE mg.movieid = m.movieid AND mg.genreid = p_genreid))
+        WHERE 
+            (v_searchterm IS NULL OR m.title ILIKE v_searchterm)
+            AND (p_status IS NULL OR m.status = p_status) -- THÊM ĐIỀU KIỆN LỌC NÀY
+            AND (p_releaseyear IS NULL OR m.releaseyear = p_releaseyear)
+            AND (p_genreid IS NULL OR EXISTS (
+                SELECT 1 FROM moviegenre mg WHERE mg.movieid = m.movieid AND mg.genreid = p_genreid
+            ))
     )
-    SELECT fm.movieid, fm.title, fm.duration, fm.releaseyear, fm.rating, fm.posterurl, fm.status,
-           (SELECT STRING_AGG(g.genrename, ', ') FROM moviegenre mg JOIN genre g ON mg.genreid = g.genreid WHERE mg.movieid = fm.movieid),
-           (SELECT COUNT(*) FROM FilteredMovies)
-    FROM FilteredMovies fm ORDER BY fm.releaseyear DESC, fm.title ASC OFFSET (p_pageindex - 1) * p_pagesize LIMIT p_pagesize;
+    SELECT 
+        fm.movieid, fm.title, fm.duration, fm.releaseyear, fm.rating, fm.posterurl, fm.status,
+        (SELECT STRING_AGG(g.genrename, ', ') FROM moviegenre mg JOIN genre g ON mg.genreid = g.genreid WHERE mg.movieid = fm.movieid),
+        (SELECT COUNT(*) FROM FilteredMovies)
+    FROM FilteredMovies fm 
+    ORDER BY fm.releaseyear DESC, fm.title ASC 
+    OFFSET (p_pageindex - 1) * p_pagesize 
+    LIMIT p_pagesize;
 END;
 $$;
-
 -- 1.3. Xem chi tiết phim (usp_GetMovieDetail)
 CREATE OR REPLACE FUNCTION usp_getmoviedetail(p_movieid INT)
 RETURNS TABLE (movieid INT, title VARCHAR(255), storyline TEXT, director VARCHAR(100), duration INT, releaseyear INT, agerating VARCHAR(10), rating REAL, posterurl VARCHAR(500), status VARCHAR(20), genres TEXT, casts TEXT)

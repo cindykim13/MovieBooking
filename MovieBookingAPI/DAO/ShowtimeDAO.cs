@@ -1,7 +1,7 @@
 ﻿using Npgsql;
 using Microsoft.EntityFrameworkCore;
 using MovieBookingAPI.Data;
-using MovieBookingAPI.Models.DTOs;
+using MovieBooking.Domain.DTOs;
 using System.Data;
 
 namespace MovieBookingAPI.DAO

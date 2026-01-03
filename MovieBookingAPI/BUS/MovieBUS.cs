@@ -1,4 +1,4 @@
-﻿using MovieBookingAPI.Models.DTOs;
+﻿using MovieBooking.Domain.DTOs;
 using MovieBookingAPI.BUS;
 using MovieBookingAPI.DAO;
 using System.Collections.Generic;
@@ -22,15 +22,15 @@ namespace MovieBookingAPI.BUS
 
             return await _movieDAO.GetMoviesPagedAsync(pageIndex, pageSize, sortBy);
         }
-        public async Task<PagedResult<MovieDTO>> SearchMoviesAsync(string? keyword, int? genreId, int? year, int pageIndex, int pageSize)
+        public async Task<PagedResult<MovieDTO>> SearchMoviesAsync(string? keyword, string? status, int? genreId, int? year, int pageIndex, int pageSize)
         {
-            // Có thể thêm logic chuẩn hóa từ khóa tại đây (Trim, Lowercase...)
             if (!string.IsNullOrWhiteSpace(keyword))
             {
                 keyword = keyword.Trim();
             }
 
-            return await _movieDAO.SearchMoviesAsync(keyword, genreId, year, pageIndex, pageSize);
+            // Truyền tham số status xuống DAO
+            return await _movieDAO.SearchMoviesAsync(keyword, status, genreId, year, pageIndex, pageSize);
         }
 
         public async Task<List<GenreDTO>> GetAllGenresAsync()

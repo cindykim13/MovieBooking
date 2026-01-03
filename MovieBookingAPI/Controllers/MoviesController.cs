@@ -7,11 +7,11 @@ namespace MovieBookingAPI.Controllers
     [ApiController]
     public class MoviesController : ControllerBase
     {
-        private readonly IMovieBUS _movieService;
+        private readonly IMovieBUS _movieBUS;
 
-        public MoviesController(IMovieBUS movieService)
+        public MoviesController(IMovieBUS movieBUS)
         {
-            _movieService = movieService;
+            _movieBUS = movieBUS;
         }
 
         // GET: api/movies?pageIndex=1&pageSize=10&sortBy=ReleaseYear
@@ -23,7 +23,7 @@ namespace MovieBookingAPI.Controllers
         {
             try
             {
-                var result = await _movieService.GetMoviesAsync(pageIndex, pageSize, sortBy);
+                var result = await _movieBUS.GetMoviesAsync(pageIndex, pageSize, sortBy);
                 return Ok(result);
             }
             catch (Exception ex)
@@ -32,18 +32,20 @@ namespace MovieBookingAPI.Controllers
             }
         }
 
-        // GET: api/movies/search?keyword=...&genreId=...
+        // GET: api/movies/search?keyword=...&status=...&genreId=...
         [HttpGet("search")]
         public async Task<IActionResult> SearchMovies(
             [FromQuery] string? keyword,
+            [FromQuery] string? status, // Thêm tham số này vào chữ ký Action
             [FromQuery] int? genreId,
             [FromQuery] int? year,
             [FromQuery] int pageIndex = 1,
-            [FromQuery] int pageSize = 20)
+            [FromQuery] int pageSize = 10) // Sửa pageSize mặc định thành 10
         {
             try
             {
-                var result = await _movieService.SearchMoviesAsync(keyword, genreId, year, pageIndex, pageSize);
+                // Truyền tham số 'status' vào Service
+                var result = await _movieBUS.SearchMoviesAsync(keyword, status, genreId, year, pageIndex, pageSize);
                 return Ok(result);
             }
             catch (Exception ex)
@@ -58,7 +60,7 @@ namespace MovieBookingAPI.Controllers
         {
             try
             {
-                var result = await _movieService.GetAllGenresAsync();
+                var result = await _movieBUS.GetAllGenresAsync();
                 return Ok(result);
             }
             catch (Exception ex)
@@ -73,7 +75,7 @@ namespace MovieBookingAPI.Controllers
         {
             try
             {
-                var movie = await _movieService.GetMovieDetailAsync(id);
+                var movie = await _movieBUS.GetMovieDetailAsync(id);
 
                 if (movie == null)
                 {

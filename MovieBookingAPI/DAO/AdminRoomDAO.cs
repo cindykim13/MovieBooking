@@ -1,7 +1,7 @@
 ﻿using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using MovieBookingAPI.Data;
-using MovieBookingAPI.Models.DTOs;
+using MovieBooking.Domain.DTOs;
 using Newtonsoft.Json;
 using System.Linq;
 using System.Threading.Tasks;

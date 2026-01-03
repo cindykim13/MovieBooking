@@ -1,7 +1,7 @@
 ﻿using Microsoft.Data.SqlClient; // Dùng SqlParameter của Microsoft cho EF Core
 using Microsoft.EntityFrameworkCore;
 using MovieBookingAPI.Data;
-using MovieBookingAPI.Models.DTOs;
+using MovieBooking.Domain.DTOs;
 using Newtonsoft.Json;
 using Npgsql; // Vẫn cần NpgsqlParameter cho ADO.NET
 using NpgsqlTypes;

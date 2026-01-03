@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MovieBookingAPI.BUS;
-using MovieBookingAPI.Models.DTOs;
+using MovieBooking.Domain.DTOs;
 namespace MovieBookingAPI.Controllers
 {
     [Route("api/admin/movies")]

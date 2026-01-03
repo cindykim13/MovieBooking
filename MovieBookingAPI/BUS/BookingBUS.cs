@@ -1,5 +1,5 @@
-﻿using MovieBookingAPI.DAO; 
-using MovieBookingAPI.Models.DTOs;
+﻿using MovieBookingAPI.DAO;
+using MovieBooking.Domain.DTOs;
 using MovieBookingAPI.BUS;
 using Npgsql;
 using System;

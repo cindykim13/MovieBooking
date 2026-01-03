@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MovieBookingAPI.DAO;
-using MovieBookingAPI.Models.DTOs;
+using MovieBooking.Domain.DTOs;
 using MovieBookingAPI.Models.Entities;
 
 namespace MovieBookingAPI.Data

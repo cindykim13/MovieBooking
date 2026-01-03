@@ -1,6 +1,6 @@
 ﻿using Microsoft.Data.SqlClient;
 using MovieBookingAPI.BUS;
-using MovieBookingAPI.Models.DTOs;
+using MovieBooking.Domain.DTOs;
 using MovieBookingAPI.DAO;
 using System;
 using System.Threading.Tasks;

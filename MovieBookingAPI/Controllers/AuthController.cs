@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using MovieBookingAPI.Models.DTOs;
+using MovieBooking.Domain.DTOs;
 using MovieBookingAPI.BUS;
 
 namespace MovieBookingAPI.Controllers

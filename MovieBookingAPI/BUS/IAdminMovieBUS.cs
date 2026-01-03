@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
-using MovieBookingAPI.Models.DTOs;
+using MovieBooking.Domain.DTOs;
 using System.Threading.Tasks;
 namespace MovieBookingAPI.BUS
 {

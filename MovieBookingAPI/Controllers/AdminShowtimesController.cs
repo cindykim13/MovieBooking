@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MovieBookingAPI.Models.DTOs;
+using MovieBooking.Domain.DTOs;
 using MovieBookingAPI.BUS;
 using System;
 using System.Threading.Tasks;

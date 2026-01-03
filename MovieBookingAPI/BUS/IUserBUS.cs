@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using MovieBookingAPI.Models.DTOs;
+using MovieBooking.Domain.DTOs;
 
 namespace MovieBookingAPI.BUS
 {

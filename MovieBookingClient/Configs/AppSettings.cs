@@ -2,12 +2,9 @@
 {
     public static class AppSettings
     {
-        // --- CHẾ ĐỘ PHÁT TRIỂN (DEVELOPMENT) ---
-        // Bỏ comment dòng dưới khi chạy Local trên máy tính
+        // Địa chỉ Base URL của API đã triển khai trên Render
+        // Lưu ý: Không bao gồm đuôi /swagger
+        //public const string BaseApiUrl = "https://moviebookingapi-vg53.onrender.com"; // Chuẩn
         public const string BaseApiUrl = "https://localhost:7034";
-
-        // --- CHẾ ĐỘ SẢN PHẨM (PRODUCTION) ---
-        // Bỏ comment dòng dưới khi muốn kết nối tới Server thật trên Render
-        // public const string BaseApiUrl = "https://movie-booking-api.onrender.com";
     }
 }
