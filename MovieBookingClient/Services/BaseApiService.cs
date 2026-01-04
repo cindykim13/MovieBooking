@@ -16,7 +16,7 @@ namespace MovieBookingClient.Services
         {
             var options = new RestClientOptions(AppSettings.BaseApiUrl)
             {
-                Timeout = TimeSpan.FromSeconds(30), // Tăng timeout lên 30s đề phòng mạng chậm
+                Timeout = TimeSpan.FromSeconds(180),  // Tăng timeout lên 30s đề phòng mạng chậm
                 RemoteCertificateValidationCallback = (sender, certificate, chain, sslPolicyErrors) => true
             };
 

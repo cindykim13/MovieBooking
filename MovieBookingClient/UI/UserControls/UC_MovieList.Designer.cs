@@ -110,8 +110,8 @@
             flowLayoutPanelMovies.Dock = DockStyle.Fill;
             flowLayoutPanelMovies.Location = new Point(0, 60);
             flowLayoutPanelMovies.Name = "flowLayoutPanelMovies";
-            flowLayoutPanelMovies.Padding = new Padding(60, 20, 0, 20);
-            flowLayoutPanelMovies.Size = new Size(1200, 505);
+            flowLayoutPanelMovies.Padding = new System.Windows.Forms.Padding(70, 20, 50, 20);
+            flowLayoutPanelMovies.Size = new System.Drawing.Size(1280, 505);
             flowLayoutPanelMovies.TabIndex = 1;
             // 
             // panelBottom

@@ -17,99 +17,108 @@
 
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
-            this.guna2Elipse1 = new Guna.UI2.WinForms.Guna2Elipse(this.components);
-            this.guna2ShadowPanel1 = new Guna.UI2.WinForms.Guna2ShadowPanel();
-            this.picPoster = new Guna.UI2.WinForms.Guna2PictureBox();
-            this.btnBuyTicket = new Guna.UI2.WinForms.Guna2Button();
-            this.lblGenre = new System.Windows.Forms.Label();
-            this.lblTitle = new System.Windows.Forms.Label();
-            ((System.ComponentModel.ISupportInitialize)(this.picPoster)).BeginInit();
-            this.guna2ShadowPanel1.SuspendLayout();
-            this.SuspendLayout();
+            components = new System.ComponentModel.Container();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges5 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges6 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges7 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges8 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            guna2Elipse1 = new Guna.UI2.WinForms.Guna2Elipse(components);
+            guna2ShadowPanel1 = new Guna.UI2.WinForms.Guna2ShadowPanel();
+            picPoster = new Guna.UI2.WinForms.Guna2PictureBox();
+            btnBuyTicket = new Guna.UI2.WinForms.Guna2Button();
+            lblGenre = new Label();
+            lblTitle = new Label();
+            guna2ShadowPanel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)picPoster).BeginInit();
+            SuspendLayout();
             // 
             // guna2Elipse1
             // 
-            this.guna2Elipse1.BorderRadius = 12;
-            this.guna2Elipse1.TargetControl = this;
+            guna2Elipse1.BorderRadius = 12;
+            guna2Elipse1.TargetControl = this;
             // 
             // guna2ShadowPanel1
             // 
-            this.guna2ShadowPanel1.BackColor = System.Drawing.Color.Transparent;
-            this.guna2ShadowPanel1.Controls.Add(this.picPoster);
-            this.guna2ShadowPanel1.Controls.Add(this.btnBuyTicket);
-            this.guna2ShadowPanel1.Controls.Add(this.lblGenre);
-            this.guna2ShadowPanel1.Controls.Add(this.lblTitle);
-            this.guna2ShadowPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.guna2ShadowPanel1.FillColor = System.Drawing.Color.White;
-            this.guna2ShadowPanel1.Location = new System.Drawing.Point(0, 0);
-            this.guna2ShadowPanel1.Name = "guna2ShadowPanel1";
-            this.guna2ShadowPanel1.Padding = new System.Windows.Forms.Padding(10);
-            this.guna2ShadowPanel1.ShadowColor = System.Drawing.Color.Black;
-            this.guna2ShadowPanel1.ShadowDepth = 30;
-            this.guna2ShadowPanel1.ShadowShift = 4;
-            this.guna2ShadowPanel1.Size = new System.Drawing.Size(260, 460); // [SỬA] Tăng kích thước panel chứa
-            this.guna2ShadowPanel1.TabIndex = 0;
+            guna2ShadowPanel1.BackColor = Color.Transparent;
+            guna2ShadowPanel1.Controls.Add(picPoster);
+            guna2ShadowPanel1.Controls.Add(btnBuyTicket);
+            guna2ShadowPanel1.Controls.Add(lblGenre);
+            guna2ShadowPanel1.Controls.Add(lblTitle);
+            guna2ShadowPanel1.Dock = DockStyle.Fill;
+            guna2ShadowPanel1.FillColor = Color.White;
+            guna2ShadowPanel1.Location = new Point(0, 0);
+            guna2ShadowPanel1.Name = "guna2ShadowPanel1";
+            guna2ShadowPanel1.Padding = new Padding(10);
+            guna2ShadowPanel1.ShadowColor = Color.Black;
+            guna2ShadowPanel1.ShadowDepth = 30;
+            guna2ShadowPanel1.ShadowShift = 4;
+            guna2ShadowPanel1.Size = new Size(260, 460);
+            guna2ShadowPanel1.TabIndex = 0;
             // 
             // picPoster
             // 
-            this.picPoster.BorderRadius = 8;
-            this.picPoster.Dock = System.Windows.Forms.DockStyle.Top;
-            this.picPoster.ImageRotate = 0F;
-            this.picPoster.Location = new System.Drawing.Point(10, 10);
-            this.picPoster.Name = "picPoster";
-            this.picPoster.Size = new System.Drawing.Size(240, 330); // [SỬA] Tăng chiều rộng ảnh
-            this.picPoster.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.picPoster.TabIndex = 0;
-            this.picPoster.TabStop = false;
-            // 
-            // lblTitle
-            // 
-            this.lblTitle.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold); // Tăng font
-            this.lblTitle.Location = new System.Drawing.Point(10, 350); // [SỬA] Đẩy xuống dưới ảnh
-            this.lblTitle.Name = "lblTitle";
-            this.lblTitle.Size = new System.Drawing.Size(240, 25);
-            this.lblTitle.TabIndex = 1;
-            this.lblTitle.Text = "Tên Phim";
-            // 
-            // lblGenre
-            // 
-            this.lblGenre.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.lblGenre.ForeColor = System.Drawing.Color.Gray;
-            this.lblGenre.Location = new System.Drawing.Point(10, 375); // [SỬA] Đẩy xuống dưới tên
-            this.lblGenre.Name = "lblGenre";
-            this.lblGenre.Size = new System.Drawing.Size(240, 20);
-            this.lblGenre.TabIndex = 2;
-            this.lblGenre.Text = "Thể loại";
+            picPoster.BorderRadius = 8;
+            picPoster.CustomizableEdges = customizableEdges5;
+            picPoster.Dock = DockStyle.Top;
+            picPoster.ImageRotate = 0F;
+            picPoster.Location = new Point(10, 10);
+            picPoster.Name = "picPoster";
+            picPoster.ShadowDecoration.CustomizableEdges = customizableEdges6;
+            picPoster.Size = new Size(240, 340);
+            picPoster.SizeMode = PictureBoxSizeMode.StretchImage;
+            picPoster.TabIndex = 0;
+            picPoster.TabStop = false;
             // 
             // btnBuyTicket
             // 
-            this.btnBuyTicket.BorderRadius = 6;
-            this.btnBuyTicket.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnBuyTicket.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
-            this.btnBuyTicket.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
-            this.btnBuyTicket.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
-            this.btnBuyTicket.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
-            this.btnBuyTicket.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(212)))), ((int)(((byte)(33)))), ((int)(((byte)(33)))));
-            this.btnBuyTicket.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.btnBuyTicket.ForeColor = System.Drawing.Color.White;
-            this.btnBuyTicket.Location = new System.Drawing.Point(10, 405); // [SỬA] Đẩy xuống đáy thẻ
-            this.btnBuyTicket.Name = "btnBuyTicket";
-            this.btnBuyTicket.Size = new System.Drawing.Size(240, 40); // Nút rộng bằng thẻ
-            this.btnBuyTicket.TabIndex = 3;
-            this.btnBuyTicket.Text = "MUA VÉ";
+            btnBuyTicket.BorderRadius = 6;
+            btnBuyTicket.Cursor = Cursors.Hand;
+            btnBuyTicket.CustomizableEdges = customizableEdges7;
+            btnBuyTicket.DisabledState.BorderColor = Color.DarkGray;
+            btnBuyTicket.DisabledState.CustomBorderColor = Color.DarkGray;
+            btnBuyTicket.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
+            btnBuyTicket.DisabledState.ForeColor = Color.FromArgb(141, 141, 141);
+            btnBuyTicket.FillColor = Color.FromArgb(212, 33, 33);
+            btnBuyTicket.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            btnBuyTicket.ForeColor = Color.White;
+            btnBuyTicket.Location = new Point(10, 405);
+            btnBuyTicket.Name = "btnBuyTicket";
+            btnBuyTicket.ShadowDecoration.CustomizableEdges = customizableEdges8;
+            btnBuyTicket.Size = new Size(240, 40);
+            btnBuyTicket.TabIndex = 3;
+            btnBuyTicket.Text = "MUA VÉ";
+            // 
+            // lblGenre
+            // 
+            lblGenre.Font = new Font("Segoe UI", 9F);
+            lblGenre.ForeColor = Color.Gray;
+            lblGenre.Location = new Point(13, 382);
+            lblGenre.Name = "lblGenre";
+            lblGenre.Size = new Size(240, 23);
+            lblGenre.TabIndex = 2;
+            lblGenre.Text = "Thể loại";
+            lblGenre.Click += lblGenre_Click;
+            // 
+            // lblTitle
+            // 
+            lblTitle.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
+            lblTitle.Location = new Point(10, 353);
+            lblTitle.Name = "lblTitle";
+            lblTitle.Size = new Size(240, 29);
+            lblTitle.TabIndex = 1;
+            lblTitle.Text = "Tên Phim";
             // 
             // UCMovieCard
             // 
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
-            this.BackColor = System.Drawing.Color.Transparent;
-            this.Controls.Add(this.guna2ShadowPanel1);
-            this.Margin = new System.Windows.Forms.Padding(15); // [SỬA] Margin 15px mỗi bên (Tổng khoảng cách ngang = 30px)
-            this.Name = "UCMovieCard";
-            this.Size = new System.Drawing.Size(260, 460); // [SỬA] Kích thước UserControl khớp với Panel
-            ((System.ComponentModel.ISupportInitialize)(this.picPoster)).EndInit();
-            this.guna2ShadowPanel1.ResumeLayout(false);
-            this.ResumeLayout(false);
+            AutoScaleMode = AutoScaleMode.None;
+            BackColor = Color.Transparent;
+            Controls.Add(guna2ShadowPanel1);
+            Margin = new Padding(10);
+            Name = "UCMovieCard";
+            Size = new Size(260, 460);
+            guna2ShadowPanel1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)picPoster).EndInit();
+            ResumeLayout(false);
         }
 
         #endregion

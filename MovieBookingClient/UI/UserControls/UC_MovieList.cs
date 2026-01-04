@@ -1,4 +1,4 @@
-﻿using MovieBooking.Domain.DTOs; // Sử dụng DTO từ project Shared
+﻿using MovieBooking.Domain.DTOs;
 using MovieBookingClient.Forms.Customer;
 using MovieBookingClient.Services;
 using System;
@@ -15,7 +15,11 @@ namespace MovieBookingClient.UI.UserControls
         private readonly FrmMain _mainForm;
         private int _currentPage = 1;
         private int _totalPages = 1;
-        public string FilterStatus { get; set; } = "Now Showing";
+        public string FilterStatus
+        {
+            get => _currentStatus;
+            set => _currentStatus = value; // Setter chỉ gán giá trị, không trigger load
+        }
 
         // Lưu trữ các tham số lọc hiện tại
         private string _currentStatus = "Now Showing"; // Mặc định
@@ -65,33 +69,44 @@ namespace MovieBookingClient.UI.UserControls
                 cboGenre.SelectedIndexChanged += async (s, e) => await ExecuteSearch();
             }
         }
-        // Hàm public để FrmMain gọi
-        public async Task ReloadWithFilter(string status)
-        {
-            this.FilterStatus = status;
-            _currentPage = 1; // Reset về trang 1
-            await LoadMoviesAsync();
-        }
         // HÀM CÔNG KHAI: Để FrmMain có thể yêu cầu lọc
+        // 1. Hàm lọc theo Status (Gọi từ Menu Phim)
         public async Task FilterByStatus(string status)
         {
-            // Cập nhật trạng thái lọc và reset các bộ lọc khác
+            // Cập nhật trạng thái và reset các bộ lọc tìm kiếm khác
             _currentStatus = status;
             _currentKeyword = null;
             _currentGenreId = null;
-            txtSearch.Clear();
-            _currentPage = 1; // Reset về trang đầu
-            await LoadMoviesAsync();
-        }
 
-        // HÀM CÔNG KHAI: Để thực hiện tìm kiếm
-        private async Task SearchMovies()
-        {
-            _currentKeyword = txtSearch.Text;
-            // Ở đây có thể lấy _currentGenreId từ cboGenre.SelectedValue
+            // Reset UI tìm kiếm
+            txtSearch.Clear();
+            if (cboGenre.Items.Count > 0) cboGenre.SelectedIndex = 0;
+
             _currentPage = 1;
             await LoadMoviesAsync();
         }
+        public async Task ResetToDefault()
+        {
+            // 1. Reset các biến trạng thái về mặc định
+            this._currentPage = 1;
+            this._currentStatus = "Now Showing"; // Mặc định về Phim đang chiếu
+            this._currentKeyword = null;
+            this._currentGenreId = null;
+
+            // 2. Reset giao diện bộ lọc
+            txtSearch.Clear();
+            if (cboGenre.Items.Count > 0) cboGenre.SelectedIndex = 0; // Chọn "Tất cả"
+
+            // 3. Reset giao diện Tab (Nếu bạn có 2 nút này trong UC_MovieList.Designer.cs)
+            // Nếu trong Designer của UC_MovieList KHÔNG CÓ 2 nút này thì XÓA 2 dòng dưới đi
+            if (this.Controls.ContainsKey("btnNowShowing")) ((Guna.UI2.WinForms.Guna2Button)this.Controls["btnNowShowing"]).Checked = true;
+            if (this.Controls.ContainsKey("btnComingSoon")) ((Guna.UI2.WinForms.Guna2Button)this.Controls["btnComingSoon"]).Checked = false;
+
+            // 4. Tải lại dữ liệu
+            await LoadMoviesAsync();
+        }
+
+        // --- PRIVATE METHODS (Logic nội bộ) ---
         // Hàm xử lý logic thu thập dữ liệu lọc
         private async Task ExecuteSearch()
         {
@@ -137,7 +152,7 @@ namespace MovieBookingClient.UI.UserControls
                     genreId: _currentGenreId,
                     year: null,
                     pageIndex: _currentPage,
-                    pageSize: 8 // Số lượng phim trên 1 trang (4 cột x 2 hàng)
+                    pageSize: 12 // Số lượng phim trên 1 trang (4 cột x 2 hàng)
                 );
 
                 flowLayoutPanelMovies.Controls.Clear();
@@ -152,7 +167,7 @@ namespace MovieBookingClient.UI.UserControls
                         card.SetMovieDetails(movie);
                         card.BuyTicketClicked += (s, id) => {
                             MessageBox.Show($"Xem chi tiết phim: {id}");
-                            // TODO: Gọi FrmMain để chuyển trang chi tiết
+                            _mainForm.NavigateToMovieDetail(id);
                         };
                         flowLayoutPanelMovies.Controls.Add(card);
                     }
@@ -176,14 +191,6 @@ namespace MovieBookingClient.UI.UserControls
                 MessageBox.Show("Lỗi tải phim: " + ex.Message);
             }
         }
-
-        private void Card_BuyTicketClicked(object sender, int movieId)
-        {
-            // Yêu cầu Form cha chuyển sang giao diện chi tiết phim
-            // _mainForm.NavigateToMovieDetail(movieId); // Sẽ làm ở bước sau
-            MessageBox.Show($"Chuyển sang trang chi tiết của phim có ID: {movieId}.", "Thông báo");
-        }
-
         private void UpdatePaginationUI()
         {
             lblPageInfo.Text = $"Trang {_currentPage} / {_totalPages}";
@@ -200,5 +207,6 @@ namespace MovieBookingClient.UI.UserControls
                 await LoadMoviesAsync();
             }
         }
+        
     }
 }

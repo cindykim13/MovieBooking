@@ -45,5 +45,11 @@ namespace MovieBookingClient.Services
             // Gọi và chờ kết quả
             return await ExecuteAsync<List<GenreDTO>>(request);
         }
+        // Trong MovieService.cs
+        public async Task<MovieDetailDTO> GetMovieDetailAsync(int id)
+        {
+            var request = CreateRequest($"/api/movies/{id}", Method.Get);
+            return await ExecuteAsync<MovieDetailDTO>(request);
+        }
     }
 }

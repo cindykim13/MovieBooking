@@ -17,6 +17,9 @@ namespace MovieBookingClient.UI.UserControls
         {
             InitializeComponent();
             btnBuyTicket.Click += (s, e) => BuyTicketClicked?.Invoke(this, _movie.MovieId);
+            // Thêm sự kiện click chuyển trang
+            picPoster.Click += (s, e) => BuyTicketClicked?.Invoke(this, _movie.MovieId);
+            lblTitle.Click += (s, e) => BuyTicketClicked?.Invoke(this, _movie.MovieId);
         }
 
         // Phương thức công khai để thiết lập dữ liệu cho Card
@@ -67,6 +70,11 @@ namespace MovieBookingClient.UI.UserControls
         }
 
         private void lblTitle_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void lblGenre_Click(object sender, EventArgs e)
         {
 
         }

@@ -1,4 +1,5 @@
 ﻿using Guna.UI2.WinForms;
+using MovieBooking.Domain.DTOs;
 using MovieBookingClient.Forms.Admin;
 using MovieBookingClient.Session;
 using MovieBookingClient.UI.UserControls;
@@ -22,6 +23,7 @@ namespace MovieBookingClient.Forms.Customer
 
         private void InitializeCustomComponents()
         {
+            // 1. Tải Logo (Giữ nguyên)
             try
             {
                 string logoPath = Path.Combine(Application.StartupPath, "Assets", "logo4.png");
@@ -34,25 +36,29 @@ namespace MovieBookingClient.Forms.Customer
             {
                 Console.WriteLine($"Không thể tải logo: {ex.Message}");
             }
-            // Khởi tạo các UserControl
+
+            // 2. Khởi tạo các UserControl (Giữ nguyên)
             ucMovieList = new UCMovieList(this);
             ucLogin = new UC_Login(this);
             ucRegister = new UC_Register(this);
-            // --- TẠO MENU PHIM ---     
+
+            // 3. TẠO MENU PHIM (Giữ nguyên logic của bạn)
             Guna2ContextMenuStrip menuMovies = new Guna2ContextMenuStrip();
             menuMovies.RenderStyle.SelectionBackColor = Color.FromArgb(212, 33, 33);
             menuMovies.RenderStyle.SelectionForeColor = Color.White;
 
             ToolStripMenuItem itemNowShowing = new ToolStripMenuItem("Phim Đang Chiếu");
             itemNowShowing.Click += async (s, e) => {
-                await ucMovieList.ReloadWithFilter("Now Showing");
+                // Đảm bảo đang ở màn hình danh sách
                 LoadUserControl(ucMovieList);
+                // Gọi hàm lọc với chuỗi chính xác khớp với Database
+                await ucMovieList.FilterByStatus("Now Showing");
             };
 
             ToolStripMenuItem itemComingSoon = new ToolStripMenuItem("Phim Sắp Chiếu");
             itemComingSoon.Click += async (s, e) => {
-                await ucMovieList.ReloadWithFilter("Coming Soon");
                 LoadUserControl(ucMovieList);
+                await ucMovieList.FilterByStatus("Coming Soon");
             };
 
             menuMovies.Items.Add(itemNowShowing);
@@ -63,9 +69,20 @@ namespace MovieBookingClient.Forms.Customer
                 menuMovies.Show(btnMovies, new Point(0, btnMovies.Height));
             };
 
-            // Gán các sự kiện điều hướng còn lại
+            // 4. SỰ KIỆN NÚT USER (Giữ nguyên)
             btnUserAction.Click += BtnUserAction_Click;
-            logoPictureBox.Click += (s, e) => NavigateToHome(); // Click logo vẫn về trang chủ
+
+            // 5. [SỬA LỖI LOGIC] LOGO & NÚT MUA VÉ -> RESET VỀ TRANG CHỦ
+            // Khi nhấn Logo hoặc Mua vé ngay, phải tải lại danh sách phim mặc định
+            logoPictureBox.Click += async (s, e) => {
+                LoadUserControl(ucMovieList); // Chuyển về view danh sách
+                await ucMovieList.ResetToDefault(); // Reset bộ lọc
+            };
+
+            btnBuyTicket.Click += async (s, e) => {
+                LoadUserControl(ucMovieList);
+                await ucMovieList.FilterByStatus("Now Showing");
+            };
         }
 
         protected override void OnLoad(EventArgs e)
@@ -128,6 +145,27 @@ namespace MovieBookingClient.Forms.Customer
         {
             // [FIX LỖI NGHIỆP VỤ]: Bỏ kiểm tra đăng nhập khi xem phim
             LoadUserControl(ucMovieList);
+        }
+        public void NavigateToMovieDetail(int movieId)
+        {
+            // Tạo UserControl chi tiết phim, truyền ID vào
+            UC_MovieDetail detailControl = new UC_MovieDetail(this, movieId);
+
+            // Tải vào panel chính
+            LoadUserControl(detailControl);
+        }
+        
+        public void NavigateToSelectShowtime(int movieId)
+        {
+            UC_SelectShowtime showtimeControl = new UC_SelectShowtime(this, movieId);
+            LoadUserControl(showtimeControl);
+        }
+
+        public void NavigateToBooking(BookingContextDTO contextInfo) // Sửa từ int sang BookingContextDTO
+        {
+            // Tạo UserControl Đặt vé và truyền toàn bộ đối tượng context vào
+            UC_Booking bookingControl = new UC_Booking(this, contextInfo);
+            LoadUserControl(bookingControl);
         }
 
         public void OnLoginSuccess()

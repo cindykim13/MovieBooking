@@ -4,7 +4,7 @@
     {
         // Địa chỉ Base URL của API đã triển khai trên Render
         // Lưu ý: Không bao gồm đuôi /swagger
-        //public const string BaseApiUrl = "https://moviebookingapi-vg53.onrender.com";
-        public const string BaseApiUrl = "https://localhost:7034";
+        public const string BaseApiUrl = "https://moviebookingapi-vg53.onrender.com";
+        //public const string BaseApiUrl = "https://localhost:7034";
     }
 }
