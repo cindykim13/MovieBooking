@@ -1,8 +1,10 @@
 ﻿using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
-using MovieBookingAPI.Data;
 using MovieBooking.Domain.DTOs;
+using MovieBookingAPI.Data;
 using Newtonsoft.Json;
+using Npgsql;
+using NpgsqlTypes;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -25,35 +27,34 @@ namespace MovieBookingAPI.DAO
             // Serialize danh sách ghế thành chuỗi JSON
             string seatsJson = JsonConvert.SerializeObject(request.Seats);
 
-
             var parameters = new[]
             {
-                new SqlParameter("@CinemaId", request.CinemaId),
-                new SqlParameter("@Name", request.Name),
-                new SqlParameter("@SeatsJson", seatsJson)
+                new NpgsqlParameter("p_cinemaid", request.CinemaId),
+                new NpgsqlParameter("p_name", request.Name),
+                // Chỉ định rõ kiểu JSON cho tham số JSON
+                new NpgsqlParameter("p_seatsjson", NpgsqlDbType.Json) { Value = seatsJson }
             };
 
-
+            // Sử dụng cú pháp gọi Function của PostgreSQL: SELECT func(...)
             var result = await _context.Database
                 .SqlQueryRaw<int>(
-                    "EXEC usp_CreateRoomWithSeats @CinemaId, @Name, @SeatsJson",
+                    "SELECT usp_createroomwithseats(@p_cinemaid, @p_name, @p_seatsjson)",
                     parameters
                 )
                 .ToListAsync();
 
-
             return result.FirstOrDefault();
         }
+
         public async Task DeleteRoomAsync(int roomId)
         {
-            var parameter = new SqlParameter("@RoomId", roomId);
+            var parameter = new NpgsqlParameter("p_roomid", roomId);
 
-
+            // Function usp_deletescreenroom trả về VOID, dùng SELECT để gọi
             await _context.Database.ExecuteSqlRawAsync(
-                "EXEC usp_DeleteScreenRoom @RoomId",
+                "SELECT usp_deletescreenroom(@p_roomid)",
                 parameter
             );
         }
-
     }
 }

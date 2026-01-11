@@ -84,9 +84,15 @@ namespace MovieBookingAPI.Controllers
         {
             try
             {
-                await _service.DeleteShowtimeAsync(id);
-                // HTTP 204 No Content là response chuẩn cho lệnh DELETE thành công
-                return NoContent();
+                string resultType = await _service.DeleteShowtimeAsync(id);
+
+                // Trả về 200 OK cùng thông báo chi tiết thay vì 204 No Content
+                // Giúp Frontend (và bạn khi test) biết được là Xóa mềm hay Xóa cứng
+                return Ok(new
+                {
+                    Message = "Xóa lịch chiếu thành công.",
+                    Type = resultType // "Soft Deleted" hoặc "Hard Deleted"
+                });
             }
             catch (KeyNotFoundException ex)
             {
@@ -97,6 +103,5 @@ namespace MovieBookingAPI.Controllers
                 return StatusCode(500, new { Message = "Lỗi hệ thống: " + ex.Message });
             }
         }
-
     }
 }

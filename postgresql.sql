@@ -289,6 +289,20 @@ SELECT
 FROM ScreenRoom r
 CROSS JOIN generate_series(1, 6) AS sb_num;
 
+-- Xóa ghế hàng I cũ nếu có để tránh trùng
+DELETE FROM seat WHERE "Row" = 'I';
+
+-- Tạo lại ghế đôi hàng I cho TẤT CẢ các phòng
+INSERT INTO seat (roomid, typeid, "Row", "Number", gridrow, gridcolumn)
+SELECT 
+    r.roomid,
+    (SELECT typeid FROM seattype WHERE typename = 'Sweetbox'),
+    'I',
+    sb_num,
+    9, -- GridRow
+    (sb_num * 2) - 1 -- GridColumn: 1, 3, 5...
+FROM screenroom r
+CROSS JOIN generate_series(1, 6) AS sb_num;
 -- ================================================================
 -- BƯỚC C: TẠO DỮ LIỆU NGƯỜI DÙNG (USER DATA)
 -- ================================================================
@@ -329,29 +343,74 @@ WHERE
 -- ================================================================
 -- BƯỚC D: TẠO DỮ LIỆU GIAO DỊCH (TRANSACTIONAL DATA)
 -- ================================================================
-
 -- 1. Tạo Lịch chiếu (Showtimes)
+-- Xóa dữ liệu cũ trong bảng Showtime (nếu cần test lại từ đầu)
+-- TRUNCATE TABLE Ticket, Booking, Showtime RESTART IDENTITY CASCADE;
 INSERT INTO Showtime (MovieId, RoomId, StartTime, EndTime, BasePrice, Status)
+WITH 
+-- [FIX LỖI] Chỉ lấy MovieId và Duration, KHÔNG lấy BasePrice vì bảng Movie không có
+ActiveMovies AS (
+    SELECT MovieId, Duration 
+    FROM Movie 
+    WHERE Status = 'Now Showing'
+),
+-- Xác định khoảng thời gian: Từ hiện tại đến HẾT THÁNG
+DateRange AS (
+    SELECT 
+        CURRENT_DATE AS StartDate,
+        (date_trunc('month', CURRENT_DATE) + interval '1 month' - interval '1 day')::date AS EndDate
+),
+-- Tạo các khung giờ (Slot) trong ngày: 5 suất/ngày
+DailySlots AS (
+    SELECT * FROM generate_series(1, 5) AS SlotIndex
+),
+-- TỔ HỢP DỮ LIỆU: (Tất cả Phòng rạp) x (Tất cả Ngày còn lại) x (5 Suất/ngày)
+RawSchedule AS (
+    SELECT 
+        r.RoomId,
+        d.SeriesDate AS ShowDate,
+        s.SlotIndex,
+        -- Random chọn 1 phim từ danh sách đang chiếu
+        (SELECT MovieId FROM ActiveMovies ORDER BY random() LIMIT 1) as SelectedMovieId
+    FROM ScreenRoom r -- Đã bao gồm tất cả phòng của tất cả rạp (CGV Vincom, Pandora, v.v.)
+    CROSS JOIN DateRange dr
+    CROSS JOIN LATERAL generate_series(dr.StartDate, dr.EndDate, interval '1 day') AS d(SeriesDate)
+    CROSS JOIN DailySlots s
+),
+-- Tính toán giờ chiếu chi tiết
+CalculatedShowtime AS (
+    SELECT 
+        rs.SelectedMovieId,
+        rs.RoomId,
+        m.Duration,
+        (
+            rs.ShowDate + 
+            -- Logic giờ giống CGV: Bắt đầu từ 9h sáng, mỗi suất cách nhau 3 tiếng
+            ((9 + (rs.SlotIndex - 1) * 3) || ' hours')::interval +
+            -- Thêm phút lẻ ngẫu nhiên (0, 15, 30, 45) cho tự nhiên
+            (floor(random() * 4) * 15 || ' minutes')::interval
+        ) AS StartTime
+    FROM RawSchedule rs
+    JOIN ActiveMovies m ON rs.SelectedMovieId = m.MovieId
+)
+-- Insert và tính toán EndTime, BasePrice
 SELECT 
-    m.MovieId,
-    r.RoomId,
-    -- Random thời gian trong 7 ngày tới
-    NOW() + (floor(random() * 7) || ' days')::interval + (floor(random() * (23-8+1) + 8) || ' hours')::interval,
-    -- EndTime sẽ được tính toán lại ngay sau đó
-    NOW(), 
-    CASE WHEN floor(random() * 2) = 0 THEN 80000 ELSE 100000 END,
-    1 -- Open
-FROM Movie m
-CROSS JOIN ScreenRoom r
-WHERE m.Status = 'Now Showing'
-ORDER BY random()
-LIMIT 150; -- Tạo 150 suất chiếu
-
--- Cập nhật lại EndTime chính xác
-UPDATE Showtime s
-SET EndTime = s.StartTime + (m.Duration + 30) * INTERVAL '1 minute'
-FROM Movie m
-WHERE s.MovieId = m.MovieId;
+    c.SelectedMovieId,
+    c.RoomId,
+    c.StartTime,
+    -- EndTime = StartTime + Thời lượng phim + 30 phút dọn dẹp
+    c.StartTime + (c.Duration + 30) * INTERVAL '1 minute',
+    -- [LOGIC GIÁ VÉ] Tính toán động dựa trên giờ và thứ
+    CASE 
+        WHEN EXTRACT(HOUR FROM c.StartTime) >= 18 THEN 110000 -- Sau 18h: 110k
+        WHEN EXTRACT(DOW FROM c.StartTime) IN (0, 6) THEN 120000 -- T7, CN: 120k
+        ELSE 80000 -- Giờ thường: 80k
+    END AS BasePrice,
+    1 -- Status: Open
+FROM CalculatedShowtime c
+-- Chỉ lấy các suất chiếu trong tương lai
+WHERE c.StartTime > NOW()
+ORDER BY c.StartTime;
 
 -- 2. Tạo Giao dịch Đặt vé (Bookings & Tickets)
 -- Sử dụng khối lệnh DO để thực hiện logic lặp
@@ -671,7 +730,6 @@ $$;
 -- ================================================================
 -- NHÓM 2: CHỨC NĂNG NGƯỜI DÙNG (TIẾP THEO)
 -- ================================================================
-
 -- 2.4. Xác nhận thanh toán (usp_ConfirmBookingPayment)
 CREATE OR REPLACE FUNCTION usp_confirmbookingpayment(p_bookingid INT, p_userid INT, p_paymentmethod VARCHAR(50))
 RETURNS VOID LANGUAGE plpgsql AS $$

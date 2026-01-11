@@ -168,11 +168,11 @@
             // logoPictureBox
             // 
             logoPictureBox.CustomizableEdges = customizableEdges11;
-            logoPictureBox.ErrorImage = Properties.Resources.logo4;
+            logoPictureBox.ErrorImage = Properties.Resources.logo;
             logoPictureBox.FillColor = SystemColors.Info;
-            logoPictureBox.Image = Properties.Resources.logo4;
+            logoPictureBox.Image = Properties.Resources.logo;
             logoPictureBox.ImageRotate = 0F;
-            logoPictureBox.InitialImage = Properties.Resources.logo4;
+            logoPictureBox.InitialImage = Properties.Resources.logo;
             logoPictureBox.Location = new Point(20, 19);
             logoPictureBox.Margin = new Padding(5, 6, 5, 6);
             logoPictureBox.Name = "logoPictureBox";

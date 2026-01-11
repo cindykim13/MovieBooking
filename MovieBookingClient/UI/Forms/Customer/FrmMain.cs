@@ -26,7 +26,7 @@ namespace MovieBookingClient.Forms.Customer
             // 1. Tải Logo (Giữ nguyên)
             try
             {
-                string logoPath = Path.Combine(Application.StartupPath, "Assets", "logo4.png");
+                string logoPath = Path.Combine(Application.StartupPath, "Assets", "logo.png");
                 if (File.Exists(logoPath))
                 {
                     logoPictureBox.Image = Image.FromFile(logoPath);

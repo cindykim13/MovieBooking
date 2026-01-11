@@ -54,8 +54,9 @@ namespace MovieBookingAPI.Controllers
             try
             {
                 await _service.DeleteRoomAsync(id);
-                // HTTP 204 No Content là response chuẩn cho lệnh DELETE thành công
-                return NoContent();
+
+                // [CẬP NHẬT]: Trả về 200 OK kèm thông báo thay vì 204 No Content
+                return Ok(new { Message = "Xóa phòng chiếu và sơ đồ ghế thành công." });
             }
             catch (KeyNotFoundException ex)
             {
@@ -63,7 +64,7 @@ namespace MovieBookingAPI.Controllers
             }
             catch (InvalidOperationException ex)
             {
-                // Trả về 409 Conflict khi vi phạm ràng buộc nghiệp vụ
+                // Lỗi nghiệp vụ: Phòng đã có lịch chiếu
                 return Conflict(new { Message = ex.Message });
             }
             catch (Exception ex)

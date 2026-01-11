@@ -8,6 +8,6 @@ namespace MovieBookingAPI.BUS
     {
         Task<int> CreateShowtimeAsync(CreateShowtimeRequestDTO request);
         Task UpdateShowtimeAsync(int showtimeId, UpdateShowtimeRequestDTO request);
-        Task DeleteShowtimeAsync(int showtimeId);
+        Task<string> DeleteShowtimeAsync(int showtimeId);
     }
 }
