@@ -15,6 +15,8 @@ namespace MovieBookingClient.Forms.Customer
         private UCMovieList ucMovieList;
         private UC_Login ucLogin;
         private UC_Register ucRegister;
+        private Action _postLoginAction = null;
+
         public FrmMain()
         {
             InitializeComponent();
@@ -136,8 +138,10 @@ namespace MovieBookingClient.Forms.Customer
             LoadUserControl(ucRegister);
         }
 
-        public void NavigateToLogin()
+        public void NavigateToLogin(Action postLoginAction = null)
         {
+            // Lưu lại hành động mong muốn
+            _postLoginAction = postLoginAction;
             LoadUserControl(ucLogin);
         }
 
@@ -180,7 +184,16 @@ namespace MovieBookingClient.Forms.Customer
             }
             else
             {
-                NavigateToHome();
+                // Kiểm tra xem có hành động nào đang chờ không
+                if (_postLoginAction != null)
+                {
+                    _postLoginAction.Invoke(); // Thực thi hành động đã lưu
+                    _postLoginAction = null;   // Xóa đi sau khi thực thi
+                }
+                else
+                {
+                    NavigateToHome(); // Nếu không có, về trang chủ mặc định
+                }
             }
         }
     }

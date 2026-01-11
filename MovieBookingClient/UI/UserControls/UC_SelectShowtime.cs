@@ -273,6 +273,19 @@ namespace MovieBookingClient.UI.UserControls
                                 PosterUrl = _currentMovieInfo?.PosterUrl
                             };
 
+                            // Kiểm tra đăng nhập
+                            if (!SessionManager.Instance.IsLoggedIn)
+                            {
+                                MessageBox.Show("Vui lòng đăng nhập để chọn ghế và đặt vé.", "Yêu cầu đăng nhập", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                                // Yêu cầu FrmMain mở trang Login, và "dặn" rằng sau khi login thành công
+                                // thì thực hiện hành động NavigateToBooking với context đã chuẩn bị
+                                _mainForm.NavigateToLogin(() => _mainForm.NavigateToBooking(context));
+
+                                return;
+                            }
+
+                            // Nếu đã đăng nhập, chuyển thẳng đến trang đặt vé
                             _mainForm.NavigateToBooking(context);
                         };
 
