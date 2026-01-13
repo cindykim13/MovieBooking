@@ -30,8 +30,8 @@
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges10 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges11 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges12 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges23 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges24 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges25 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges26 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges15 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges16 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges17 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
@@ -40,6 +40,8 @@
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges20 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges21 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges22 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges23 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges24 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges1 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges2 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             guna2Elipse1 = new Guna.UI2.WinForms.Guna2Elipse(components);
@@ -55,6 +57,7 @@
             btnMyTicket = new Guna.UI2.WinForms.Guna2Button();
             controlBoxMinimize = new Guna.UI2.WinForms.Guna2ControlBox();
             controlBoxClose = new Guna.UI2.WinForms.Guna2ControlBox();
+            btnLogout = new Guna.UI2.WinForms.Guna2Button();
             panelMain = new Guna.UI2.WinForms.Guna2Panel();
             guna2ShadowForm1 = new Guna.UI2.WinForms.Guna2ShadowForm(components);
             panelHeader.SuspendLayout();
@@ -144,7 +147,7 @@
             btnCinemas.ShadowDecoration.CustomizableEdges = customizableEdges8;
             btnCinemas.Size = new Size(140, 69);
             btnCinemas.TabIndex = 1;
-            btnCinemas.Text = "RẠP CGV";
+            btnCinemas.Text = "RẠP PHIM";
             // 
             // btnMovies
             // 
@@ -169,13 +172,19 @@
             // logoPictureBox
             // 
             logoPictureBox.CustomizableEdges = customizableEdges11;
-            logoPictureBox.ErrorImage = Properties.Resources.logo;
+            logoPictureBox.ErrorImage = Properties.Resources.logo6;
             logoPictureBox.FillColor = SystemColors.Info;
-            logoPictureBox.Image = Properties.Resources.logo;
+            logoPictureBox.Image = Properties.Resources.logo6;
             logoPictureBox.ImageRotate = 0F;
+<<<<<<< HEAD
             logoPictureBox.InitialImage = Properties.Resources.logo;
             logoPictureBox.Location = new Point(14, 11);
             logoPictureBox.Margin = new Padding(4);
+=======
+            logoPictureBox.InitialImage = Properties.Resources.logo6;
+            logoPictureBox.Location = new Point(20, 19);
+            logoPictureBox.Margin = new Padding(5, 6, 5, 6);
+>>>>>>> 79cc9cf4a3c67dfea5b43896612349ab95143a62
             logoPictureBox.Name = "logoPictureBox";
             logoPictureBox.ShadowDecoration.CustomizableEdges = customizableEdges12;
             logoPictureBox.Size = new Size(175, 46);
@@ -192,13 +201,19 @@
             panelTopBar.Controls.Add(btnMyTicket);
             panelTopBar.Controls.Add(controlBoxMinimize);
             panelTopBar.Controls.Add(controlBoxClose);
-            panelTopBar.CustomizableEdges = customizableEdges23;
+            panelTopBar.Controls.Add(btnLogout);
+            panelTopBar.CustomizableEdges = customizableEdges25;
             panelTopBar.Dock = DockStyle.Top;
             panelTopBar.Location = new Point(0, 0);
             panelTopBar.Margin = new Padding(4);
             panelTopBar.Name = "panelTopBar";
+<<<<<<< HEAD
             panelTopBar.ShadowDecoration.CustomizableEdges = customizableEdges24;
             panelTopBar.Size = new Size(1358, 40);
+=======
+            panelTopBar.ShadowDecoration.CustomizableEdges = customizableEdges26;
+            panelTopBar.Size = new Size(2133, 67);
+>>>>>>> 79cc9cf4a3c67dfea5b43896612349ab95143a62
             panelTopBar.TabIndex = 0;
             // 
             // btnUserAction
@@ -213,13 +228,19 @@
             btnUserAction.FillColor = Color.Transparent;
             btnUserAction.Font = new Font("Segoe UI", 9F);
             btnUserAction.ForeColor = Color.FromArgb(64, 64, 64);
+<<<<<<< HEAD
             btnUserAction.Location = new Point(1090, 2);
             btnUserAction.Margin = new Padding(4);
+=======
+            btnUserAction.Location = new Point(1549, 9);
+            btnUserAction.Margin = new Padding(5, 6, 5, 6);
+>>>>>>> 79cc9cf4a3c67dfea5b43896612349ab95143a62
             btnUserAction.Name = "btnUserAction";
             btnUserAction.ShadowDecoration.CustomizableEdges = customizableEdges16;
             btnUserAction.Size = new Size(175, 35);
             btnUserAction.TabIndex = 2;
             btnUserAction.Text = "ĐĂNG NHẬP / ĐĂNG KÝ";
+            btnUserAction.TextAlign = HorizontalAlignment.Right;
             // 
             // btnMyTicket
             // 
@@ -232,8 +253,13 @@
             btnMyTicket.FillColor = Color.Transparent;
             btnMyTicket.Font = new Font("Segoe UI", 9F);
             btnMyTicket.ForeColor = Color.FromArgb(64, 64, 64);
+<<<<<<< HEAD
             btnMyTicket.Location = new Point(962, 2);
             btnMyTicket.Margin = new Padding(4);
+=======
+            btnMyTicket.Location = new Point(1382, 9);
+            btnMyTicket.Margin = new Padding(5, 6, 5, 6);
+>>>>>>> 79cc9cf4a3c67dfea5b43896612349ab95143a62
             btnMyTicket.Name = "btnMyTicket";
             btnMyTicket.ShadowDecoration.CustomizableEdges = customizableEdges18;
             btnMyTicket.Size = new Size(117, 35);
@@ -267,6 +293,23 @@
             controlBoxClose.ShadowDecoration.CustomizableEdges = customizableEdges22;
             controlBoxClose.Size = new Size(52, 34);
             controlBoxClose.TabIndex = 0;
+            // 
+            // btnLogout
+            // 
+            btnLogout.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btnLogout.Cursor = Cursors.Hand;
+            btnLogout.CustomizableEdges = customizableEdges23;
+            btnLogout.FillColor = Color.Transparent;
+            btnLogout.Font = new Font("Segoe UI", 9F);
+            btnLogout.ForeColor = Color.FromArgb(212, 33, 33);
+            btnLogout.Image = Properties.Resources.logout_icon;
+            btnLogout.Location = new Point(1796, 9);
+            btnLogout.Name = "btnLogout";
+            btnLogout.ShadowDecoration.CustomizableEdges = customizableEdges24;
+            btnLogout.Size = new Size(147, 58);
+            btnLogout.TabIndex = 3;
+            btnLogout.Text = "THOÁT";
+            btnLogout.Visible = false;
             // 
             // panelMain
             // 
@@ -323,5 +366,6 @@
         private Guna.UI2.WinForms.Guna2Button btnBuyTicket;
         private Guna.UI2.WinForms.Guna2Button btnMember;
         private Guna.UI2.WinForms.Guna2Button btnCinemas;
+        private Guna.UI2.WinForms.Guna2Button btnLogout;
     }
 }
