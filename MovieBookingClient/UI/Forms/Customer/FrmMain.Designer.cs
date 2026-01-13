@@ -176,15 +176,12 @@
             logoPictureBox.FillColor = SystemColors.Info;
             logoPictureBox.Image = Properties.Resources.logo6;
             logoPictureBox.ImageRotate = 0F;
-<<<<<<< HEAD
             logoPictureBox.InitialImage = Properties.Resources.logo;
             logoPictureBox.Location = new Point(14, 11);
             logoPictureBox.Margin = new Padding(4);
-=======
             logoPictureBox.InitialImage = Properties.Resources.logo6;
             logoPictureBox.Location = new Point(20, 19);
             logoPictureBox.Margin = new Padding(5, 6, 5, 6);
->>>>>>> 79cc9cf4a3c67dfea5b43896612349ab95143a62
             logoPictureBox.Name = "logoPictureBox";
             logoPictureBox.ShadowDecoration.CustomizableEdges = customizableEdges12;
             logoPictureBox.Size = new Size(175, 46);
@@ -207,13 +204,13 @@
             panelTopBar.Location = new Point(0, 0);
             panelTopBar.Margin = new Padding(4);
             panelTopBar.Name = "panelTopBar";
-<<<<<<< HEAD
+
             panelTopBar.ShadowDecoration.CustomizableEdges = customizableEdges24;
             panelTopBar.Size = new Size(1358, 40);
-=======
+
             panelTopBar.ShadowDecoration.CustomizableEdges = customizableEdges26;
             panelTopBar.Size = new Size(2133, 67);
->>>>>>> 79cc9cf4a3c67dfea5b43896612349ab95143a62
+
             panelTopBar.TabIndex = 0;
             // 
             // btnUserAction
@@ -228,13 +225,13 @@
             btnUserAction.FillColor = Color.Transparent;
             btnUserAction.Font = new Font("Segoe UI", 9F);
             btnUserAction.ForeColor = Color.FromArgb(64, 64, 64);
-<<<<<<< HEAD
+
             btnUserAction.Location = new Point(1090, 2);
             btnUserAction.Margin = new Padding(4);
-=======
+
             btnUserAction.Location = new Point(1549, 9);
             btnUserAction.Margin = new Padding(5, 6, 5, 6);
->>>>>>> 79cc9cf4a3c67dfea5b43896612349ab95143a62
+
             btnUserAction.Name = "btnUserAction";
             btnUserAction.ShadowDecoration.CustomizableEdges = customizableEdges16;
             btnUserAction.Size = new Size(175, 35);
@@ -253,13 +250,11 @@
             btnMyTicket.FillColor = Color.Transparent;
             btnMyTicket.Font = new Font("Segoe UI", 9F);
             btnMyTicket.ForeColor = Color.FromArgb(64, 64, 64);
-<<<<<<< HEAD
             btnMyTicket.Location = new Point(962, 2);
             btnMyTicket.Margin = new Padding(4);
-=======
+
             btnMyTicket.Location = new Point(1382, 9);
             btnMyTicket.Margin = new Padding(5, 6, 5, 6);
->>>>>>> 79cc9cf4a3c67dfea5b43896612349ab95143a62
             btnMyTicket.Name = "btnMyTicket";
             btnMyTicket.ShadowDecoration.CustomizableEdges = customizableEdges18;
             btnMyTicket.Size = new Size(117, 35);

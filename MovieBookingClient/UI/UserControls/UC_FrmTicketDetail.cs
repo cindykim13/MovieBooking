@@ -23,11 +23,23 @@ namespace MovieBookingClient.UI.Forms
             lblStatus.Text = $"Trạng thái: {ticket.Status}";
             lblPayment.Text = $"Thanh toán: {ticket.PaymentMethod}";
 
-            /* Load ảnh Poster (nếu có URL)
-            if (!string.IsNullOrEmpty(ticket.PosterUrl))
+            if (!string.IsNullOrEmpty(ticket.PosterUrl) && Uri.IsWellFormedUriString(ticket.PosterUrl, UriKind.Absolute))
             {
-                try { picPoster.Load(ticket.PosterUrl); } catch { }
-            }*/
+                try
+                {
+                    picPoster.Load(ticket.PosterUrl);
+                }
+                catch (Exception)
+                {
+                    picPoster.Image = null;
+                    picPoster.FillColor = Color.LightGray;
+                }
+            }
+            else
+            {
+                picPoster.Image = null;
+                picPoster.FillColor = Color.LightGray;
+            }
         }
 
         private void btnClose_Click(object sender, EventArgs e)
