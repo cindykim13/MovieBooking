@@ -28,7 +28,7 @@ namespace MovieBookingClient.Forms.Customer
             // 1. Tải Logo (Giữ nguyên)
             try
             {
-                string logoPath = Path.Combine(Application.StartupPath, "Assets", "logo.png");
+                string logoPath = Path.Combine(Application.StartupPath, "Assets", "logo6.png");
                 if (File.Exists(logoPath))
                 {
                     logoPictureBox.Image = Image.FromFile(logoPath);
@@ -108,10 +108,12 @@ namespace MovieBookingClient.Forms.Customer
             if (SessionManager.Instance.IsLoggedIn)
             {
                 btnUserAction.Text = $"XIN CHÀO, {SessionManager.Instance.Username?.ToUpper()}";
+                btnLogout.Visible = true; // [MỚI] Hiện nút Thoát
             }
             else
             {
                 btnUserAction.Text = "ĐĂNG NHẬP / ĐĂNG KÝ";
+                btnLogout.Visible = false; // [MỚI] Ẩn nút Thoát
             }
         }
 
@@ -119,10 +121,8 @@ namespace MovieBookingClient.Forms.Customer
         {
             if (SessionManager.Instance.IsLoggedIn)
             {
-                // Logic đăng xuất
-                SessionManager.Instance.EndSession();
-                UpdateUserStatusUI();
-                NavigateToHome(); // Tải lại trang chủ sau khi đăng xuất
+                // Logic xem hồ sơ cá nhân (sẽ làm sau)
+                MessageBox.Show("Chuyển đến trang hồ sơ cá nhân.");
             }
             else
             {
@@ -130,7 +130,12 @@ namespace MovieBookingClient.Forms.Customer
                 NavigateToLogin();
             }
         }
-
+        private void BtnLogout_Click(object sender, EventArgs e)
+        {
+            SessionManager.Instance.EndSession();
+            UpdateUserStatusUI();
+            NavigateToHome(); // Tải lại trang chủ
+        }
         // --- CÁC HÀM ĐIỀU HƯỚNG CÔNG KHAI ---
 
         public void NavigateToRegister()
