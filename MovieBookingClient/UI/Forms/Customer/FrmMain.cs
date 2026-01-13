@@ -50,7 +50,8 @@ namespace MovieBookingClient.Forms.Customer
             menuMovies.RenderStyle.SelectionForeColor = Color.White;
 
             ToolStripMenuItem itemNowShowing = new ToolStripMenuItem("Phim Đang Chiếu");
-            itemNowShowing.Click += async (s, e) => {
+            itemNowShowing.Click += async (s, e) =>
+            {
                 // Đảm bảo đang ở màn hình danh sách
                 LoadUserControl(ucMovieList);
                 // Gọi hàm lọc với chuỗi chính xác khớp với Database
@@ -58,7 +59,8 @@ namespace MovieBookingClient.Forms.Customer
             };
 
             ToolStripMenuItem itemComingSoon = new ToolStripMenuItem("Phim Sắp Chiếu");
-            itemComingSoon.Click += async (s, e) => {
+            itemComingSoon.Click += async (s, e) =>
+            {
                 LoadUserControl(ucMovieList);
                 await ucMovieList.FilterByStatus("Coming Soon");
             };
@@ -67,7 +69,8 @@ namespace MovieBookingClient.Forms.Customer
             menuMovies.Items.Add(itemComingSoon);
 
             // Nút "PHIM" bây giờ CHỈ có nhiệm vụ hiển thị menu
-            btnMovies.Click += (s, e) => {
+            btnMovies.Click += (s, e) =>
+            {
                 menuMovies.Show(btnMovies, new Point(0, btnMovies.Height));
             };
 
@@ -76,12 +79,14 @@ namespace MovieBookingClient.Forms.Customer
 
             // 5. [SỬA LỖI LOGIC] LOGO & NÚT MUA VÉ -> RESET VỀ TRANG CHỦ
             // Khi nhấn Logo hoặc Mua vé ngay, phải tải lại danh sách phim mặc định
-            logoPictureBox.Click += async (s, e) => {
+            logoPictureBox.Click += async (s, e) =>
+            {
                 LoadUserControl(ucMovieList); // Chuyển về view danh sách
                 await ucMovieList.ResetToDefault(); // Reset bộ lọc
             };
 
-            btnBuyTicket.Click += async (s, e) => {
+            btnBuyTicket.Click += async (s, e) =>
+            {
                 LoadUserControl(ucMovieList);
                 await ucMovieList.FilterByStatus("Now Showing");
             };
@@ -158,7 +163,7 @@ namespace MovieBookingClient.Forms.Customer
             // Tải vào panel chính
             LoadUserControl(detailControl);
         }
-        
+
         public void NavigateToSelectShowtime(int movieId)
         {
             UC_SelectShowtime showtimeControl = new UC_SelectShowtime(this, movieId);
@@ -195,6 +200,32 @@ namespace MovieBookingClient.Forms.Customer
                     NavigateToHome(); // Nếu không có, về trang chủ mặc định
                 }
             }
+        }
+
+        private void btnMember_Click(object sender, EventArgs e)
+        {
+            if (!SessionManager.Instance.IsLoggedIn)
+            {
+                MessageBox.Show("Vui lòng đăng nhập để xem thông tin thành viên!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                // Điều hướng tới Login và sau khi login xong thì quay lại trang Member
+                NavigateToLogin(() => btnMember_Click(sender, e));
+                return;
+            }
+            LoadUserControl(new UC_MemberInfo());
+        }
+
+        private void btnMyTicket_Click(object sender, EventArgs e)
+        {
+            if (!SessionManager.Instance.IsLoggedIn)
+            {
+                MessageBox.Show("Vui lòng đăng nhập để xem lịch sử vé!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                // Điều hướng tới Login và sau khi login xong thì quay lại trang MyTicket
+                NavigateToLogin(() => btnMyTicket_Click(sender, e));
+                return;
+            }
+            LoadUserControl(new UC_MyTickets());
         }
     }
 }
