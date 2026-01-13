@@ -1,6 +1,5 @@
-﻿using MovieBookingClient.Configs;
-using MovieBookingClient.Session;
-using RestSharp.Serializers.NewtonsoftJson; // Thêm using
+﻿using MovieBookingClient.Session;
+using RestSharp.Serializers.NewtonsoftJson;
 using RestSharp;
 using System;
 using System.Threading.Tasks;
@@ -12,24 +11,27 @@ namespace MovieBookingClient.Services
     {
         protected readonly RestClient _client;
 
+        // 👇 SỬA 1: Gán cứng URL Server của bạn vào đây cho chắc ăn
+        private const string BASE_URL = "https://localhost:7034";
+
         protected BaseApiService()
         {
-            var options = new RestClientOptions(AppSettings.BaseApiUrl)
+            var options = new RestClientOptions(BASE_URL)
             {
-                Timeout = TimeSpan.FromSeconds(180),  // Tăng timeout lên 30s đề phòng mạng chậm
+                Timeout = TimeSpan.FromSeconds(30), // 30s là quá đủ
                 RemoteCertificateValidationCallback = (sender, certificate, chain, sslPolicyErrors) => true
             };
 
-            _client = new RestClient(options, configureSerialization: s => s.UseNewtonsoftJson()); // Sử dụng Newtonsoft
+            // Cấu hình RestSharp dùng Newtonsoft.Json
+            _client = new RestClient(options, configureSerialization: s => s.UseNewtonsoftJson());
         }
 
-        // Hàm tạo Request chuẩn, tự động thêm Token nếu có
+        // Hàm tạo Request chuẩn
         protected RestRequest CreateRequest(string resource, Method method)
         {
             var request = new RestRequest(resource, method);
 
-            // Kiểm tra và đính kèm Token Bearer
-            // [FIX CẢNH BÁO NULL]: Thêm toán tử ?. hoặc kiểm tra null an toàn
+            // Tự động đính kèm Token nếu đã đăng nhập
             if (SessionManager.Instance.IsLoggedIn && !string.IsNullOrEmpty(SessionManager.Instance.AccessToken))
             {
                 request.AddHeader("Authorization", $"Bearer {SessionManager.Instance.AccessToken}");
@@ -38,12 +40,12 @@ namespace MovieBookingClient.Services
             return request;
         }
 
-        // Hàm thực thi Request và Deserialize kết quả
-        // [FIX LỖI CS8714]: Thêm ràng buộc 'where T : class' hoặc cho phép T nullable
+        // Hàm thực thi Request
         protected async Task<T> ExecuteAsync<T>(RestRequest request)
         {
             try
             {
+                // Gọi API
                 var response = await _client.ExecuteAsync<T>(request);
 
                 if (!response.IsSuccessful)
@@ -61,17 +63,15 @@ namespace MovieBookingClient.Services
             }
         }
 
-        // Xử lý lỗi HTTP tập trung
+        // Xử lý lỗi tập trung
         private void HandleError(RestResponse response)
         {
-            // Ưu tiên lấy thông báo lỗi từ API, nếu không có thì lấy StatusDescription
             string errorMessage = !string.IsNullOrEmpty(response.Content) ? response.Content : response.StatusDescription;
 
             if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
             {
-                MessageBox.Show("Phiên đăng nhập hết hạn hoặc không hợp lệ. Vui lòng đăng nhập lại.", "Lỗi Xác Thực", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại.", "Lỗi Xác Thực", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 SessionManager.Instance.EndSession();
-                // Logic chuyển về màn hình đăng nhập sẽ được xử lý ở tầng UI
             }
             else if (response.StatusCode == System.Net.HttpStatusCode.Forbidden)
             {
@@ -79,7 +79,9 @@ namespace MovieBookingClient.Services
             }
             else
             {
-                MessageBox.Show($"Lỗi API ({response.StatusCode}): {errorMessage}", "Thông báo lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                // Làm sạch thông báo lỗi (bỏ dấu ngoặc kép thừa nếu có)
+                errorMessage = errorMessage.Replace("\"", "");
+                MessageBox.Show($"Lỗi Server: {errorMessage}", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }

@@ -78,7 +78,7 @@
             lblForgotPass.ForeColor = Color.FromArgb(100, 100, 100);
             lblForgotPass.Location = new Point(95, 457);
             lblForgotPass.Name = "lblForgotPass";
-            lblForgotPass.Size = new Size(233, 25);
+            lblForgotPass.Size = new Size(156, 15);
             lblForgotPass.TabIndex = 7;
             lblForgotPass.Text = "Bạn muốn tìm lại mật khẩu?";
             // 
@@ -108,7 +108,7 @@
             lblPassword.ForeColor = Color.FromArgb(64, 64, 64);
             lblPassword.Location = new Point(40, 300);
             lblPassword.Name = "lblPassword";
-            lblPassword.Size = new Size(93, 25);
+            lblPassword.Size = new Size(59, 15);
             lblPassword.TabIndex = 5;
             lblPassword.Text = "Mật khẩu";
             // 
@@ -140,7 +140,7 @@
             lblUsername.ForeColor = Color.FromArgb(64, 64, 64);
             lblUsername.Location = new Point(40, 210);
             lblUsername.Name = "lblUsername";
-            lblUsername.Size = new Size(233, 25);
+            lblUsername.Size = new Size(148, 15);
             lblUsername.TabIndex = 3;
             lblUsername.Text = "Email hoặc tên đăng nhập";
             // 
@@ -232,15 +232,14 @@
             // 
             // lblSlogan
             // 
-            this.lblSlogan.AutoSize = false; // Tắt AutoSize để cho phép chỉnh kích thước
-            this.lblSlogan.Size = new System.Drawing.Size(460, 100); // Chiều rộng bằng panel phải
-            this.lblSlogan.TextAlign = System.Drawing.ContentAlignment.MiddleCenter; // Căn giữa tuyệt đối
-            this.lblSlogan.Location = new System.Drawing.Point(0, 220); // X=0 để bắt đầu từ mép trái panel
             lblSlogan.Font = new Font("Segoe UI Semibold", 18F, FontStyle.Bold);
             lblSlogan.ForeColor = Color.FromArgb(212, 33, 33);
+            lblSlogan.Location = new Point(0, 220);
             lblSlogan.Name = "lblSlogan";
+            lblSlogan.Size = new Size(460, 100);
             lblSlogan.TabIndex = 0;
             lblSlogan.Text = "Trải nghiệm điện ảnh \r\nđẳng cấp thế giới";
+            lblSlogan.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // UC_Login
             // 
@@ -253,7 +252,6 @@
             panelLeft.PerformLayout();
             panelTabs.ResumeLayout(false);
             panelRight.ResumeLayout(false);
-            panelRight.PerformLayout();
             ResumeLayout(false);
         }
 

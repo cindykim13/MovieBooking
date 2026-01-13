@@ -154,7 +154,7 @@ namespace MovieBookingClient.Forms.Customer
             // Tải vào panel chính
             LoadUserControl(detailControl);
         }
-        
+
         public void NavigateToSelectShowtime(int movieId)
         {
             UC_SelectShowtime showtimeControl = new UC_SelectShowtime(this, movieId);
@@ -182,6 +182,20 @@ namespace MovieBookingClient.Forms.Customer
             {
                 NavigateToHome();
             }
+        }
+
+public void NavigateToAdminDashboard()
+        {
+            this.Hide();
+            MovieBookingClient.Forms.Admin.FrmAdminDashboard adminForm = new MovieBookingClient.Forms.Admin.FrmAdminDashboard();
+            adminForm.FormClosed += (s, args) => this.Close();
+            adminForm.Show();
+        }
+
+        public void NavigateToCustomerHome()
+        {
+            NavigateToHome();
+            UpdateUserStatusUI();
         }
     }
 }

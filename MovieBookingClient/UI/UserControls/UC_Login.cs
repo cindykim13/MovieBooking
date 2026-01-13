@@ -1,27 +1,23 @@
-﻿using MovieBooking.Domain.DTOs; // Sử dụng DTO từ project Shared
-using MovieBookingClient.Forms.Customer;
+﻿using MovieBookingClient.Forms.Customer;
 using MovieBookingClient.Services;
 using MovieBookingClient.Session;
 using System;
 using System.Windows.Forms;
 
-// Đổi namespace để phù hợp với vị trí mới
 namespace MovieBookingClient.UI.UserControls
 {
-    // Đổi kế thừa từ Form sang UserControl
     public partial class UC_Login : UserControl
     {
-        private readonly FrmMain _mainForm; // Tham chiếu đến Form cha
+        private readonly FrmMain _mainForm;
         private readonly AuthService _authService;
 
-        // Sửa Constructor để nhận FrmMain
         public UC_Login(FrmMain mainForm)
         {
             InitializeComponent();
             _mainForm = mainForm;
             _authService = new AuthService();
 
-            // Gán sự kiện
+            // Gán sự kiện click
             btnLogin.Click += BtnLogin_Click;
             btnTabRegister.Click += BtnTabRegister_Click;
         }
@@ -33,7 +29,7 @@ namespace MovieBookingClient.UI.UserControls
 
             if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
             {
-                MessageBox.Show("Vui lòng nhập đầy đủ tên đăng nhập và mật khẩu.", "Thông tin thiếu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Vui lòng nhập đủ thông tin!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
@@ -46,21 +42,29 @@ namespace MovieBookingClient.UI.UserControls
 
                 if (result != null)
                 {
-                    // Lưu Session
+                    // Lưu session
                     SessionManager.Instance.StartSession(result.Token, result.Username, result.Role);
 
-                    // YÊU CẦU FORM CHA XỬ LÝ SAU KHI ĐĂNG NHẬP THÀNH CÔNG
-                    _mainForm.OnLoginSuccess();
+                    // --- PHÂN QUYỀN ---
+                    if (string.Equals(result.Role, "Admin", StringComparison.OrdinalIgnoreCase))
+                    {
+                        MessageBox.Show($"Xin chào Admin: {result.Username}", "Thành công");
+                        _mainForm.NavigateToAdminDashboard(); 
+                    }
+                    else
+                    {
+                        MessageBox.Show($"Đăng nhập thành công!", "Thành công");
+                        _mainForm.NavigateToCustomerHome(); 
+                    }
                 }
                 else
                 {
-                    // Lỗi đã được BaseApiService xử lý và hiển thị, chỉ cần reset UI
-                    txtPassword.Clear();
+                    MessageBox.Show("Sai tên đăng nhập hoặc mật khẩu!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Lỗi không mong muốn: {ex.Message}", "Lỗi hệ thống", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Lỗi kết nối: " + ex.Message);
             }
             finally
             {
@@ -69,10 +73,8 @@ namespace MovieBookingClient.UI.UserControls
             }
         }
 
-        // Sự kiện khi nhấn vào tab Đăng ký
         private void BtnTabRegister_Click(object sender, EventArgs e)
         {
-            // YÊU CẦU FORM CHA CHUYỂN SANG GIAO DIỆN ĐĂNG KÝ
             _mainForm.NavigateToRegister();
         }
     }

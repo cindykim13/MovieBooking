@@ -82,11 +82,11 @@
             panelHeader.Controls.Add(logoPictureBox);
             panelHeader.CustomizableEdges = customizableEdges13;
             panelHeader.Dock = DockStyle.Top;
-            panelHeader.Location = new Point(0, 67);
-            panelHeader.Margin = new Padding(5, 6, 5, 6);
+            panelHeader.Location = new Point(0, 40);
+            panelHeader.Margin = new Padding(4, 4, 4, 4);
             panelHeader.Name = "panelHeader";
             panelHeader.ShadowDecoration.CustomizableEdges = customizableEdges14;
-            panelHeader.Size = new Size(2133, 115);
+            panelHeader.Size = new Size(1392, 69);
             panelHeader.TabIndex = 1;
             // 
             // btnBuyTicket
@@ -101,11 +101,11 @@
             btnBuyTicket.FillColor = Color.FromArgb(212, 33, 33);
             btnBuyTicket.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             btnBuyTicket.ForeColor = Color.White;
-            btnBuyTicket.Location = new Point(1913, 0);
-            btnBuyTicket.Margin = new Padding(5, 6, 5, 6);
+            btnBuyTicket.Location = new Point(1238, 0);
+            btnBuyTicket.Margin = new Padding(4, 4, 4, 4);
             btnBuyTicket.Name = "btnBuyTicket";
             btnBuyTicket.ShadowDecoration.CustomizableEdges = customizableEdges4;
-            btnBuyTicket.Size = new Size(220, 115);
+            btnBuyTicket.Size = new Size(154, 69);
             btnBuyTicket.TabIndex = 4;
             btnBuyTicket.Text = "MUA VÉ NGAY";
             // 
@@ -119,11 +119,11 @@
             btnMember.FillColor = Color.Transparent;
             btnMember.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
             btnMember.ForeColor = Color.FromArgb(64, 64, 64);
-            btnMember.Location = new Point(700, 0);
-            btnMember.Margin = new Padding(5, 6, 5, 6);
+            btnMember.Location = new Point(490, 0);
+            btnMember.Margin = new Padding(4, 4, 4, 4);
             btnMember.Name = "btnMember";
             btnMember.ShadowDecoration.CustomizableEdges = customizableEdges6;
-            btnMember.Size = new Size(200, 115);
+            btnMember.Size = new Size(140, 69);
             btnMember.TabIndex = 2;
             btnMember.Text = "THÀNH VIÊN";
             // 
@@ -137,11 +137,11 @@
             btnCinemas.FillColor = Color.Transparent;
             btnCinemas.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
             btnCinemas.ForeColor = Color.FromArgb(64, 64, 64);
-            btnCinemas.Location = new Point(500, 0);
-            btnCinemas.Margin = new Padding(5, 6, 5, 6);
+            btnCinemas.Location = new Point(350, 0);
+            btnCinemas.Margin = new Padding(4, 4, 4, 4);
             btnCinemas.Name = "btnCinemas";
             btnCinemas.ShadowDecoration.CustomizableEdges = customizableEdges8;
-            btnCinemas.Size = new Size(200, 115);
+            btnCinemas.Size = new Size(140, 69);
             btnCinemas.TabIndex = 1;
             btnCinemas.Text = "RẠP CGV";
             // 
@@ -157,11 +157,11 @@
             btnMovies.FillColor = Color.Transparent;
             btnMovies.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
             btnMovies.ForeColor = Color.FromArgb(212, 33, 33);
-            btnMovies.Location = new Point(300, 0);
-            btnMovies.Margin = new Padding(5, 6, 5, 6);
+            btnMovies.Location = new Point(210, 0);
+            btnMovies.Margin = new Padding(4, 4, 4, 4);
             btnMovies.Name = "btnMovies";
             btnMovies.ShadowDecoration.CustomizableEdges = customizableEdges10;
-            btnMovies.Size = new Size(200, 115);
+            btnMovies.Size = new Size(140, 69);
             btnMovies.TabIndex = 0;
             btnMovies.Text = "PHIM";
             // 
@@ -173,11 +173,11 @@
             logoPictureBox.Image = Properties.Resources.logo4;
             logoPictureBox.ImageRotate = 0F;
             logoPictureBox.InitialImage = Properties.Resources.logo4;
-            logoPictureBox.Location = new Point(20, 19);
-            logoPictureBox.Margin = new Padding(5, 6, 5, 6);
+            logoPictureBox.Location = new Point(14, 11);
+            logoPictureBox.Margin = new Padding(4, 4, 4, 4);
             logoPictureBox.Name = "logoPictureBox";
             logoPictureBox.ShadowDecoration.CustomizableEdges = customizableEdges12;
-            logoPictureBox.Size = new Size(250, 77);
+            logoPictureBox.Size = new Size(175, 46);
             logoPictureBox.SizeMode = PictureBoxSizeMode.Zoom;
             logoPictureBox.TabIndex = 2;
             logoPictureBox.TabStop = false;
@@ -194,10 +194,10 @@
             panelTopBar.CustomizableEdges = customizableEdges23;
             panelTopBar.Dock = DockStyle.Top;
             panelTopBar.Location = new Point(0, 0);
-            panelTopBar.Margin = new Padding(5, 6, 5, 6);
+            panelTopBar.Margin = new Padding(4, 4, 4, 4);
             panelTopBar.Name = "panelTopBar";
             panelTopBar.ShadowDecoration.CustomizableEdges = customizableEdges24;
-            panelTopBar.Size = new Size(2133, 67);
+            panelTopBar.Size = new Size(1392, 40);
             panelTopBar.TabIndex = 0;
             // 
             // btnUserAction
@@ -212,11 +212,11 @@
             btnUserAction.FillColor = Color.Transparent;
             btnUserAction.Font = new Font("Segoe UI", 9F);
             btnUserAction.ForeColor = Color.FromArgb(64, 64, 64);
-            btnUserAction.Location = new Point(1750, 4);
-            btnUserAction.Margin = new Padding(5, 6, 5, 6);
+            btnUserAction.Location = new Point(1124, 2);
+            btnUserAction.Margin = new Padding(4, 4, 4, 4);
             btnUserAction.Name = "btnUserAction";
             btnUserAction.ShadowDecoration.CustomizableEdges = customizableEdges16;
-            btnUserAction.Size = new Size(250, 58);
+            btnUserAction.Size = new Size(175, 35);
             btnUserAction.TabIndex = 2;
             btnUserAction.Text = "ĐĂNG NHẬP / ĐĂNG KÝ";
             // 
@@ -231,11 +231,11 @@
             btnMyTicket.FillColor = Color.Transparent;
             btnMyTicket.Font = new Font("Segoe UI", 9F);
             btnMyTicket.ForeColor = Color.FromArgb(64, 64, 64);
-            btnMyTicket.Location = new Point(1567, 4);
-            btnMyTicket.Margin = new Padding(5, 6, 5, 6);
+            btnMyTicket.Location = new Point(996, 2);
+            btnMyTicket.Margin = new Padding(4, 4, 4, 4);
             btnMyTicket.Name = "btnMyTicket";
             btnMyTicket.ShadowDecoration.CustomizableEdges = customizableEdges18;
-            btnMyTicket.Size = new Size(167, 58);
+            btnMyTicket.Size = new Size(117, 35);
             btnMyTicket.TabIndex = 1;
             btnMyTicket.Text = "VÉ CỦA TÔI";
             // 
@@ -246,11 +246,11 @@
             controlBoxMinimize.CustomizableEdges = customizableEdges19;
             controlBoxMinimize.FillColor = Color.Transparent;
             controlBoxMinimize.IconColor = Color.Gray;
-            controlBoxMinimize.Location = new Point(1983, 4);
-            controlBoxMinimize.Margin = new Padding(5, 6, 5, 6);
+            controlBoxMinimize.Location = new Point(1287, 2);
+            controlBoxMinimize.Margin = new Padding(4, 4, 4, 4);
             controlBoxMinimize.Name = "controlBoxMinimize";
             controlBoxMinimize.ShadowDecoration.CustomizableEdges = customizableEdges20;
-            controlBoxMinimize.Size = new Size(75, 56);
+            controlBoxMinimize.Size = new Size(52, 34);
             controlBoxMinimize.TabIndex = 1;
             // 
             // controlBoxClose
@@ -259,11 +259,11 @@
             controlBoxClose.CustomizableEdges = customizableEdges21;
             controlBoxClose.FillColor = Color.Transparent;
             controlBoxClose.IconColor = Color.Gray;
-            controlBoxClose.Location = new Point(2058, 4);
-            controlBoxClose.Margin = new Padding(5, 6, 5, 6);
+            controlBoxClose.Location = new Point(1340, 2);
+            controlBoxClose.Margin = new Padding(4, 4, 4, 4);
             controlBoxClose.Name = "controlBoxClose";
             controlBoxClose.ShadowDecoration.CustomizableEdges = customizableEdges22;
-            controlBoxClose.Size = new Size(75, 56);
+            controlBoxClose.Size = new Size(52, 34);
             controlBoxClose.TabIndex = 0;
             // 
             // panelMain
@@ -271,12 +271,12 @@
             panelMain.BackColor = SystemColors.Info;
             panelMain.CustomizableEdges = customizableEdges1;
             panelMain.Dock = DockStyle.Fill;
-            panelMain.Location = new Point(0, 182);
-            panelMain.Margin = new Padding(5, 6, 5, 6);
+            panelMain.Location = new Point(0, 109);
+            panelMain.Margin = new Padding(4, 4, 4, 4);
             panelMain.Name = "panelMain";
-            panelMain.Padding = new Padding(83, 38, 83, 38);
+            panelMain.Padding = new Padding(58, 23, 58, 23);
             panelMain.ShadowDecoration.CustomizableEdges = customizableEdges2;
-            panelMain.Size = new Size(2133, 1203);
+            panelMain.Size = new Size(1392, 580);
             panelMain.TabIndex = 2;
             // 
             // guna2ShadowForm1
@@ -286,15 +286,15 @@
             // 
             // FrmMain
             // 
-            AutoScaleDimensions = new SizeF(10F, 25F);
+            AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(245, 245, 245);
-            ClientSize = new Size(2133, 1385);
+            ClientSize = new Size(1392, 689);
             Controls.Add(panelMain);
             Controls.Add(panelHeader);
             Controls.Add(panelTopBar);
             FormBorderStyle = FormBorderStyle.None;
-            Margin = new Padding(5, 6, 5, 6);
+            Margin = new Padding(4, 4, 4, 4);
             Name = "FrmMain";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "CGV Movie Booking";
