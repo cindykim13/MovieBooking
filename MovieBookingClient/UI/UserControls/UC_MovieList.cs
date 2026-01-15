@@ -33,8 +33,10 @@ namespace MovieBookingClient.UI.UserControls
             _movieService = new MovieService();
 
             this.Load += UCMovieList_Load;
-            btnNext.Click += async (s, e) => await ChangePage(_currentPage + 1);
-            btnPrevious.Click += async (s, e) => await ChangePage(_currentPage - 1);
+            // [SỬA LỖI TẠI ĐÂY]
+            // Gán đúng hành động cho từng nút
+            btnNext.Click += async (s, e) => await ChangePage(1);  // +1 để sang trang tiếp
+            btnPrevious.Click += async (s, e) => await ChangePage(-1); // -1 để về trang trước
             // Sự kiện Tìm kiếm (Click nút hoặc nhấn Enter)
             btnSearch.Click += async (s, e) => await ExecuteSearch();
             txtSearch.KeyDown += async (s, e) => {
@@ -165,10 +167,15 @@ namespace MovieBookingClient.UI.UserControls
                     {
                         var card = new UCMovieCard();
                         card.SetMovieDetails(movie);
-                        card.BuyTicketClicked += (s, id) => {
-                            MessageBox.Show($"Xem chi tiết phim: {id}");
-                            _mainForm.NavigateToMovieDetail(id);
+                        // 1. Gán sự kiện cho nút "Mua vé" -> Chuyển sang trang Chọn Lịch
+                        card.BuyTicketClicked += (s, movieId) => {
+                            _mainForm.NavigateToSelectShowtime(movieId);
                         };
+                        // 2. Gán sự kiện cho Poster/Title -> Chuyển sang trang Chi tiết
+                        card.ViewDetailClicked += (s, movieId) => {
+                            _mainForm.NavigateToMovieDetail(movieId);
+                        };
+
                         flowLayoutPanelMovies.Controls.Add(card);
                     }
                 }
@@ -198,15 +205,15 @@ namespace MovieBookingClient.UI.UserControls
             btnNext.Enabled = _currentPage < _totalPages;
         }
 
+        // Hàm ChangePage (Đảm bảo logic đúng)
         private async Task ChangePage(int delta)
         {
-            int newPage = _currentPage + delta;
+            int newPage = _currentPage + delta; // Tính toán trang mới
             if (newPage >= 1 && newPage <= _totalPages)
             {
                 _currentPage = newPage;
                 await LoadMoviesAsync();
             }
         }
-        
     }
 }

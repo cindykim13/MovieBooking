@@ -110,8 +110,8 @@
             flowLayoutPanelMovies.Dock = DockStyle.Fill;
             flowLayoutPanelMovies.Location = new Point(0, 60);
             flowLayoutPanelMovies.Name = "flowLayoutPanelMovies";
-            flowLayoutPanelMovies.Padding = new System.Windows.Forms.Padding(70, 20, 50, 20);
-            flowLayoutPanelMovies.Size = new System.Drawing.Size(1280, 505);
+            flowLayoutPanelMovies.Padding = new Padding(70, 20, 50, 20);
+            flowLayoutPanelMovies.Size = new Size(1200, 505);
             flowLayoutPanelMovies.TabIndex = 1;
             // 
             // panelBottom
@@ -134,10 +134,10 @@
             btnNext.FillColor = Color.OrangeRed;
             btnNext.Font = new Font("Segoe UI", 9F);
             btnNext.ForeColor = Color.White;
-            btnNext.Location = new Point(630, 12);
+            btnNext.Location = new Point(700, 12);
             btnNext.Name = "btnNext";
             btnNext.ShadowDecoration.CustomizableEdges = customizableEdges10;
-            btnNext.Size = new Size(100, 36);
+            btnNext.Size = new Size(142, 36);
             btnNext.TabIndex = 2;
             btnNext.Text = "Trang sau >";
             // 
@@ -148,19 +148,19 @@
             btnPrevious.FillColor = Color.OrangeRed;
             btnPrevious.Font = new Font("Segoe UI", 9F);
             btnPrevious.ForeColor = Color.White;
-            btnPrevious.Location = new Point(470, 12);
+            btnPrevious.Location = new Point(393, 12);
             btnPrevious.Name = "btnPrevious";
             btnPrevious.ShadowDecoration.CustomizableEdges = customizableEdges12;
-            btnPrevious.Size = new Size(100, 36);
+            btnPrevious.Size = new Size(157, 36);
             btnPrevious.TabIndex = 1;
             btnPrevious.Text = "< Trang trước";
             // 
             // lblPageInfo
             // 
             lblPageInfo.Anchor = AnchorStyles.Top;
-            lblPageInfo.Location = new Point(570, 12);
+            lblPageInfo.Location = new Point(556, 12);
             lblPageInfo.Name = "lblPageInfo";
-            lblPageInfo.Size = new Size(60, 36);
+            lblPageInfo.Size = new Size(138, 36);
             lblPageInfo.TabIndex = 0;
             lblPageInfo.Text = "1 / 10";
             lblPageInfo.TextAlign = ContentAlignment.MiddleCenter;

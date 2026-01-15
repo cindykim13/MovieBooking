@@ -15,6 +15,9 @@ namespace MovieBookingClient.Forms.Customer
         private UCMovieList ucMovieList;
         private UC_Login ucLogin;
         private UC_Register ucRegister;
+        private Action _postLoginAction = null;
+        private UC_CinemaList ucCinemaList;
+
         public FrmMain()
         {
             InitializeComponent();
@@ -26,7 +29,7 @@ namespace MovieBookingClient.Forms.Customer
             // 1. Tải Logo (Giữ nguyên)
             try
             {
-                string logoPath = Path.Combine(Application.StartupPath, "Assets", "logo.png");
+                string logoPath = Path.Combine(Application.StartupPath, "Assets", "logo6.png");
                 if (File.Exists(logoPath))
                 {
                     logoPictureBox.Image = Image.FromFile(logoPath);
@@ -41,6 +44,7 @@ namespace MovieBookingClient.Forms.Customer
             ucMovieList = new UCMovieList(this);
             ucLogin = new UC_Login(this);
             ucRegister = new UC_Register(this);
+            ucCinemaList = new UC_CinemaList(this);
 
             // 3. TẠO MENU PHIM (Giữ nguyên logic của bạn)
             Guna2ContextMenuStrip menuMovies = new Guna2ContextMenuStrip();
@@ -48,7 +52,8 @@ namespace MovieBookingClient.Forms.Customer
             menuMovies.RenderStyle.SelectionForeColor = Color.White;
 
             ToolStripMenuItem itemNowShowing = new ToolStripMenuItem("Phim Đang Chiếu");
-            itemNowShowing.Click += async (s, e) => {
+            itemNowShowing.Click += async (s, e) =>
+            {
                 // Đảm bảo đang ở màn hình danh sách
                 LoadUserControl(ucMovieList);
                 // Gọi hàm lọc với chuỗi chính xác khớp với Database
@@ -56,7 +61,8 @@ namespace MovieBookingClient.Forms.Customer
             };
 
             ToolStripMenuItem itemComingSoon = new ToolStripMenuItem("Phim Sắp Chiếu");
-            itemComingSoon.Click += async (s, e) => {
+            itemComingSoon.Click += async (s, e) =>
+            {
                 LoadUserControl(ucMovieList);
                 await ucMovieList.FilterByStatus("Coming Soon");
             };
@@ -65,21 +71,25 @@ namespace MovieBookingClient.Forms.Customer
             menuMovies.Items.Add(itemComingSoon);
 
             // Nút "PHIM" bây giờ CHỈ có nhiệm vụ hiển thị menu
-            btnMovies.Click += (s, e) => {
+            btnMovies.Click += (s, e) =>
+            {
                 menuMovies.Show(btnMovies, new Point(0, btnMovies.Height));
             };
 
             // 4. SỰ KIỆN NÚT USER (Giữ nguyên)
             btnUserAction.Click += BtnUserAction_Click;
-
+            btnCinemas.Click += (s, e) => LoadUserControl(ucCinemaList);
+            btnLogout.Click += BtnLogout_Click;
             // 5. [SỬA LỖI LOGIC] LOGO & NÚT MUA VÉ -> RESET VỀ TRANG CHỦ
             // Khi nhấn Logo hoặc Mua vé ngay, phải tải lại danh sách phim mặc định
-            logoPictureBox.Click += async (s, e) => {
+            logoPictureBox.Click += async (s, e) =>
+            {
                 LoadUserControl(ucMovieList); // Chuyển về view danh sách
                 await ucMovieList.ResetToDefault(); // Reset bộ lọc
             };
 
-            btnBuyTicket.Click += async (s, e) => {
+            btnBuyTicket.Click += async (s, e) =>
+            {
                 LoadUserControl(ucMovieList);
                 await ucMovieList.FilterByStatus("Now Showing");
             };
@@ -106,10 +116,12 @@ namespace MovieBookingClient.Forms.Customer
             if (SessionManager.Instance.IsLoggedIn)
             {
                 btnUserAction.Text = $"XIN CHÀO, {SessionManager.Instance.Username?.ToUpper()}";
+                btnLogout.Visible = true; // [MỚI] Hiện nút Thoát
             }
             else
             {
                 btnUserAction.Text = "ĐĂNG NHẬP / ĐĂNG KÝ";
+                btnLogout.Visible = false; // [MỚI] Ẩn nút Thoát
             }
         }
 
@@ -117,10 +129,8 @@ namespace MovieBookingClient.Forms.Customer
         {
             if (SessionManager.Instance.IsLoggedIn)
             {
-                // Logic đăng xuất
-                SessionManager.Instance.EndSession();
-                UpdateUserStatusUI();
-                NavigateToHome(); // Tải lại trang chủ sau khi đăng xuất
+                // Logic xem hồ sơ cá nhân (sẽ làm sau)
+                MessageBox.Show("Chuyển đến trang hồ sơ cá nhân.");
             }
             else
             {
@@ -128,7 +138,12 @@ namespace MovieBookingClient.Forms.Customer
                 NavigateToLogin();
             }
         }
-
+        private void BtnLogout_Click(object sender, EventArgs e)
+        {
+            SessionManager.Instance.EndSession();
+            UpdateUserStatusUI();
+            NavigateToHome(); // Tải lại trang chủ
+        }
         // --- CÁC HÀM ĐIỀU HƯỚNG CÔNG KHAI ---
 
         public void NavigateToRegister()
@@ -136,8 +151,10 @@ namespace MovieBookingClient.Forms.Customer
             LoadUserControl(ucRegister);
         }
 
-        public void NavigateToLogin()
+        public void NavigateToLogin(Action postLoginAction = null)
         {
+            // Lưu lại hành động mong muốn
+            _postLoginAction = postLoginAction;
             LoadUserControl(ucLogin);
         }
 
@@ -154,7 +171,7 @@ namespace MovieBookingClient.Forms.Customer
             // Tải vào panel chính
             LoadUserControl(detailControl);
         }
-        
+
         public void NavigateToSelectShowtime(int movieId)
         {
             UC_SelectShowtime showtimeControl = new UC_SelectShowtime(this, movieId);
@@ -180,8 +197,43 @@ namespace MovieBookingClient.Forms.Customer
             }
             else
             {
-                NavigateToHome();
+                // Kiểm tra xem có hành động nào đang chờ không
+                if (_postLoginAction != null)
+                {
+                    _postLoginAction.Invoke(); // Thực thi hành động đã lưu
+                    _postLoginAction = null;   // Xóa đi sau khi thực thi
+                }
+                else
+                {
+                    NavigateToHome(); // Nếu không có, về trang chủ mặc định
+                }
             }
+        }
+
+        private void btnMember_Click(object sender, EventArgs e)
+        {
+            if (!SessionManager.Instance.IsLoggedIn)
+            {
+                MessageBox.Show("Vui lòng đăng nhập để xem thông tin thành viên!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                // Điều hướng tới Login và sau khi login xong thì quay lại trang Member
+                NavigateToLogin(() => btnMember_Click(sender, e));
+                return;
+            }
+            LoadUserControl(new UC_MemberInfo());
+        }
+
+        private void btnMyTicket_Click(object sender, EventArgs e)
+        {
+            if (!SessionManager.Instance.IsLoggedIn)
+            {
+                MessageBox.Show("Vui lòng đăng nhập để xem lịch sử vé!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                // Điều hướng tới Login và sau khi login xong thì quay lại trang MyTicket
+                NavigateToLogin(() => btnMyTicket_Click(sender, e));
+                return;
+            }
+            LoadUserControl(new UC_MyTickets());
         }
     }
 }

@@ -18,10 +18,10 @@
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges5 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges6 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges7 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges8 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges1 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges2 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges3 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges4 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             guna2Elipse1 = new Guna.UI2.WinForms.Guna2Elipse(components);
             guna2ShadowPanel1 = new Guna.UI2.WinForms.Guna2ShadowPanel();
             picPoster = new Guna.UI2.WinForms.Guna2PictureBox();
@@ -58,12 +58,12 @@
             // picPoster
             // 
             picPoster.BorderRadius = 8;
-            picPoster.CustomizableEdges = customizableEdges5;
+            picPoster.CustomizableEdges = customizableEdges1;
             picPoster.Dock = DockStyle.Top;
             picPoster.ImageRotate = 0F;
             picPoster.Location = new Point(10, 10);
             picPoster.Name = "picPoster";
-            picPoster.ShadowDecoration.CustomizableEdges = customizableEdges6;
+            picPoster.ShadowDecoration.CustomizableEdges = customizableEdges2;
             picPoster.Size = new Size(240, 340);
             picPoster.SizeMode = PictureBoxSizeMode.StretchImage;
             picPoster.TabIndex = 0;
@@ -73,7 +73,7 @@
             // 
             btnBuyTicket.BorderRadius = 6;
             btnBuyTicket.Cursor = Cursors.Hand;
-            btnBuyTicket.CustomizableEdges = customizableEdges7;
+            btnBuyTicket.CustomizableEdges = customizableEdges3;
             btnBuyTicket.DisabledState.BorderColor = Color.DarkGray;
             btnBuyTicket.DisabledState.CustomBorderColor = Color.DarkGray;
             btnBuyTicket.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
@@ -83,7 +83,7 @@
             btnBuyTicket.ForeColor = Color.White;
             btnBuyTicket.Location = new Point(10, 405);
             btnBuyTicket.Name = "btnBuyTicket";
-            btnBuyTicket.ShadowDecoration.CustomizableEdges = customizableEdges8;
+            btnBuyTicket.ShadowDecoration.CustomizableEdges = customizableEdges4;
             btnBuyTicket.Size = new Size(240, 40);
             btnBuyTicket.TabIndex = 3;
             btnBuyTicket.Text = "MUA VÉ";
@@ -92,12 +92,11 @@
             // 
             lblGenre.Font = new Font("Segoe UI", 9F);
             lblGenre.ForeColor = Color.Gray;
-            lblGenre.Location = new Point(13, 382);
+            lblGenre.Location = new Point(10, 379);
             lblGenre.Name = "lblGenre";
             lblGenre.Size = new Size(240, 23);
             lblGenre.TabIndex = 2;
             lblGenre.Text = "Thể loại";
-            lblGenre.Click += lblGenre_Click;
             // 
             // lblTitle
             // 

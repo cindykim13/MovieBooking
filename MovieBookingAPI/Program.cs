@@ -119,6 +119,9 @@ builder.Services.AddScoped<IAdminShowtimeBUS, AdminShowtimeBUS>();
 // Đăng ký Module Admin Rooms (Mới)
 builder.Services.AddScoped<IAdminRoomDAO, AdminRoomDAO>();
 builder.Services.AddScoped<IAdminRoomBUS, AdminRoomBUS>();
+// Đăng ký Module Cinema (Mới)
+builder.Services.AddScoped<ICinemaDAO, CinemaDAO>();
+builder.Services.AddScoped<ICinemaBUS, CinemaBUS>();
 
 var app = builder.Build();
 // --- Cấu hình HTTP Request Pipeline (Middleware) ---

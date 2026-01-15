@@ -11,15 +11,20 @@ namespace MovieBookingClient.UI.UserControls
         private MovieDTO _movie;
 
         // Định nghĩa một event để thông báo cho Form cha khi nút "Mua vé" được nhấn
+        // Sự kiện 1: Khi nhấn nút "MUA VÉ"
         public event EventHandler<int> BuyTicketClicked;
+        // [SỬA ĐỔI] Sự kiện 2: Khi nhấn vào Poster hoặc Title để xem chi tiết
+        public event EventHandler<int> ViewDetailClicked;
 
         public UCMovieCard()
         {
             InitializeComponent();
             btnBuyTicket.Click += (s, e) => BuyTicketClicked?.Invoke(this, _movie.MovieId);
             // Thêm sự kiện click chuyển trang
-            picPoster.Click += (s, e) => BuyTicketClicked?.Invoke(this, _movie.MovieId);
-            lblTitle.Click += (s, e) => BuyTicketClicked?.Invoke(this, _movie.MovieId);
+            // Poster và Title -> Kích hoạt sự kiện ViewDetailClicked
+            picPoster.Click += (s, e) => ViewDetailClicked?.Invoke(this, _movie.MovieId);
+            lblTitle.Click += (s, e) => ViewDetailClicked?.Invoke(this, _movie.MovieId);
+
         }
 
         // Phương thức công khai để thiết lập dữ liệu cho Card
@@ -67,16 +72,6 @@ namespace MovieBookingClient.UI.UserControls
                 // Ghi log lỗi và có thể hiển thị ảnh mặc định
                 Console.WriteLine($"Lỗi tải ảnh: {ex.Message}");
             }
-        }
-
-        private void lblTitle_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void lblGenre_Click(object sender, EventArgs e)
-        {
-
         }
     }
 }

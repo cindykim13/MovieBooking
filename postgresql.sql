@@ -756,6 +756,29 @@ BEGIN
     WHERE b.userid = p_userid ORDER BY b.bookingdate DESC;
 END;
 $$;
+-- -- 2.6. Lấy danh sách hệ thống rạp phim (usp_getallcinemas)
+CREATE OR REPLACE FUNCTION usp_getallcinemas()
+RETURNS TABLE (
+    cinemaid INT, 
+    name VARCHAR(100), 
+    address VARCHAR(255), 
+    city VARCHAR(50), 
+    phonenumber VARCHAR(20)
+)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    RETURN QUERY
+    SELECT 
+        c.cinemaid, 
+        c.name, 
+        c.address, 
+        c.city, 
+        c.phonenumber
+    FROM cinema c
+    ORDER BY c.city, c.name;
+END;
+$$;
 
 -- ================================================================
 -- NHÓM 3: CHỨC NĂNG QUẢN TRỊ VIÊN (ADMIN)
@@ -855,17 +878,41 @@ END;
 $$;
 
 -- 3.7. Tạo lịch chiếu
-CREATE OR REPLACE FUNCTION usp_createshowtime(p_movieid INT, p_roomid INT, p_starttime TIMESTAMP, p_baseprice NUMERIC, p_cleaningtimeminutes INT DEFAULT 15)
+CREATE OR REPLACE FUNCTION usp_createshowtime(
+    p_movieid INT, 
+    p_roomid INT, 
+    p_starttime TIMESTAMP, -- Mặc định là WITHOUT TIME ZONE
+    p_baseprice NUMERIC, 
+    p_cleaningtimeminutes INT DEFAULT 15
+)
 RETURNS INT LANGUAGE plpgsql AS $$
-DECLARE v_duration INT; v_endtime TIMESTAMP; v_newshowtimeid INT;
+DECLARE 
+    v_duration INT; 
+    v_endtime TIMESTAMP; 
+    v_newshowtimeid INT;
 BEGIN
     IF p_baseprice < 0 THEN RAISE EXCEPTION 'Giá vé không hợp lệ.'; END IF;
-    IF p_starttime < NOW() THEN RAISE EXCEPTION 'Thời gian chiếu phải ở tương lai.'; END IF;
+    
+    -- Sử dụng LOCALTIMESTAMP để so sánh với TIMESTAMP WITHOUT TIME ZONE
+    IF p_starttime < LOCALTIMESTAMP THEN RAISE EXCEPTION 'Thời gian chiếu phải ở tương lai.'; END IF;
+    
     SELECT duration INTO v_duration FROM movie WHERE movieid = p_movieid;
     IF NOT FOUND THEN RAISE EXCEPTION 'Phim không tồn tại.'; END IF;
+    
     v_endtime := p_starttime + (v_duration + p_cleaningtimeminutes) * INTERVAL '1 minute';
-    IF EXISTS (SELECT 1 FROM showtime WHERE roomid = p_roomid AND status = 1 AND (p_starttime < endtime) AND (v_endtime > starttime)) THEN RAISE EXCEPTION 'Phòng chiếu bị trùng lịch.'; END IF;
-    INSERT INTO showtime (movieid, roomid, starttime, endtime, baseprice, status) VALUES (p_movieid, p_roomid, p_starttime, v_endtime, p_baseprice, 1) RETURNING showtimeid INTO v_newshowtimeid;
+    
+    IF EXISTS (
+        SELECT 1 FROM showtime 
+        WHERE roomid = p_roomid AND status = 1 
+          AND (p_starttime < endtime) AND (v_endtime > starttime)
+    ) THEN 
+        RAISE EXCEPTION 'Phòng chiếu bị trùng lịch.'; 
+    END IF;
+    
+    INSERT INTO showtime (movieid, roomid, starttime, endtime, baseprice, status) 
+    VALUES (p_movieid, p_roomid, p_starttime, v_endtime, p_baseprice, 1) 
+    RETURNING showtimeid INTO v_newshowtimeid;
+    
     RETURN v_newshowtimeid;
 END;
 $$;

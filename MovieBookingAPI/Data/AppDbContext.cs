@@ -21,6 +21,8 @@ namespace MovieBookingAPI.Data
         public DbSet<MovieDetailRawResult> MovieDetailRawResults { get; set; }
         public DbSet<ShowtimeRawResult> ShowtimeRawResults { get; set; }
         public DbSet<BookingHistoryRawDTO> BookingHistoryRawResults { get; set; }
+        public DbSet<CinemaDTO> CinemaResults { get; set; } 
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -34,11 +36,10 @@ namespace MovieBookingAPI.Data
             modelBuilder.Entity<UserAuthData>().HasNoKey();
             modelBuilder.Entity<PagedMovieResult>().HasNoKey();
             modelBuilder.Entity<MovieDetailRawResult>().HasNoKey();
-            // Thêm trong OnModelCreating
             modelBuilder.Entity<ShowtimeRawResult>().HasNoKey();
             modelBuilder.Entity<SeatMapRawResult>().HasNoKey();
-            // THÊM DÒNG NÀY:
             modelBuilder.Entity<BookingHistoryRawDTO>().HasNoKey();
+            modelBuilder.Entity<CinemaDTO>().HasNoKey();
         }
     }
 }

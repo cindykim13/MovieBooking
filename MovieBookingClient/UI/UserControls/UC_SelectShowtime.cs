@@ -20,10 +20,11 @@ namespace MovieBookingClient.UI.UserControls
         private readonly int _movieId;
         private readonly ShowtimeService _showtimeService;
         private readonly MovieService _movieService;
-        private MovieDetailDTO _currentMovieInfo; // Thêm biến toàn cục để lưu info phim
         // --- State ---
         private DateTime _selectedDate;
         private List<Guna2Button> _dateButtons = new List<Guna2Button>();
+        private DateTime _currentWeekStartDate;
+        private MovieDetailDTO _currentMovieInfo; // Thêm biến toàn cục để lưu info phim
 
         // --- Constants (Màu sắc) ---
         private readonly Color COLOR_ACTIVE_BG = Color.FromArgb(212, 33, 33); // Đỏ CGV
@@ -32,7 +33,6 @@ namespace MovieBookingClient.UI.UserControls
         private readonly Color COLOR_INACTIVE_TEXT = Color.Black;
         private readonly Color COLOR_BORDER = Color.Silver;
 
-        
         public UC_SelectShowtime(FrmMain mainForm, int movieId)
         {
             InitializeComponent();
@@ -45,6 +45,9 @@ namespace MovieBookingClient.UI.UserControls
             this.Load += async (s, e) => await InitDataAsync();
             // Logic nút Back: Quay lại trang chi tiết phim để người dùng có thể xem lại nội dung
             btnBack.Click += (s, e) => _mainForm.NavigateToMovieDetail(_movieId);
+            // [MỚI] Gán sự kiện cho nút điều hướng tuần
+            btnNextWeek.Click += (s, e) => ChangeWeek(7);
+            btnPreviousWeek.Click += (s, e) => ChangeWeek(-7);
 
         }
 
@@ -53,12 +56,16 @@ namespace MovieBookingClient.UI.UserControls
             // 1. Lấy thông tin tên phim để hiển thị lên Header
             await LoadMovieInfoAsync();
 
-            // 2. Vẽ thanh chọn ngày (14 ngày tới)
+            // 2. Thiết lập ngày bắt đầu của tuần hiện tại và vẽ thanh ngày
+            _currentWeekStartDate = DateTime.Now.Date;
             RenderDateBar();
 
             // 3. Tải lịch chiếu cho ngày mặc định (Hôm nay)
             _selectedDate = DateTime.Now.Date;
             await LoadShowtimesAsync(_selectedDate);
+
+            // Cập nhật trạng thái nút Back
+            UpdateWeekNavigationButtons();
         }
 
         private async Task LoadMovieInfoAsync()
@@ -83,49 +90,48 @@ namespace MovieBookingClient.UI.UserControls
         {
             flpDates.Controls.Clear();
             _dateButtons.Clear();
-            DateTime startDate = DateTime.Now;
 
-            // Tạo nút cho 14 ngày
-            for (int i = 0; i < 14; i++)
+            // Tạo nút cho 7 ngày, bắt đầu từ _currentWeekStartDate
+            for (int i = 0; i < 7; i++)
             {
-                DateTime date = startDate.AddDays(i);
+                DateTime date = _currentWeekStartDate.AddDays(i);
+
+                // Không tạo nút cho các ngày trong quá khứ
+                if (date < DateTime.Now.Date) continue;
 
                 Guna2Button btnDate = new Guna2Button();
-                btnDate.Size = new Size(80, 50);
-                btnDate.BorderRadius = 4;
+                btnDate.Size = new Size(80, 60); // Tăng chiều cao cho đẹp
+                btnDate.BorderRadius = 5;
                 btnDate.BorderThickness = 1;
-                btnDate.BorderColor = COLOR_BORDER;
                 btnDate.Font = new Font("Segoe UI", 9, FontStyle.Bold);
                 btnDate.Cursor = Cursors.Hand;
-                btnDate.Margin = new Padding(0, 0, 10, 0); // Khoảng cách giữa các nút
+                btnDate.Margin = new Padding(5); // Thêm margin
 
-                // Hiển thị: Thứ (hàng trên) + Ngày/Tháng (hàng dưới)
-                // Sử dụng CultureInfo tiếng Việt để hiển thị "Thứ..."
                 string dayName = date.ToString("ddd", new CultureInfo("vi-VN"));
                 string dayMonth = date.ToString("dd/MM");
                 btnDate.Text = $"{dayName}\n{dayMonth}";
-
-                // Lưu ngày thực vào Tag để dùng lại khi click
                 btnDate.Tag = date.Date;
 
-                // Sự kiện Click chọn ngày
-                btnDate.Click += async (s, e) => {
-                    await OnDateSelected(btnDate);
-                };
+                btnDate.Click += async (s, e) => await OnDateSelected(btnDate);
 
-                // Style mặc định (Inactive)
-                UpdateButtonState(btnDate, false);
+                // Highlight ngày đang được chọn (_selectedDate)
+                UpdateButtonState(btnDate, date.Date == _selectedDate.Date);
 
-                // Thêm vào list quản lý và giao diện
                 _dateButtons.Add(btnDate);
                 flpDates.Controls.Add(btnDate);
             }
+        }
+        private void ChangeWeek(int daysToAdd)
+        {
+            _currentWeekStartDate = _currentWeekStartDate.AddDays(daysToAdd);
+            RenderDateBar();
+            UpdateWeekNavigationButtons();
+        }
 
-            // Mặc định chọn nút đầu tiên (Hôm nay)
-            if (_dateButtons.Count > 0)
-            {
-                UpdateButtonState(_dateButtons[0], true);
-            }
+        private void UpdateWeekNavigationButtons()
+        {
+            // Chỉ vô hiệu hóa nút "Back" khi tuần hiện tại là tuần của ngày hôm nay
+            btnPreviousWeek.Enabled = (_currentWeekStartDate.Date > DateTime.Now.Date);
         }
 
         private async Task OnDateSelected(Guna2Button clickedBtn)
@@ -273,6 +279,19 @@ namespace MovieBookingClient.UI.UserControls
                                 PosterUrl = _currentMovieInfo?.PosterUrl
                             };
 
+                            // Kiểm tra đăng nhập
+                            if (!SessionManager.Instance.IsLoggedIn)
+                            {
+                                MessageBox.Show("Vui lòng đăng nhập để chọn ghế và đặt vé.", "Yêu cầu đăng nhập", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                                // Yêu cầu FrmMain mở trang Login, và "dặn" rằng sau khi login thành công
+                                // thì thực hiện hành động NavigateToBooking với context đã chuẩn bị
+                                _mainForm.NavigateToLogin(() => _mainForm.NavigateToBooking(context));
+
+                                return;
+                            }
+
+                            // Nếu đã đăng nhập, chuyển thẳng đến trang đặt vé
                             _mainForm.NavigateToBooking(context);
                         };
 
