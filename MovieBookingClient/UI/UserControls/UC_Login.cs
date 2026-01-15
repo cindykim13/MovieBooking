@@ -1,6 +1,7 @@
 ﻿using MovieBookingClient.Forms.Customer;
 using MovieBookingClient.Services;
-using MovieBookingClient.Session;
+using MovieBookingClient.Session; // <--- ĐÃ MỞ LẠI: Để dùng SessionManager
+using MovieBookingClient.Global;
 using System;
 using System.Windows.Forms;
 
@@ -17,7 +18,6 @@ namespace MovieBookingClient.UI.UserControls
             _mainForm = mainForm;
             _authService = new AuthService();
 
-            // Gán sự kiện click
             btnLogin.Click += BtnLogin_Click;
             btnTabRegister.Click += BtnTabRegister_Click;
         }
@@ -42,19 +42,24 @@ namespace MovieBookingClient.UI.UserControls
 
                 if (result != null)
                 {
-                    // Lưu session
+                    // 1. LƯU VÀO SESSIONMANAGER (BẮT BUỘC): Để BaseApiService có Token đi xóa phim
                     SessionManager.Instance.StartSession(result.Token, result.Username, result.Role);
+
+                    // 2. Lưu vào UserSession (Dùng cho các mục đích hiển thị khác của bạn)
+                    UserSession.AccessToken = result.Token;
+                    UserSession.CurrentUsername = result.Username;
+                    UserSession.CurrentRole = result.Role;
 
                     // --- PHÂN QUYỀN ---
                     if (string.Equals(result.Role, "Admin", StringComparison.OrdinalIgnoreCase))
                     {
                         MessageBox.Show($"Xin chào Admin: {result.Username}", "Thành công");
-                        _mainForm.NavigateToAdminDashboard(); 
+                        _mainForm.NavigateToAdminDashboard();
                     }
                     else
                     {
                         MessageBox.Show($"Đăng nhập thành công!", "Thành công");
-                        _mainForm.NavigateToCustomerHome(); 
+                        _mainForm.NavigateToCustomerHome();
                     }
                 }
                 else

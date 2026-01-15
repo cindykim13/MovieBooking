@@ -1,102 +1,84 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using MovieBooking.Domain.DTOs;
+﻿using Microsoft.AspNetCore.Mvc;
 using MovieBookingAPI.BUS;
+using MovieBooking.Domain.DTOs; // Nhớ using DTO
 using System;
 using System.Threading.Tasks;
 
-
 namespace MovieBookingAPI.Controllers
 {
-    [Route("api/admin/showtimes")]
+    [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Admin")]
     public class AdminShowtimesController : ControllerBase
     {
-        private readonly IAdminShowtimeBUS _service;
+        private readonly IShowtimeBUS _showtimeBUS;
 
-
-        public AdminShowtimesController(IAdminShowtimeBUS service)
+        public AdminShowtimesController(IShowtimeBUS showtimeBUS)
         {
-            _service = service;
+            _showtimeBUS = showtimeBUS;
         }
 
-
-        // POST: api/admin/showtimes
+        // 1. THÊM LỊCH CHIẾU
         [HttpPost]
-        public async Task<IActionResult> CreateShowtime([FromBody] CreateShowtimeRequestDTO request)
+        public async Task<IActionResult> CreateShowtime([FromBody] CreateShowtimeRequest request)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
+            if (!ModelState.IsValid) return BadRequest(ModelState);
 
             try
             {
-                int newId = await _service.CreateShowtimeAsync(request);
-                return StatusCode(201, new { Message = "Tạo lịch chiếu thành công.", ShowtimeId = newId });
-            }
-            catch (InvalidOperationException ex) // Lỗi trùng lịch (Conflict)
-            {
-                return Conflict(new { Message = ex.Message });
-            }
-            catch (ArgumentException ex) // Lỗi validation dữ liệu
-            {
-                return BadRequest(new { Message = ex.Message });
+                // [SỬA LỖI CS7036]: Truyền từng tham số lẻ thay vì truyền cả cục 'request'
+                var newId = await _showtimeBUS.AddShowtimeAsync(
+                    request.MovieId,
+                    request.RoomId,
+                    request.StartTime,
+                    request.Price
+                );
+
+                return Ok(newId);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { Message = "Lỗi hệ thống: " + ex.Message });
+                return StatusCode(500, "Lỗi thêm lịch chiếu: " + ex.Message);
             }
         }
-        // PUT: api/admin/showtimes/5
+
+        // 2. SỬA LỊCH CHIẾU
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateShowtime(int id, [FromBody] UpdateShowtimeRequestDTO request)
+        public async Task<IActionResult> UpdateShowtime(int id, [FromBody] UpdateShowtimeRequest request)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
+            if (!ModelState.IsValid) return BadRequest(ModelState);
 
             try
             {
-                await _service.UpdateShowtimeAsync(id, request);
-                return Ok(new { Message = "Cập nhật lịch chiếu thành công." });
-            }
-            catch (KeyNotFoundException ex)
-            {
-                return NotFound(new { Message = ex.Message });
-            }
-            catch (InvalidOperationException ex) // Lỗi nghiệp vụ (trùng lịch, đã bán vé)
-            {
-                return Conflict(new { Message = ex.Message });
+                // [SỬA LỖI CS7036]: Truyền từng tham số lẻ
+                await _showtimeBUS.UpdateShowtimeAsync(
+                    id,
+                    request.MovieId,
+                    request.RoomId,
+                    request.StartTime,
+                    request.BasePrice // Lưu ý: Trong DTO bạn đặt là BasePrice hay Price thì dùng cái đó
+                );
+
+                return Ok("Cập nhật thành công!");
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { Message = "Lỗi hệ thống: " + ex.Message });
+                return StatusCode(500, "Lỗi cập nhật: " + ex.Message);
             }
         }
-        // DELETE: api/admin/showtimes/5
+
+        // 3. XÓA LỊCH CHIẾU
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteShowtime(int id)
         {
             try
             {
-                await _service.DeleteShowtimeAsync(id);
-                // HTTP 204 No Content là response chuẩn cho lệnh DELETE thành công
-                return NoContent();
-            }
-            catch (KeyNotFoundException ex)
-            {
-                return NotFound(new { Message = ex.Message });
+                await _showtimeBUS.DeleteShowtimeAsync(id);
+                return Ok("Xóa thành công!");
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { Message = "Lỗi hệ thống: " + ex.Message });
+                return StatusCode(500, "Lỗi xóa: " + ex.Message);
             }
         }
-
     }
 }

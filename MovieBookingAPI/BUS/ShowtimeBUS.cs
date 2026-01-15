@@ -1,53 +1,54 @@
 ﻿using MovieBooking.Domain.DTOs;
+using MovieBooking.Domain.Entities;
 using MovieBookingAPI.DAO;
+using MovieBookingAPI.Models.Entities;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace MovieBookingAPI.BUS
 {
     public class ShowtimeBUS : IShowtimeBUS
     {
-        private readonly IShowtimeDAO _showtimeRepo;
+        private readonly IShowtimeDAO _showtimeDAO;
 
-        public ShowtimeBUS(IShowtimeDAO showtimeRepo)
+        public ShowtimeBUS(IShowtimeDAO showtimeDAO)
         {
-            _showtimeRepo = showtimeRepo;
+            _showtimeDAO = showtimeDAO;
         }
 
-        public async Task<List<CinemaShowtimeDTO>> GetShowtimesByMovieAsync(int movieId, DateTime? date)
+        // [SỬA TÊN] Đổi từ CreateShowtimeAsync -> AddShowtimeAsync (để khớp với AdminController)
+        public async Task<int> AddShowtimeAsync(int movieId, int roomId, DateTime startTime, decimal price)
         {
-            // Nếu không truyền ngày, mặc định lấy ngày hiện tại
-            DateTime filterDate = date ?? DateTime.Now.Date;
-
-            // 1. Lấy dữ liệu thô từ Repository
-            var rawData = await _showtimeRepo.GetRawShowtimesAsync(movieId, filterDate);
-
-            // 2. Thực hiện Grouping (Logic quan trọng)
-            // Gom nhóm theo CinemaId để tạo cấu trúc phân cấp
-            var result = rawData
-                .GroupBy(x => new { x.CinemaId, x.CinemaName, x.CinemaAddress })
-                .Select(g => new CinemaShowtimeDTO
-                {
-                    CinemaId = g.Key.CinemaId,
-                    CinemaName = g.Key.CinemaName,
-                    Address = g.Key.CinemaAddress,
-                    Showtimes = g.Select(s => new ShowtimeDTO
-                    {
-                        ShowtimeId = s.ShowtimeId,
-                        StartTime = s.StartTime,
-                        EndTime = s.EndTime,
-                        RoomId = s.RoomId,
-                        RoomName = s.RoomName,
-                        Price = s.BasePrice
-                    }).ToList()
-                })
-                .ToList();
-
-            return result;
+            return await _showtimeDAO.CreateShowtimeAsync(movieId, roomId, startTime, price);
         }
 
-        public async Task<List<SeatDTO>> GetSeatMapAsync(int showtimeId)
+        // [THÊM HÀM] Thêm hàm Update (để khớp với AdminController)
+        public async Task UpdateShowtimeAsync(int id, int movieId, int roomId, DateTime startTime, decimal price)
         {
-            // Có thể thêm logic kiểm tra showtimeId > 0
-            return await _showtimeRepo.GetSeatMapAsync(showtimeId);
+            await _showtimeDAO.UpdateShowtimeAsync(id, movieId, roomId, startTime, price);
+        }
+
+        // Hàm lấy ghế (đã khớp với DAO vừa sửa ở bước 2)
+        public async Task<IEnumerable<Seat>> GetSeatMapAsync(int showtimeId)
+        {
+            return await _showtimeDAO.GetSeatMapAsync(showtimeId);
+        }
+
+        // Các hàm cũ giữ nguyên
+        public async Task<IEnumerable<Showtime>> GetShowtimesByMovieAsync(int movieId, DateTime date)
+        {
+            return await _showtimeDAO.GetShowtimesByMovieAsync(movieId, date);
+        }
+
+        public async Task<IEnumerable<ShowtimeDTO>> GetShowtimesByDateAsync(DateTime date)
+        {
+            return await _showtimeDAO.GetShowtimesByDateAsync(date);
+        }
+
+        public async Task DeleteShowtimeAsync(int id)
+        {
+            await _showtimeDAO.DeleteShowtimeAsync(id);
         }
     }
 }

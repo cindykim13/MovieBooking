@@ -1,13 +1,13 @@
 ﻿using MovieBooking.Domain.DTOs;
-using System.Threading.Tasks;
-
 
 namespace MovieBookingAPI.DAO
 {
     public interface IAdminShowtimeDAO
     {
-        Task<int> CreateShowtimeAsync(CreateShowtimeRequestDTO request);
-        Task UpdateShowtimeAsync(int showtimeId, UpdateShowtimeRequestDTO request);
-        Task DeleteShowtimeAsync(int showtimeId);
+        Task<IEnumerable<ShowtimeDTO>> GetAllShowtimesAsync();
+        Task<IEnumerable<ShowtimeDTO>> GetShowtimesByDateAsync(DateTime date);
+        Task<bool> CreateShowtimeAsync(CreateShowtimeRequestDTO req);
+        Task<bool> UpdateShowtimeAsync(int id, UpdateShowtimeRequestDTO req);
+        Task<bool> DeleteShowtimeAsync(int id);
     }
 }

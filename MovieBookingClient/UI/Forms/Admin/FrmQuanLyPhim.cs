@@ -1,37 +1,51 @@
 ﻿using MovieBooking.Domain.DTOs;
-using MovieBookingClient.Services; // Namespace chứa MovieService
+using MovieBookingClient.Services;
+using MovieBookingClient.Session; // Đảm bảo import để kiểm tra Session
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Linq;
 
 namespace MovieBookingClient.UI.Forms.Admin
 {
     public partial class FrmQuanLyPhim : UserControl
     {
-        // Service giả định (Bạn cần đảm bảo bên Client có class này)
         private readonly MovieService _movieService;
 
         public FrmQuanLyPhim()
         {
             InitializeComponent();
-            _movieService = new MovieService(); // Khởi tạo service
+            _movieService = new MovieService();
+
+            // --- 1. ĐĂNG KÝ SỰ KIỆN ---
+
+            if (this.btnThem != null)
+            {
+                this.btnThem.Click -= btnThem_Click;
+                this.btnThem.Click += btnThem_Click;
+            }
+
+            if (this.btnSua != null)
+            {
+                this.btnSua.Click -= btnSua_Click;
+                this.btnSua.Click += btnSua_Click;
+            }
+
+            if (this.btnXoa != null)
+            {
+                this.btnXoa.Click -= btnXoa_Click;
+                this.btnXoa.Click += btnXoa_Click;
+            }
+
+            // Đăng ký sự kiện Load
+            this.Load += async (s, e) => await LoadData();
         }
 
-        private async void frmAdmin_Load(object sender, EventArgs e)
-        {
-            await LoadData();
-        }
-
-        // --- HÀM TẢI DỮ LIỆU ---
+        // --- 2. HÀM TẢI DỮ LIỆU ---
         private async Task LoadData(string keyword = "")
         {
             try
             {
-                // Gọi hàm Search thay vì GetPaged vì nó linh hoạt hơn
-                // Tham số: keyword, status, genreId, year, pageIndex, pageSize
-                // Truyền null/0 cho các tham số không dùng để lấy tất cả
                 var result = await _movieService.SearchMoviesAsync(keyword, null, null, null, 1, 100);
 
                 if (result != null && result.Items != null)
@@ -41,50 +55,115 @@ namespace MovieBookingClient.UI.Forms.Admin
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi tải dữ liệu: " + ex.Message);
+                System.Diagnostics.Debug.WriteLine("Lỗi Load Phim: " + ex.Message);
             }
         }
 
-        // --- ĐỔ DỮ LIỆU VÀO BẢNG ---
         private void BindGrid(List<MovieDTO> list)
         {
-            dgvPhim.DataSource = null;
-            dgvPhim.DataSource = list;
-
-            // Ẩn các cột không cần thiết
-            string[] cotAn = { "PosterUrl", "Description" }; // Thêm tên cột muốn ẩn
-            foreach (var col in cotAn)
+            if (dgvPhim.InvokeRequired)
             {
-                if (dgvPhim.Columns[col] != null) dgvPhim.Columns[col].Visible = false;
+                dgvPhim.Invoke(new Action(() => BindGrid(list)));
+                return;
             }
 
-            // Đặt tên tiếng Việt cho cột
-            if (dgvPhim.Columns["MovieId"] != null) dgvPhim.Columns["MovieId"].HeaderText = "Mã Phim";
-            if (dgvPhim.Columns["Title"] != null) dgvPhim.Columns["Title"].HeaderText = "Tên Phim";
-            if (dgvPhim.Columns["Duration"] != null) dgvPhim.Columns["Duration"].HeaderText = "Thời lượng";
-            if (dgvPhim.Columns["ReleaseYear"] != null) dgvPhim.Columns["ReleaseYear"].HeaderText = "Năm SX";
-            if (dgvPhim.Columns["Genres"] != null) dgvPhim.Columns["Genres"].HeaderText = "Thể Loại";
-            if (dgvPhim.Columns["Status"] != null) dgvPhim.Columns["Status"].HeaderText = "Trạng Thái";
+            dgvPhim.DataSource = null;
+            dgvPhim.AutoGenerateColumns = false;
+            dgvPhim.Columns.Clear();
 
+            dgvPhim.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "Id", HeaderText = "ID", Width = 50 });
+            dgvPhim.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "Title", HeaderText = "Tên Phim", Width = 200 });
+            dgvPhim.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "Duration", HeaderText = "Thời lượng", Width = 80 });
+            dgvPhim.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "ReleaseYear", HeaderText = "Năm", Width = 60 });
+            dgvPhim.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "Rating", HeaderText = "Điểm", Width = 60 });
+            dgvPhim.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "Genres", HeaderText = "Thể Loại", Width = 150 });
+
+            dgvPhim.DataSource = list;
             dgvPhim.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dgvPhim.SelectionMode = DataGridViewSelectionMode.FullRowSelect; // Đảm bảo chọn cả dòng
         }
 
-        // --- TÌM KIẾM ---
+        // --- 3. TÌM KIẾM ---
         private async void textBox1_TextChanged(object sender, EventArgs e)
         {
-            // Vì Server có hàm Search xịn rồi, ta gọi thẳng Server luôn (hoặc lọc RAM nếu muốn)
-            // Ở đây mình gọi Server để test tính năng SearchMoviesAsync
             await LoadData(textBox1.Text.Trim());
         }
 
-        private void btnThem_Click(object sender, EventArgs e)
+        // --- 4. CHỨC NĂNG THÊM ---
+        private async void btnThem_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Chức năng Thêm đang phát triển");
+            using (FrmThemPhim frm = new FrmThemPhim())
+            {
+                if (frm.ShowDialog() == DialogResult.OK)
+                {
+                    await LoadData();
+                }
+            }
         }
 
-        private void guna2HtmlLabel1_Click(object sender, EventArgs e)
+        // --- 5. CHỨC NĂNG SỬA ---
+        private async void btnSua_Click(object sender, EventArgs e)
         {
+            if (dgvPhim.SelectedRows.Count == 0)
+            {
+                MessageBox.Show("Vui lòng chọn phim cần sửa!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
 
+            var movieItem = (MovieDTO)dgvPhim.SelectedRows[0].DataBoundItem;
+
+            using (FrmThemPhim frm = new FrmThemPhim(movieItem.Id))
+            {
+                if (frm.ShowDialog() == DialogResult.OK)
+                {
+                    await LoadData();
+                }
+            }
+        }
+
+        // --- 6. CHỨC NĂNG XÓA (ĐÃ CẬP NHẬT) ---
+        private async void btnXoa_Click(object sender, EventArgs e)
+        {
+            // 1. Kiểm tra lựa chọn
+            if (dgvPhim.SelectedRows.Count == 0)
+            {
+                MessageBox.Show("Vui lòng chọn phim cần xóa!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            // 2. Kiểm tra trạng thái đăng nhập trước khi gọi API
+            if (!SessionManager.Instance.IsLoggedIn)
+            {
+                MessageBox.Show("Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại!", "Lỗi xác thực", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            var movieItem = (MovieDTO)dgvPhim.SelectedRows[0].DataBoundItem;
+
+            var confirm = MessageBox.Show($"Bạn có chắc muốn xóa phim: {movieItem.Title}?\nHành động này không thể hoàn tác.",
+                                          "Xác nhận xóa",
+                                          MessageBoxButtons.YesNo,
+                                          MessageBoxIcon.Question);
+
+            if (confirm == DialogResult.Yes)
+            {
+                try
+                {
+                    // Gọi Service (Lúc này MovieService sẽ dùng Token từ SessionManager)
+                    bool isDeleted = await _movieService.DeleteMovieAsync(movieItem.Id);
+
+                    if (isDeleted)
+                    {
+                        MessageBox.Show("Đã xóa phim thành công.", "Thông báo");
+                        await LoadData(); // Cập nhật lại danh sách ngay lập tức
+                    }
+                    // Lưu ý: Nếu thất bại (401/403), BaseApiService đã tự hiện MessageBox rồi.
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Lỗi hệ thống khi xóa: " + ex.Message, "Lỗi");
+                }
+            }
         }
     }
 }

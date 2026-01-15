@@ -7,7 +7,7 @@ using MovieBookingAPI.DAO;
 using MovieBookingAPI.Data;
 using System.Text;
 using Npgsql;
-
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 var builder = WebApplication.CreateBuilder(args);
 
 // 1. Cấu hình kết nối Database (SQL Server)

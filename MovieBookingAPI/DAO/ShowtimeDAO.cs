@@ -1,8 +1,11 @@
-﻿using Npgsql;
-using Microsoft.EntityFrameworkCore;
-using MovieBookingAPI.Data;
+﻿using Microsoft.EntityFrameworkCore;
 using MovieBooking.Domain.DTOs;
-using System.Data;
+using MovieBooking.Domain.Entities; // Nhớ using Entity
+using MovieBookingAPI.Data;
+using MovieBookingAPI.Models.Entities;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace MovieBookingAPI.DAO
 {
@@ -15,54 +18,112 @@ namespace MovieBookingAPI.DAO
             _context = context;
         }
 
-        public async Task<List<ShowtimeRawDTO>> GetRawShowtimesAsync(int movieId, DateTime date)
+        public async Task<IEnumerable<ShowtimeDTO>> GetShowtimesByDateAsync(DateTime date)
         {
-            var p_movieid = new NpgsqlParameter("p_movieid", movieId);
-            var p_viewdate = new NpgsqlParameter("p_viewdate", date);
+            // Logic tìm từ 00:00 hôm nay đến 00:00 hôm sau
+            var startOfDay = date.Date;
+            var endOfDay = startOfDay.AddDays(1);
 
-            // Sử dụng FromSqlRaw
-            var rawResult = await _context.Set<ShowtimeRawResult>()
-                .FromSqlRaw("SELECT * FROM usp_getshowtimesbymovie(@p_movieid, @p_viewdate)",
-                    p_movieid, p_viewdate)
-                .ToListAsync();
+            var query = from s in _context.Showtimes
+                        join m in _context.Movies on s.MovieId equals m.MovieId into mGroup
+                        from m in mGroup.DefaultIfEmpty()
 
-            // Chuyển đổi từ lớp tạm (chữ thường) sang DTO (PascalCase)
-            return rawResult.Select(r => new ShowtimeRawDTO
-            {
-                CinemaId = r.cinemaid,
-                CinemaName = r.cinemaname,
-                CinemaAddress = r.cinemaaddress,
-                RoomId = r.roomid,
-                RoomName = r.roomname,
-                ShowtimeId = r.showtimeid,
-                StartTime = r.starttime,
-                EndTime = r.endtime,
-                BasePrice = r.baseprice
-            }).ToList();
+                        join r in _context.ScreenRooms on s.RoomId equals r.Id into rGroup
+                        from r in rGroup.DefaultIfEmpty()
+
+                        join c in _context.Cinemas on (r == null ? 0 : r.CinemaId) equals c.CinemaId into cGroup
+                        from c in cGroup.DefaultIfEmpty()
+
+                            // Lọc theo ngày
+                        where s.StartTime >= startOfDay && s.StartTime < endOfDay
+                        orderby s.StartTime
+
+                        // [QUAN TRỌNG] Phải map đúng tên biến trong ShowtimeDTO
+                        select new ShowtimeDTO
+                        {
+                            ShowtimeId = s.ShowtimeId,
+
+                            // Lấy tên để hiển thị
+                            MovieTitle = m != null ? m.Title : "Unknown Movie",
+                            RoomName = r != null ? r.RoomName : "Unknown Room",
+                            CinemaName = c != null ? c.Name : "Unknown Cinema",
+
+                            StartTime = s.StartTime,
+                            EndTime = s.EndTime,
+                            Price = s.Price,
+                            Status = s.Status == 1 ? "Active" : "Stopped"
+                        };
+
+            return await query.ToListAsync();
         }
-        public async Task<List<SeatDTO>> GetSeatMapAsync(int showtimeId)
+        // ... (Giữ nguyên các hàm Create, Update, Delete ở dưới) ...
+        public async Task<int> CreateShowtimeAsync(int movieId, int roomId, DateTime startTime, decimal price)
         {
-            // Định nghĩa tham số cho Function PostgreSQL (đúng tên, chữ thường)
-            var p_showtimeid = new NpgsqlParameter("p_showtimeid", showtimeId);
+            var showtime = new Showtime
+            {
+                MovieId = movieId,
+                RoomId = roomId,
+                StartTime = startTime,
+                Price = price,
+                Status = 1
+            };
+            _context.Showtimes.Add(showtime);
+            await _context.SaveChangesAsync();
+            return showtime.ShowtimeId;
+        }
 
-            // Cần tạo lớp tạm để hứng kết quả thô có tên cột chữ thường
-            // Tôi sẽ đặt tên là SeatMapRawResult để tránh nhầm lẫn
-            var rawResult = await _context.Set<SeatMapRawResult>()
-                .FromSqlRaw("SELECT * FROM usp_getshowtimeseatmap(@p_showtimeid)", p_showtimeid)
+        public async Task DeleteShowtimeAsync(int id)
+        {
+            var showtime = await _context.Showtimes.FindAsync(id);
+            if (showtime != null)
+            {
+                _context.Showtimes.Remove(showtime);
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        // (Các hàm khác giữ nguyên...)
+        public async Task UpdateShowtimeAsync(int id, int movieId, int roomId, DateTime startTime, decimal price)
+        {
+            var showtime = await _context.Showtimes.FindAsync(id);
+            if (showtime != null)
+            {
+                showtime.MovieId = movieId;
+                showtime.RoomId = roomId;
+                showtime.StartTime = startTime;
+                showtime.Price = price;
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        public async Task<Showtime?> GetShowtimeByIdAsync(int id)
+        {
+            return await _context.Showtimes.FindAsync(id);
+        }
+
+        public async Task<IEnumerable<Showtime>> GetShowtimesByMovieAsync(int movieId, DateTime date)
+        {
+            return await _context.Showtimes.Where(s => s.MovieId == movieId).ToListAsync();
+        }
+
+        public async Task<Showtime?> GetShowtimeDetailAsync(int showtimeId)
+        {
+            return await _context.Showtimes.FindAsync(showtimeId);
+        }
+        public async Task<IEnumerable<Seat>> GetSeatMapAsync(int showtimeId)
+        {
+            // 1. Lấy thông tin lịch chiếu để biết RoomId
+            var showtime = await _context.Showtimes.FindAsync(showtimeId);
+            if (showtime == null) return new List<Seat>();
+
+            // 2. Lấy danh sách ghế dựa theo RoomId
+            var seats = await _context.Seats
+                .Where(s => s.RoomId == showtime.RoomId)
+                .OrderBy(s => s.SeatRow)
+                .ThenBy(s => s.SeatNumber)
                 .ToListAsync();
 
-            // Chuyển đổi từ lớp tạm sang DTO chuẩn
-            return rawResult.Select(r => new SeatDTO
-            {
-                SeatId = r.seatid,
-                Row = r.Row,
-                Number = r.Number,
-                GridRow = r.gridrow,
-                GridColumn = r.gridcolumn,
-                SeatType = r.seattype,
-                Price = r.price,
-                Status = r.status
-            }).ToList();
+            return seats;
         }
     }
 }

@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MovieBookingAPI.BUS;
-using Microsoft.AspNetCore.Authorization;
+using System;
+using System.Threading.Tasks;
+using System.Linq; // Để dùng .Count()
 
 namespace MovieBookingAPI.Controllers
 {
@@ -15,21 +17,35 @@ namespace MovieBookingAPI.Controllers
             _showtimeService = showtimeService;
         }
 
-        // GET: api/showtimes?movieId=1&date=2025-12-20
+        // GET: api/showtimes?movieId=...&date=...
         [HttpGet]
         public async Task<IActionResult> GetShowtimes(
-            [FromQuery] int movieId,
-            [FromQuery] DateTime? date)
+            [FromQuery] int? movieId,   // Đã sửa thành int? (có thể null)
+            [FromQuery] DateTime? date) // Đã sửa thành DateTime? (có thể null)
         {
-            if (movieId <= 0)
-            {
-                return BadRequest(new { Message = "MovieId không hợp lệ." });
-            }
-
             try
             {
-                var result = await _showtimeService.GetShowtimesByMovieAsync(movieId, date);
-                return Ok(result);
+                // TRƯỜNG HỢP 1: Admin xem lịch chiếu theo ngày (movieId = null hoặc 0)
+                if ((movieId == null || movieId <= 0) && date.HasValue)
+                {
+                    // Gọi hàm tìm theo ngày (Admin)
+                    var result = await _showtimeService.GetShowtimesByDateAsync(date.Value);
+
+                    // Trả về danh sách rỗng thay vì 404 để Client không báo lỗi
+                    if (result == null) return Ok(new List<object>());
+
+                    return Ok(result);
+                }
+
+                // TRƯỜNG HỢP 2: Khách hàng xem lịch chiếu của 1 phim cụ thể
+                if (movieId.HasValue && movieId > 0)
+                {
+                    // Gọi hàm tìm theo phim (Client)
+                    var result = await _showtimeService.GetShowtimesByMovieAsync(movieId.Value, date ?? DateTime.Now);
+                    return Ok(result);
+                }
+
+                return BadRequest(new { Message = "Vui lòng cung cấp MovieId (để tìm theo phim) hoặc Date (để tìm theo ngày)." });
             }
             catch (Exception ex)
             {
@@ -39,15 +55,13 @@ namespace MovieBookingAPI.Controllers
 
         // GET: api/showtimes/5/seats
         [HttpGet("{id}/seats")]
-        [Authorize] // Bảo vệ Endpoint
         public async Task<IActionResult> GetSeatMap(int id)
         {
             try
             {
                 var seats = await _showtimeService.GetSeatMapAsync(id);
 
-                // Nếu danh sách rỗng, có thể là do ShowtimeId sai hoặc chưa tạo ghế
-                if (seats == null || seats.Count == 0)
+                if (seats == null || seats.Count() == 0)
                 {
                     return NotFound(new { Message = "Không tìm thấy sơ đồ ghế cho suất chiếu này." });
                 }

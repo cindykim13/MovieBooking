@@ -16,10 +16,10 @@ namespace MovieBookingClient.UI.UserControls
         public UCMovieCard()
         {
             InitializeComponent();
-            btnBuyTicket.Click += (s, e) => BuyTicketClicked?.Invoke(this, _movie.MovieId);
+            btnBuyTicket.Click += (s, e) => BuyTicketClicked?.Invoke(this, _movie.Id);
             // Thêm sự kiện click chuyển trang
-            picPoster.Click += (s, e) => BuyTicketClicked?.Invoke(this, _movie.MovieId);
-            lblTitle.Click += (s, e) => BuyTicketClicked?.Invoke(this, _movie.MovieId);
+            picPoster.Click += (s, e) => BuyTicketClicked?.Invoke(this, _movie.Id);
+            lblTitle.Click += (s, e) => BuyTicketClicked?.Invoke(this, _movie.Id);
         }
 
         // Phương thức công khai để thiết lập dữ liệu cho Card
@@ -29,7 +29,7 @@ namespace MovieBookingClient.UI.UserControls
 
             // Gán dữ liệu vào các control
             lblTitle.Text = movie.Title;
-            lblGenre.Text = movie.Genres;
+            lblGenre.Text = movie.Genres != null ? string.Join(", ", movie.Genres) : "";
 
             // Tải ảnh từ URL một cách bất đồng bộ
             LoadImageFromUrl(movie.PosterUrl);

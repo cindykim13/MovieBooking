@@ -1,7 +1,8 @@
-﻿using MovieBookingClient.UI.Forms.Admin; // 👇 Quan trọng: Phải có dòng này mới gọi được các Form con
+﻿using MovieBookingClient.UI.Forms.Admin; // 👇 Đảm bảo namespace này đúng với nơi chứa FrmQuanLyPhim
 using System;
 using System.Drawing;
 using System.Windows.Forms;
+using MovieBookingClient.UI.Modules;
 
 namespace MovieBookingClient.Forms.Admin
 {
@@ -10,9 +11,8 @@ namespace MovieBookingClient.Forms.Admin
         public FrmAdminDashboard()
         {
             InitializeComponent();
-
-            // 👇 THAY ĐỔI 1: Vừa mở Form lên là hiện Trang Chủ Thống Kê ngay
-            HienThiUserControl(new FrmDashboardHome());
+            HienThiUserControl(new FrmQuanLyPhim());
+            lblTitle.Text = "QUẢN LÝ PHIM";
         }
 
         // --- HÀM DÙNG CHUNG ĐỂ HIỂN THỊ USER CONTROL ---
@@ -31,13 +31,13 @@ namespace MovieBookingClient.Forms.Admin
 
         // --- SỰ KIỆN MENU ---
 
-        // 1. Nút TRANG CHỦ
+        // 1. Nút TRANG CHỦ (button4)
         private void button4_Click(object sender, EventArgs e)
         {
-            // 👇 THAY ĐỔI 2: Gọi lại Trang Chủ Thống Kê thay vì để trống
-            HienThiUserControl(new FrmDashboardHome());
-
-            lblTitle.Text = "TỔNG QUAN";
+            // 👇 THAY ĐỔI 2: Vì không còn Dashboard, nút này tạm thời sẽ mở Quản Lý Phim
+            // Hoặc bạn có thể để trống nếu chưa biết hiển thị gì
+            HienThiUserControl(new FrmQuanLyPhim());
+            lblTitle.Text = "QUẢN LÝ PHIM";
         }
 
         // 2. Nút QUẢN LÝ PHIM
@@ -57,7 +57,7 @@ namespace MovieBookingClient.Forms.Admin
         // 4. Nút QUẢN LÝ PHÒNG
         private void btnPhong_Click(object sender, EventArgs e)
         {
-            HienThiUserControl(new FrmQuanLyPhong());
+            HienThiUserControl(new UC_QuanLyPhong());
             lblTitle.Text = "QUẢN LÝ PHÒNG CHIẾU";
         }
 

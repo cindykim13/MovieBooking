@@ -1,13 +1,15 @@
 ﻿using MovieBooking.Domain.DTOs;
-using System.Threading.Tasks;
-
 
 namespace MovieBookingAPI.BUS
 {
     public interface IAdminShowtimeBUS
     {
-        Task<int> CreateShowtimeAsync(CreateShowtimeRequestDTO request);
-        Task UpdateShowtimeAsync(int showtimeId, UpdateShowtimeRequestDTO request);
-        Task DeleteShowtimeAsync(int showtimeId);
+        Task<IEnumerable<ShowtimeDTO>> GetAllShowtimesAsync();
+        Task<IEnumerable<ShowtimeDTO>> GetShowtimesByDateAsync(DateTime date);
+
+        // Sửa tham số input thành DTO
+        Task<bool> CreateShowtimeAsync(CreateShowtimeRequestDTO req);
+        Task<bool> UpdateShowtimeAsync(int id, UpdateShowtimeRequestDTO req);
+        Task<bool> DeleteShowtimeAsync(int id);
     }
 }

@@ -26,5 +26,6 @@ namespace MovieBooking.Domain.DTOs
         [Required]
         [Range(0, 2)] // 0: Closed, 1: Open, 2: Cancelled
         public int Status { get; set; }
+        public int ShowtimeId { get; set; }
     }
 }

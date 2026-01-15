@@ -100,44 +100,31 @@ namespace MovieBookingClient.UI.UserControls
         }
         private async Task LoadSeatMapAsync()
         {
-
-            // Hiển thị trạng thái Loading
-            pnlSeatMap.Controls.Clear();
-            Label lblLoading = new Label
-            {
-                Text = "Đang tải sơ đồ ghế...",
-                AutoSize = true,
-                Location = new Point(350, 250),
-                Font = new Font("Segoe UI", 12)
-            };
-            pnlSeatMap.Controls.Add(lblLoading);
-
             try
             {
-                // Gọi API lấy danh sách ghế
-                var seats = await _showtimeService.GetSeatMapAsync(_showtimeId);
+                // seatMap ở đây là kiểu SeatMapDTO
+                var seatMap = await _showtimeService.GetSeatMapAsync(_showtimeId);
 
-                // Xóa loading và vẽ ghế
                 pnlSeatMap.Controls.Clear();
-                // Vẽ lại màn hình và line màn hình (do Clear đã xóa mất)
                 RenderScreenArea();
 
-                if (seats != null && seats.Count > 0)
+                // FIX LỖI CS1061: Kiểm tra .Seats.Count thay vì kiểm tra trực tiếp trên seatMap
+                if (seatMap != null && seatMap.Seats != null && seatMap.Seats.Count > 0)
                 {
-                    RenderSeats(seats);
-                    UpdateSummaryPanel(); // Cập nhật panel bên phải (ban đầu là 0đ)
+                    // FIX LỖI CS1503: Truyền seatMap.Seats (kiểu List<SeatDTO>) vào hàm RenderSeats
+                    RenderSeats(seatMap.Seats);
+                    UpdateSummaryPanel();
                 }
                 else
                 {
-                    MessageBox.Show("Không tải được dữ liệu ghế.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("Không tìm thấy dữ liệu ghế cho suất chiếu này.");
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Lỗi hệ thống: {ex.Message}");
+                MessageBox.Show($"Lỗi: {ex.Message}");
             }
         }
-
         private void RenderScreenArea()
         {
             // Tính toán vị trí giữa dựa trên chiều rộng Panel

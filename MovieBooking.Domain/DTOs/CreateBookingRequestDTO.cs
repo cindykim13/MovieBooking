@@ -1,15 +1,15 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace MovieBooking.Domain.DTOs
 {
-    public class CreateBookingRequestDTO
+   public class CreateBookingRequestDTO
     {
-        [Required(ErrorMessage = "Vui lòng chọn suất chiếu.")]
-        public int ShowtimeId { get; set; }
-
-        [Required(ErrorMessage = "Vui lòng chọn ít nhất một ghế.")]
-        [MinLength(1, ErrorMessage = "Danh sách ghế không được để trống.")]
-        public List<int> SeatIds { get; set; } = new List<int>();
+        public int Id { get; set; }
+        public int? SeatIds { get; set; }
+        public int? ShowtimeId { get; set; }
     }
 }

@@ -2,74 +2,50 @@
 using Microsoft.AspNetCore.Mvc;
 using MovieBooking.Domain.DTOs;
 using MovieBookingAPI.BUS;
-using System;
-using System.Threading.Tasks;
-
 
 namespace MovieBookingAPI.Controllers
 {
-    [Route("api/admin/rooms")]
+    [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Admin")]
+    // [Authorize(Roles = "Admin")] // Bỏ comment nếu muốn bật bảo mật
     public class AdminRoomsController : ControllerBase
     {
-        private readonly IAdminRoomBUS _service;
+        private readonly IAdminRoomBUS _adminRoomBUS;
 
-
-        public AdminRoomsController(IAdminRoomBUS service)
+        public AdminRoomsController(IAdminRoomBUS adminRoomBUS)
         {
-            _service = service;
+            _adminRoomBUS = adminRoomBUS;
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetAllRooms()
+        {
+            // API này vẫn cần thiết để ComboBox chọn phòng hiển thị danh sách
+            var result = await _adminRoomBUS.GetAllRoomsAsync();
+            return Ok(result);
+        }
 
-        // POST: api/admin/rooms
         [HttpPost]
-        public async Task<IActionResult> CreateRoom([FromBody] CreateRoomRequestDTO request)
+        public async Task<IActionResult> CreateRoom([FromBody] CreateRoomRequestDTO dto)
         {
             if (!ModelState.IsValid)
-            {
                 return BadRequest(ModelState);
-            }
 
+            var result = await _adminRoomBUS.CreateRoomAsync(dto);
+            if (result)
+                return Ok(new { Message = "Tạo phòng và ghế thành công" });
 
-            try
-            {
-                int newId = await _service.CreateRoomAsync(request);
-                return StatusCode(201, new { Message = "Tạo phòng chiếu thành công.", RoomId = newId });
-            }
-            catch (ArgumentException ex)
-            {
-                // Lỗi nghiệp vụ (trùng tên, ghế trống...)
-                return BadRequest(new { Message = ex.Message });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { Message = "Lỗi hệ thống: " + ex.Message });
-            }
+            return BadRequest(new { Message = "Tạo phòng thất bại" });
         }
-        // DELETE: api/admin/rooms/5
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteRoom(int id)
         {
-            try
-            {
-                await _service.DeleteRoomAsync(id);
-                // HTTP 204 No Content là response chuẩn cho lệnh DELETE thành công
-                return NoContent();
-            }
-            catch (KeyNotFoundException ex)
-            {
-                return NotFound(new { Message = ex.Message });
-            }
-            catch (InvalidOperationException ex)
-            {
-                // Trả về 409 Conflict khi vi phạm ràng buộc nghiệp vụ
-                return Conflict(new { Message = ex.Message });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { Message = "Lỗi hệ thống: " + ex.Message });
-            }
+            var result = await _adminRoomBUS.DeleteRoomAsync(id);
+            if (result)
+                return Ok(new { Message = "Xóa thành công" });
+
+            return BadRequest(new { Message = "Xóa thất bại (ID không tồn tại)" });
         }
     }
 }

@@ -4,6 +4,7 @@ using RestSharp;
 using System;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Configuration; // Đảm bảo đã add reference System.Configuration
 
 namespace MovieBookingClient.Services
 {
@@ -11,27 +12,36 @@ namespace MovieBookingClient.Services
     {
         protected readonly RestClient _client;
 
-        // 👇 SỬA 1: Gán cứng URL Server của bạn vào đây cho chắc ăn
-        private const string BASE_URL = "https://localhost:7034";
-
         protected BaseApiService()
         {
-            var options = new RestClientOptions(BASE_URL)
+            // Lấy URL từ file cấu hình (App.config hoặc AppSettings tĩnh)
+            // Giả sử bạn lưu trong App.config là <add key="ApiBaseUrl" value="..."/>
+            string baseUrl = ConfigurationManager.AppSettings["ApiBaseUrl"];
+
+            // Nếu bạn dùng một class tĩnh riêng để quản lý cấu hình, hãy thay bằng:
+            // string baseUrl = MovieBookingClient.Settings.Config.BaseUrl;
+
+            if (string.IsNullOrEmpty(baseUrl))
             {
-                Timeout = TimeSpan.FromSeconds(30), // 30s là quá đủ
+                // Backup phòng trường hợp file config lỗi
+                baseUrl = "https://localhost:7034";
+            }
+
+            var options = new RestClientOptions(baseUrl)
+            {
+                Timeout = TimeSpan.FromSeconds(30),
                 RemoteCertificateValidationCallback = (sender, certificate, chain, sslPolicyErrors) => true
             };
 
-            // Cấu hình RestSharp dùng Newtonsoft.Json
             _client = new RestClient(options, configureSerialization: s => s.UseNewtonsoftJson());
         }
 
-        // Hàm tạo Request chuẩn
+        // Hàm tạo Request chuẩn (Giữ nguyên logic đính kèm Token)
         protected RestRequest CreateRequest(string resource, Method method)
         {
             var request = new RestRequest(resource, method);
 
-            // Tự động đính kèm Token nếu đã đăng nhập
+            // Tự động đính kèm Token từ Session để mở "ổ khóa" 🔒 trên Swagger
             if (SessionManager.Instance.IsLoggedIn && !string.IsNullOrEmpty(SessionManager.Instance.AccessToken))
             {
                 request.AddHeader("Authorization", $"Bearer {SessionManager.Instance.AccessToken}");
@@ -40,12 +50,11 @@ namespace MovieBookingClient.Services
             return request;
         }
 
-        // Hàm thực thi Request
+        // Hàm thực thi Request (Dùng chung cho cả Get, Post, Put, Delete)
         protected async Task<T> ExecuteAsync<T>(RestRequest request)
         {
             try
             {
-                // Gọi API
                 var response = await _client.ExecuteAsync<T>(request);
 
                 if (!response.IsSuccessful)
@@ -70,17 +79,16 @@ namespace MovieBookingClient.Services
 
             if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
             {
-                MessageBox.Show("Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại.", "Lỗi Xác Thực", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Phiên đăng nhập hết hạn hoặc chưa đăng nhập. Vui lòng thử lại.", "Lỗi Xác Thực", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 SessionManager.Instance.EndSession();
             }
             else if (response.StatusCode == System.Net.HttpStatusCode.Forbidden)
             {
-                MessageBox.Show("Bạn không có quyền thực hiện thao tác này.", "Từ chối truy cập", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Tài khoản của bạn không có quyền Admin để thực hiện thao tác này.", "Từ chối truy cập", MessageBoxButtons.OK, MessageBoxIcon.Stop);
             }
             else
             {
-                // Làm sạch thông báo lỗi (bỏ dấu ngoặc kép thừa nếu có)
-                errorMessage = errorMessage.Replace("\"", "");
+                errorMessage = errorMessage?.Replace("\"", "");
                 MessageBox.Show($"Lỗi Server: {errorMessage}", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }

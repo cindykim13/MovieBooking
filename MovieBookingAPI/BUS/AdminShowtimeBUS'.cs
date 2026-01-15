@@ -1,85 +1,43 @@
-﻿using Microsoft.Data.SqlClient;
-using MovieBooking.Domain.DTOs;
+﻿using MovieBooking.Domain.DTOs;
 using MovieBookingAPI.DAO;
-using System;
-using System.Threading.Tasks;
-
 
 namespace MovieBookingAPI.BUS
 {
     public class AdminShowtimeBUS : IAdminShowtimeBUS
     {
-        private readonly IAdminShowtimeDAO _repo;
+        private readonly IAdminShowtimeDAO _adminShowtimeDAO;
 
-
-        public AdminShowtimeBUS(IAdminShowtimeDAO repo)
+        public AdminShowtimeBUS(IAdminShowtimeDAO adminShowtimeDAO)
         {
-            _repo = repo;
+            _adminShowtimeDAO = adminShowtimeDAO;
         }
 
-
-        public async Task<int> CreateShowtimeAsync(CreateShowtimeRequestDTO request)
+        public async Task<IEnumerable<ShowtimeDTO>> GetAllShowtimesAsync()
         {
-            try
-            {
-                return await _repo.CreateShowtimeAsync(request);
-            }
-            catch (SqlException ex)
-            {
-                // Bắt lỗi nghiệp vụ từ Stored Procedure
-                if (ex.Number == 54004) // Lỗi trùng lịch
-                {
-                    throw new InvalidOperationException(ex.Message); // Message từ SP: "Phòng chiếu này đang bận..."
-                }
-                if (ex.Number == 54003) // Lỗi phim không tồn tại
-                {
-                    throw new ArgumentException(ex.Message);
-                }
-                if (ex.Number == 54002 || ex.Number == 54001) // Lỗi validation khác
-                {
-                    throw new ArgumentException(ex.Message);
-                }
-
-
-                throw; // Lỗi hệ thống khác
-            }
-        }
-        public async Task UpdateShowtimeAsync(int showtimeId, UpdateShowtimeRequestDTO request)
-        {
-            try
-            {
-                await _repo.UpdateShowtimeAsync(showtimeId, request);
-            }
-            catch (SqlException ex)
-            {
-                // Bắt lỗi nghiệp vụ từ Stored Procedure
-                switch (ex.Number)
-                {
-                    case 54004: // Trùng lịch
-                    case 54006: // Đã có vé bán
-                        throw new InvalidOperationException(ex.Message);
-                    case 54005: // Không tồn tại
-                        throw new KeyNotFoundException(ex.Message);
-                    default:
-                        throw; // Lỗi hệ thống khác
-                }
-            }
-        }
-        public async Task DeleteShowtimeAsync(int showtimeId)
-        {
-            try
-            {
-                await _repo.DeleteShowtimeAsync(showtimeId);
-            }
-            catch (SqlException ex)
-            {
-                if (ex.Number == 54005) // Không tồn tại
-                {
-                    throw new KeyNotFoundException(ex.Message);
-                }
-                throw; // Lỗi khác
-            }
+            return await _adminShowtimeDAO.GetAllShowtimesAsync();
         }
 
+        public async Task<IEnumerable<ShowtimeDTO>> GetShowtimesByDateAsync(DateTime date)
+        {
+            return await _adminShowtimeDAO.GetShowtimesByDateAsync(date);
+        }
+
+        public async Task<bool> CreateShowtimeAsync(CreateShowtimeRequestDTO req)
+        {
+            // Validate logic nghiệp vụ: Giờ chiếu không được nhỏ hơn hiện tại
+            if (req.StartTime < DateTime.Now) return false;
+
+            return await _adminShowtimeDAO.CreateShowtimeAsync(req);
+        }
+
+        public async Task<bool> UpdateShowtimeAsync(int id, UpdateShowtimeRequestDTO req)
+        {
+            return await _adminShowtimeDAO.UpdateShowtimeAsync(id, req);
+        }
+
+        public async Task<bool> DeleteShowtimeAsync(int id)
+        {
+            return await _adminShowtimeDAO.DeleteShowtimeAsync(id);
+        }
     }
 }
