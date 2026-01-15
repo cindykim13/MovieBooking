@@ -103,5 +103,25 @@ namespace MovieBookingAPI.Controllers
                 return StatusCode(500, new { Message = "Lỗi hệ thống: " + ex.Message });
             }
         }
+        // GET: api/admin/showtimes/5
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetShowtimeDetail(int id)
+        {
+            try
+            {
+                var result = await _service.GetShowtimeDetailAsync(id);
+
+                if (result == null)
+                {
+                    return NotFound(new { Message = $"Không tìm thấy suất chiếu với ID = {id}" });
+                }
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Message = "Lỗi hệ thống: " + ex.Message });
+            }
+        }
     }
 }

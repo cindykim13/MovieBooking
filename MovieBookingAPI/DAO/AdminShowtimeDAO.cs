@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using MovieBooking.Domain.DTOs;
 using MovieBookingAPI.DAO;
 using MovieBookingAPI.Data;
+using MovieBookingAPI.Domain.DTOs;
 using Npgsql;
 using System.Data;
 using System.Linq;
@@ -88,6 +89,33 @@ namespace MovieBookingAPI.DAO
                 .ToListAsync();
 
             return result.FirstOrDefault() ?? string.Empty;
+        }
+
+        public async Task<ShowtimeDetailDTO?> GetShowtimeDetailAsync(int showtimeId)
+        {
+            var p_showtimeid = new NpgsqlParameter("p_showtimeid", showtimeId);
+
+            var rawResult = await _context.Set<ShowtimeDetailRawResult>()
+                .FromSqlRaw("SELECT * FROM usp_getshowtimedetail(@p_showtimeid)", p_showtimeid)
+                .FirstOrDefaultAsync();
+
+            if (rawResult == null) return null;
+
+            // Mapping từ Raw sang DTO chuẩn
+            return new ShowtimeDetailDTO
+            {
+                ShowtimeId = rawResult.showtimeid,
+                MovieId = rawResult.movieid,
+                MovieTitle = rawResult.movietitle,
+                CinemaId = rawResult.cinemaid,
+                CinemaName = rawResult.cinemaname,
+                RoomId = rawResult.roomid,
+                RoomName = rawResult.roomname,
+                StartTime = rawResult.starttime,
+                EndTime = rawResult.endtime,
+                BasePrice = rawResult.baseprice,
+                Status = rawResult.status
+            };
         }
     }
 }

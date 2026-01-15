@@ -63,6 +63,16 @@ namespace MovieBookingClient.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap home_icon {
+            get {
+                object obj = ResourceManager.GetObject("home_icon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap logo {
             get {
                 object obj = ResourceManager.GetObject("logo", resourceCulture);
@@ -106,6 +116,26 @@ namespace MovieBookingClient.Properties {
         internal static System.Drawing.Bitmap logout_icon {
             get {
                 object obj = ResourceManager.GetObject("logout_icon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap theme {
+            get {
+                object obj = ResourceManager.GetObject("theme", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap theme2 {
+            get {
+                object obj = ResourceManager.GetObject("theme2", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

@@ -1,5 +1,6 @@
 ﻿using MovieBooking.Domain.DTOs;
 using MovieBookingAPI.DAO;
+using MovieBookingAPI.Domain.DTOs;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -18,6 +19,11 @@ namespace MovieBookingAPI.BUS
         {
             // Logic nghiệp vụ có thể thêm ở đây, ví dụ: gom nhóm
             return await _cinemaDAO.GetAllCinemasAsync();
+        }
+        public async Task<List<RoomDTO>> GetRoomsByCinemaAsync(int cinemaId)
+        {
+            // Có thể thêm logic kiểm tra cinemaId > 0 nếu cần
+            return await _cinemaDAO.GetRoomsByCinemaAsync(cinemaId);
         }
     }
 }

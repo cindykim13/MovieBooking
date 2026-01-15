@@ -1,4 +1,5 @@
 ﻿using MovieBooking.Domain.DTOs;
+using MovieBookingAPI.Domain.DTOs;
 using System.Threading.Tasks;
 
 
@@ -10,5 +11,6 @@ namespace MovieBookingAPI.DAO
         Task UpdateShowtimeAsync(int showtimeId, UpdateShowtimeRequestDTO request);
         Task<string> DeleteShowtimeAsync(int showtimeId); 
         Task<bool> IsRoomInCinemaAsync(int roomId, int cinemaId);
+        Task<ShowtimeDetailDTO?> GetShowtimeDetailAsync(int showtimeId);
     }
 }

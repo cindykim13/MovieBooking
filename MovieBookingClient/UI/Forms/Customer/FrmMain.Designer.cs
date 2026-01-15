@@ -83,6 +83,8 @@
             panelHeader.Controls.Add(btnCinemas);
             panelHeader.Controls.Add(btnMovies);
             panelHeader.Controls.Add(logoPictureBox);
+            panelHeader.CustomBorderColor = Color.FromArgb(212, 33, 33);
+            panelHeader.CustomBorderThickness = new Padding(3);
             panelHeader.CustomizableEdges = customizableEdges13;
             panelHeader.Dock = DockStyle.Top;
             panelHeader.Location = new Point(0, 67);
@@ -114,6 +116,8 @@
             // 
             // btnMember
             // 
+            btnMember.CustomBorderColor = Color.FromArgb(212, 33, 33);
+            btnMember.CustomBorderThickness = new Padding(0, 3, 3, 3);
             btnMember.CustomizableEdges = customizableEdges5;
             btnMember.DisabledState.BorderColor = Color.DarkGray;
             btnMember.DisabledState.CustomBorderColor = Color.DarkGray;
@@ -121,7 +125,7 @@
             btnMember.DisabledState.ForeColor = Color.FromArgb(141, 141, 141);
             btnMember.FillColor = Color.Transparent;
             btnMember.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
-            btnMember.ForeColor = Color.FromArgb(64, 64, 64);
+            btnMember.ForeColor = Color.FromArgb(212, 33, 33);
             btnMember.Location = new Point(700, 0);
             btnMember.Margin = new Padding(5, 6, 5, 6);
             btnMember.Name = "btnMember";
@@ -133,6 +137,8 @@
             // 
             // btnCinemas
             // 
+            btnCinemas.CustomBorderColor = Color.FromArgb(212, 33, 33);
+            btnCinemas.CustomBorderThickness = new Padding(0, 3, 3, 3);
             btnCinemas.CustomizableEdges = customizableEdges7;
             btnCinemas.DisabledState.BorderColor = Color.DarkGray;
             btnCinemas.DisabledState.CustomBorderColor = Color.DarkGray;
@@ -140,7 +146,7 @@
             btnCinemas.DisabledState.ForeColor = Color.FromArgb(141, 141, 141);
             btnCinemas.FillColor = Color.Transparent;
             btnCinemas.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
-            btnCinemas.ForeColor = Color.FromArgb(64, 64, 64);
+            btnCinemas.ForeColor = Color.FromArgb(212, 33, 33);
             btnCinemas.Location = new Point(500, 0);
             btnCinemas.Margin = new Padding(5, 6, 5, 6);
             btnCinemas.Name = "btnCinemas";
@@ -152,7 +158,7 @@
             // btnMovies
             // 
             btnMovies.CustomBorderColor = Color.FromArgb(212, 33, 33);
-            btnMovies.CustomBorderThickness = new Padding(0, 0, 0, 3);
+            btnMovies.CustomBorderThickness = new Padding(3);
             btnMovies.CustomizableEdges = customizableEdges9;
             btnMovies.DisabledState.BorderColor = Color.DarkGray;
             btnMovies.DisabledState.CustomBorderColor = Color.DarkGray;
@@ -177,11 +183,11 @@
             logoPictureBox.Image = Properties.Resources.logo6;
             logoPictureBox.ImageRotate = 0F;
             logoPictureBox.InitialImage = Properties.Resources.logo6;
-            logoPictureBox.Location = new Point(20, 19);
+            logoPictureBox.Location = new Point(0, 6);
             logoPictureBox.Margin = new Padding(5, 6, 5, 6);
             logoPictureBox.Name = "logoPictureBox";
             logoPictureBox.ShadowDecoration.CustomizableEdges = customizableEdges12;
-            logoPictureBox.Size = new Size(250, 77);
+            logoPictureBox.Size = new Size(272, 103);
             logoPictureBox.SizeMode = PictureBoxSizeMode.Zoom;
             logoPictureBox.TabIndex = 2;
             logoPictureBox.TabStop = false;

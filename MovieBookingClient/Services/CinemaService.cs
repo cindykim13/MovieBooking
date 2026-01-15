@@ -1,4 +1,5 @@
 ﻿using MovieBooking.Domain.DTOs;
+using MovieBookingAPI.Domain.DTOs;
 using RestSharp;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -16,6 +17,11 @@ namespace MovieBookingClient.Services
 
             // Gọi và chờ kết quả
             return await ExecuteAsync<List<CinemaDTO>>(request);
+        }
+        public async Task<List<RoomDTO>> GetRoomsByCinemaAsync(int cinemaId)
+        {
+            var request = CreateRequest($"/api/cinemas/{cinemaId}/rooms", Method.Get);
+            return await ExecuteAsync<List<RoomDTO>>(request);
         }
     }
 }

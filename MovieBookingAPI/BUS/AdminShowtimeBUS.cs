@@ -1,9 +1,10 @@
 ﻿using Microsoft.Data.SqlClient;
 using MovieBooking.Domain.DTOs;
 using MovieBookingAPI.DAO;
-using System.Collections.Generic; // Thêm cho KeyNotFoundException
+using MovieBookingAPI.Domain.DTOs;
 using Npgsql;
 using System;
+using System.Collections.Generic; // Thêm cho KeyNotFoundException
 using System.Threading.Tasks;
 
 
@@ -95,6 +96,10 @@ namespace MovieBookingAPI.BUS
                 // Ném các lỗi khác (ví dụ lỗi kết nối)
                 throw new Exception("Lỗi cơ sở dữ liệu khi xóa lịch chiếu.", ex);
             }
+        }
+        public async Task<ShowtimeDetailDTO?> GetShowtimeDetailAsync(int showtimeId)
+        {
+            return await _repo.GetShowtimeDetailAsync(showtimeId);
         }
     }
 }

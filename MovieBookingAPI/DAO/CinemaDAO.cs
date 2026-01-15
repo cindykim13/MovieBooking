@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MovieBooking.Domain.DTOs;
 using MovieBookingAPI.Data;
+using MovieBookingAPI.Domain.DTOs;
+using Npgsql;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -23,6 +25,22 @@ namespace MovieBookingAPI.DAO
             return await _context.Set<CinemaDTO>()
                 .FromSqlRaw("SELECT * FROM usp_getallcinemas()")
                 .ToListAsync();
+        }
+
+        public async Task<List<RoomDTO>> GetRoomsByCinemaAsync(int cinemaId)
+        {
+            var p_cinemaid = new NpgsqlParameter("p_cinemaid", cinemaId);
+
+            var rawResult = await _context.Set<ScreenRoomRawResult>()
+                .FromSqlRaw("SELECT * FROM usp_getroomsbycinema(@p_cinemaid)", p_cinemaid)
+                .ToListAsync();
+
+            return rawResult.Select(r => new RoomDTO
+            {
+                RoomId = r.roomid,
+                Name = r.roomname,
+                TotalSeats = r.totalseats
+            }).ToList();
         }
     }
 }

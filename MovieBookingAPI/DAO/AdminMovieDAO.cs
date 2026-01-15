@@ -107,14 +107,10 @@ namespace MovieBookingAPI.DAO
         // ==========================================
         public async Task DeleteMovieAsync(int movieId)
         {
-            // Sửa tên tham số
+            // Sửa tên tham số cho nhất quán
             var p_movieid = new NpgsqlParameter("p_movieid", movieId);
-
-            // Sửa cú pháp gọi Function trả về VOID
-            // Dùng SELECT thay vì CALL
-            await _context.Database.ExecuteSqlRawAsync(
-                "SELECT usp_deletemovie(@p_movieid)",
-                p_movieid
+            await _context.Database.ExecuteSqlInterpolatedAsync(
+                $"SELECT usp_deletemovie({p_movieid})"
             );
         }
     }
