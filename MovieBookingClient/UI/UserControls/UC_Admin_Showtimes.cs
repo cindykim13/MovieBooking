@@ -15,61 +15,12 @@ namespace MovieBookingClient.UI.UserControls.Admin
             InitializeComponent();
             _adminShowtimeService = new AdminShowtimeService();
 
+            // Chỉ gán sự kiện trong Constructor
             this.Load += async (s, e) => await LoadData();
-            SetupEvents();
-        }
-
-        private void SetupEvents()
-        {
-            // Gán sự kiện cho các nút điều khiển
             btnXem.Click += async (s, e) => await LoadData();
-            dtpNgayChieu.ValueChanged += async (s, e) => await LoadData();
-
-            btnAdd.Click += (s, e) => ShowAddEditForm(null); 
-
-            btnSua.Click += (s, e) => {
-                if (dgvLichChieu.SelectedRows.Count == 0)
-                {
-                    MessageBox.Show("Vui lòng chọn một suất chiếu để sửa.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    return;
-                }
-                int id = Convert.ToInt32(dgvLichChieu.SelectedRows[0].Cells["ShowtimeId"].Value);
-                ShowAddEditForm(id); // Mở form Sửa với ID đã chọn
-            };
-
-            btnXoa.Click += async (s, e) => {
-                if (dgvLichChieu.SelectedRows.Count == 0)
-                {
-                    MessageBox.Show("Vui lòng chọn một suất chiếu để xóa.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    return;
-                }
-
-                int id = Convert.ToInt32(dgvLichChieu.SelectedRows[0].Cells["ShowtimeId"].Value);
-                string movieTitle = dgvLichChieu.SelectedRows[0].Cells["MovieTitle"].Value?.ToString();
-                string startTime = Convert.ToDateTime(dgvLichChieu.SelectedRows[0].Cells["StartTime"].Value).ToString("HH:mm");
-
-                if (MessageBox.Show($"Bạn có chắc chắn muốn xóa suất chiếu của phim '{movieTitle}' lúc {startTime} không?", "Xác nhận xóa", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
-                {
-                    try
-                    {
-                        bool success = await _adminShowtimeService.DeleteShowtimeAsync(id);
-                        if (success)
-                        {
-                            MessageBox.Show("Xóa lịch chiếu thành công!", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                            await LoadData();
-                        }
-                        else
-                        {
-                            MessageBox.Show("Xóa lịch chiếu thất bại.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        // Hiển thị thông báo lỗi nghiệp vụ từ API (VD: Không thể xóa vì đã có vé)
-                        MessageBox.Show($"Lỗi khi xóa: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
-                }
-            };
+            btnAdd.Click += (s, e) => ShowAddEditForm(null);
+            btnSua.Click += (s, e) => HandleUpdateClick();
+            btnXoa.Click += async (s, e) => await HandleDeleteClick();
         }
 
         private async Task LoadData()
@@ -116,7 +67,52 @@ namespace MovieBookingClient.UI.UserControls.Admin
                 dgvLichChieu.Columns["BasePrice"].DefaultCellStyle.Format = "N0";
             }
         }
+        // --- HÀM XỬ LÝ SỰ KIỆN NÚT BẤM ---
 
+        private void HandleUpdateClick()
+        {
+            if (dgvLichChieu.SelectedRows.Count == 0)
+            {
+                MessageBox.Show("Vui lòng chọn một suất chiếu để sửa.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+            int id = Convert.ToInt32(dgvLichChieu.SelectedRows[0].Cells["ShowtimeId"].Value);
+            ShowAddEditForm(id);
+        }
+
+        private async Task HandleDeleteClick()
+        {
+            if (dgvLichChieu.SelectedRows.Count == 0)
+            {
+                MessageBox.Show("Vui lòng chọn một suất chiếu để xóa.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            int id = Convert.ToInt32(dgvLichChieu.SelectedRows[0].Cells["ShowtimeId"].Value);
+            string movieTitle = dgvLichChieu.SelectedRows[0].Cells["MovieTitle"].Value?.ToString() ?? "Không rõ";
+            string startTime = Convert.ToDateTime(dgvLichChieu.SelectedRows[0].Cells["StartTime"].Value).ToString("HH:mm");
+
+            if (MessageBox.Show($"Bạn có chắc chắn muốn xóa/hủy suất chiếu của phim '{movieTitle}' lúc {startTime} không?", "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            {
+                try
+                {
+                    bool success = await _adminShowtimeService.DeleteShowtimeAsync(id);
+                    if (success)
+                    {
+                        MessageBox.Show("Thao tác thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        await LoadData();
+                    }
+                    else
+                    {
+                        MessageBox.Show("Thao tác thất bại.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Lỗi khi thực hiện: {ex.Message}", "Lỗi Hệ Thống", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+        }
         // --- HÀM QUẢN LÝ HIỂN THỊ ---
 
         private void ShowAddEditForm(int? id)

@@ -30,13 +30,14 @@ namespace MovieBookingAPI.Controllers
                 return StatusCode(500, new { Message = "Lỗi hệ thống: " + ex.Message });
             }
         }
-        // GET: api/cinemas/1/rooms
-        [HttpGet("{id}/rooms")]
-        public async Task<IActionResult> GetRoomsByCinema(int id)
+        // GET: api/cinemas/rooms?cinemaId=1 (Lấy theo rạp)
+        // GET: api/cinemas/rooms (Lấy tất cả)
+        [HttpGet("rooms")]
+        public async Task<IActionResult> GetRooms([FromQuery] int? cinemaId)
         {
             try
             {
-                var rooms = await _cinemaBUS.GetRoomsByCinemaAsync(id);
+                var rooms = await _cinemaBUS.GetRoomsAsync(cinemaId);
                 return Ok(rooms);
             }
             catch (Exception ex)

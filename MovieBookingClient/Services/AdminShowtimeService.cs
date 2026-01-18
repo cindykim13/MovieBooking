@@ -14,10 +14,11 @@ namespace MovieBookingClient.Services
         // Dùng để hiển thị trên DataGridView của Admin
         public async Task<List<ShowtimeAdminDTO>> GetShowtimesByDateAsync(DateTime date)
         {
-            // API Endpoint này cần được tạo ở Backend
-            var request = CreateRequest("/api/admin/showtimes", Method.Get);
-            request.AddParameter("date", date.ToString("yyyy-MM-dd"));
+            // [SỬA LỖI TẠI ĐÂY]
+            // Sửa lại route cho đúng với Controller
+            var request = CreateRequest("/api/admin/showtimes/by-date", Method.Get);
 
+            request.AddParameter("date", date.ToString("yyyy-MM-dd"));
             return await ExecuteAsync<List<ShowtimeAdminDTO>>(request);
         }
 
@@ -36,9 +37,11 @@ namespace MovieBookingClient.Services
             var request = CreateRequest("/api/admin/showtimes", Method.Post);
             request.AddBody(dto);
 
-            // API trả về 201 Created nếu thành công
-            var response = await _client.ExecuteAsync(request);
-            return response.IsSuccessful;
+            // Sử dụng ExecuteAsync<dynamic> để có thể đọc được Response Body khi lỗi
+            var result = await ExecuteAsync<dynamic>(request);
+
+            // Nếu ExecuteAsync không ném lỗi và trả về kết quả (dù rỗng), coi như thành công
+            return result != null;
         }
 
         // 4. CẬP NHẬT LỊCH CHIẾU (UPDATE)
@@ -47,9 +50,10 @@ namespace MovieBookingClient.Services
             var request = CreateRequest($"/api/admin/showtimes/{id}", Method.Put);
             request.AddBody(dto);
 
-            // API trả về 200 OK nếu thành công
-            var response = await _client.ExecuteAsync(request);
-            return response.IsSuccessful;
+            // Tương tự như Create, ExecuteAsync sẽ tự động ném ApiException nếu có lỗi nghiệp vụ
+            var result = await ExecuteAsync<dynamic>(request);
+
+            return result != null;
         }
 
         // 5. XÓA LỊCH CHIẾU (DELETE)

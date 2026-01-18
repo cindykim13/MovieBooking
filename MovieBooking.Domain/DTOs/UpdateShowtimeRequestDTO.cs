@@ -13,6 +13,8 @@ namespace MovieBooking.Domain.DTOs
         [Required]
         public int RoomId { get; set; }
 
+        [Required]
+        public int CinemaId { get; set; }
 
         [Required]
         public DateTime StartTime { get; set; }

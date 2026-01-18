@@ -101,5 +101,9 @@ namespace MovieBookingAPI.BUS
         {
             return await _repo.GetShowtimeDetailAsync(showtimeId);
         }
+        public async Task<List<ShowtimeAdminDTO>> GetShowtimesByDateAsync(DateTime date)
+        {
+            return await _repo.GetShowtimesByDateAsync(date);
+        }
     }
 }

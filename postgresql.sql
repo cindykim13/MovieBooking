@@ -824,16 +824,53 @@ END;
 $$;
 
 -- 3.3. Cập nhật phim
-CREATE OR REPLACE FUNCTION usp_updatemovie(p_movieid INT, p_title VARCHAR(255), p_storyline TEXT, p_director VARCHAR(100), p_duration INT, p_releaseyear INT, p_agerating VARCHAR(10), p_rating REAL, p_posterurl VARCHAR(500), p_status VARCHAR(20), p_genrenamesjson JSON, p_actornamesjson JSON)
-RETURNS VOID LANGUAGE plpgsql AS $$
+CREATE OR REPLACE FUNCTION usp_updatemovie(
+    p_movieid INT, 
+    p_title VARCHAR(255), 
+    p_storyline TEXT, 
+    p_director VARCHAR(100), 
+    p_duration INT, 
+    p_releaseyear INT, 
+    p_agerating VARCHAR(10), 
+    p_rating DOUBLE PRECISION, 
+    p_posterurl VARCHAR(500), 
+    p_status VARCHAR(20), 
+    p_genrenamesjson JSONB, 
+    p_actornamesjson JSONB
+) RETURNS VOID LANGUAGE plpgsql AS $$
 BEGIN
-    IF NOT EXISTS (SELECT 1 FROM movie WHERE movieid = p_movieid) THEN RAISE EXCEPTION 'Phim không tồn tại.'; END IF;
-    UPDATE movie SET title=p_title, storyline=p_storyline, director=p_director, duration=p_duration, releaseyear=p_releaseyear, agerating=p_agerating, rating=p_rating, posterurl=p_posterurl, status=p_status WHERE movieid=p_movieid;
-    DELETE FROM moviegenre WHERE movieid = p_movieid; DELETE FROM moviecast WHERE movieid = p_movieid;
-    INSERT INTO genre (genrename) SELECT DISTINCT TRIM(value::TEXT, '"') FROM json_array_elements_text(p_genrenamesjson) ON CONFLICT DO NOTHING;
-    INSERT INTO moviegenre (movieid, genreid) SELECT p_movieid, g.genreid FROM json_array_elements_text(p_genrenamesjson) j JOIN genre g ON g.genrename = TRIM(j.value::TEXT, '"');
-    INSERT INTO actor (actorname) SELECT DISTINCT TRIM(value::TEXT, '"') FROM json_array_elements_text(p_actornamesjson) ON CONFLICT DO NOTHING;
-    INSERT INTO moviecast (movieid, actorid) SELECT p_movieid, a.actorid FROM json_array_elements_text(p_actornamesjson) j JOIN actor a ON a.actorname = TRIM(j.value::TEXT, '"');
+    -- 1. Kiểm tra phim có tồn tại không
+    IF NOT EXISTS (SELECT 1 FROM movie WHERE movieid = p_movieid) THEN 
+        RAISE EXCEPTION 'Phim không tồn tại.' USING ERRCODE = 'P0002'; 
+    END IF;
+
+    -- 2. [MỚI] Kiểm tra trùng lặp (Duplicate Check for Update)
+    -- Logic: Có phim nào KHÁC (movieid <> p_movieid) mà có cùng Title và ReleaseYear không?
+    IF EXISTS (
+        SELECT 1 FROM movie 
+        WHERE title = p_title 
+          AND releaseyear = p_releaseyear 
+          AND movieid <> p_movieid
+    ) THEN
+        RAISE EXCEPTION 'Tên phim và năm phát hành này đã tồn tại ở một bộ phim khác.' USING ERRCODE = '23505';
+    END IF;
+
+    -- 3. Thực hiện Update
+    UPDATE movie 
+    SET title=p_title, storyline=p_storyline, director=p_director, 
+        duration=p_duration, releaseyear=p_releaseyear, agerating=p_agerating, 
+        rating=p_rating, posterurl=p_posterurl, status=p_status 
+    WHERE movieid=p_movieid;
+
+    -- 4. Cập nhật quan hệ M:N (Xóa cũ -> Thêm mới)
+    DELETE FROM moviegenre WHERE movieid = p_movieid;
+    DELETE FROM moviecast WHERE movieid = p_movieid;
+
+    INSERT INTO genre (genrename) SELECT DISTINCT TRIM(value::TEXT, '"') FROM jsonb_array_elements_text(p_genrenamesjson) ON CONFLICT DO NOTHING;
+    INSERT INTO moviegenre (movieid, genreid) SELECT p_movieid, g.genreid FROM jsonb_array_elements_text(p_genrenamesjson) j JOIN genre g ON g.genrename = TRIM(j.value::TEXT, '"');
+    
+    INSERT INTO actor (actorname) SELECT DISTINCT TRIM(value::TEXT, '"') FROM jsonb_array_elements_text(p_actornamesjson) ON CONFLICT DO NOTHING;
+    INSERT INTO moviecast (movieid, actorid) SELECT p_movieid, a.actorid FROM jsonb_array_elements_text(p_actornamesjson) j JOIN actor a ON a.actorname = TRIM(j.value::TEXT, '"');
 END;
 $$;
 
@@ -879,10 +916,11 @@ $$;
 
 -- 3.7. Tạo lịch chiếu
 CREATE OR REPLACE FUNCTION usp_createshowtime(
-    p_movieid INT, 
-    p_roomid INT, 
-    p_starttime TIMESTAMP, -- Mặc định là WITHOUT TIME ZONE
-    p_baseprice NUMERIC, 
+    p_movieid INT,
+    p_cinemaid INT, -- THÊM THAM SỐ NÀY
+    p_roomid INT,
+    p_starttime TIMESTAMP,
+    p_baseprice NUMERIC,
     p_cleaningtimeminutes INT DEFAULT 15
 )
 RETURNS INT LANGUAGE plpgsql AS $$
@@ -891,8 +929,11 @@ DECLARE
     v_endtime TIMESTAMP; 
     v_newshowtimeid INT;
 BEGIN
+    -- Kiểm tra xem Room có thuộc Cinema không
+    IF NOT EXISTS (SELECT 1 FROM screenroom WHERE roomid = p_roomid AND cinemaid = p_cinemaid) THEN
+        RAISE EXCEPTION 'Phòng chiếu không thuộc rạp đã chọn.';
+    END IF;
     IF p_baseprice < 0 THEN RAISE EXCEPTION 'Giá vé không hợp lệ.'; END IF;
-    
     -- Sử dụng LOCALTIMESTAMP để so sánh với TIMESTAMP WITHOUT TIME ZONE
     IF p_starttime < LOCALTIMESTAMP THEN RAISE EXCEPTION 'Thời gian chiếu phải ở tương lai.'; END IF;
     
@@ -975,3 +1016,210 @@ BEGIN
 END;
 $$;
 
+-- 3.12 Lấy danh sách phòng chiếu thuộc một rạp cụ thể
+CREATE OR REPLACE FUNCTION usp_getroomsbycinema(p_cinemaid INT)
+RETURNS TABLE (
+    roomid INT, 
+    roomname VARCHAR(50), 
+    totalseats INT
+)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    RETURN QUERY
+    SELECT 
+        r.roomid, 
+        r.name, 
+        r.totalseats
+    FROM screenroom r
+    WHERE r.cinemaid = p_cinemaid
+    ORDER BY r.name;
+END;
+$$;
+--Lấy danh sách phòng. Nếu p_cinemaid NULL thì lấy tất cả, ngược lại thì lọc theo ID.
+CREATE OR REPLACE FUNCTION usp_get_rooms_dynamic(p_cinemaid INT DEFAULT NULL)
+RETURNS TABLE (
+    roomid INT, 
+    roomname VARCHAR(50), 
+    totalseats INT,
+    cinemaid INT,       -- Bổ sung thêm thông tin Rạp
+    cinemaname VARCHAR(100)
+)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    RETURN QUERY
+    SELECT 
+        r.roomid, 
+        r.name AS roomname, 
+        r.totalseats,
+        c.cinemaid,
+        c.name AS cinemaname
+    FROM screenroom r
+    JOIN cinema c ON r.cinemaid = c.cinemaid
+    WHERE (p_cinemaid IS NULL OR r.cinemaid = p_cinemaid) -- Logic lọc động
+    ORDER BY c.name, r.name;
+END;
+$$;
+
+-- 3.13 Lấy chi tiết một suất chiếu theo ID phục vụ Admin
+CREATE OR REPLACE FUNCTION usp_getshowtimedetail(p_showtimeid INT)
+RETURNS TABLE (
+    showtimeid INT,
+    movieid INT,
+    movietitle VARCHAR(255),
+    cinemaid INT,
+    cinemaname VARCHAR(100),
+    roomid INT,
+    roomname VARCHAR(50),
+    starttime TIMESTAMP,
+    endtime TIMESTAMP,
+    baseprice NUMERIC(18,2),
+    status SMALLINT
+)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    RETURN QUERY
+    SELECT 
+        s.showtimeid,
+        s.movieid,
+        m.title AS movietitle,
+        c.cinemaid,
+        c.name AS cinemaname,
+        s.roomid,
+        sr.name AS roomname,
+        s.starttime,
+        s.endtime,
+        s.baseprice,
+        s.status
+    FROM showtime s
+    JOIN movie m ON s.movieid = m.movieid
+    JOIN screenroom sr ON s.roomid = sr.roomid
+    JOIN cinema c ON sr.cinemaid = c.cinemaid
+    WHERE s.showtimeid = p_showtimeid;
+END;
+$$;
+-- 3.14 Function: usp_admin_getshowtimesbydate
+CREATE OR REPLACE FUNCTION usp_admin_getshowtimesbydate(p_viewdate DATE)
+RETURNS TABLE (
+    showtimeid INT, movieid INT, roomid INT, cinemaid INT, 
+    movietitle VARCHAR, roomname VARCHAR, cinemaname VARCHAR, 
+    starttime TIMESTAMP, endtime TIMESTAMP, baseprice NUMERIC, status SMALLINT
+)
+LANGUAGE plpgsql AS $$
+BEGIN
+    RETURN QUERY
+    SELECT 
+        s.showtimeid, s.movieid, s.roomid, sr.cinemaid,
+        m.title, sr.name, c.name, 
+        s.starttime, s.endtime, s.baseprice, s.status
+    FROM showtime s
+    JOIN movie m ON s.movieid = m.movieid
+    JOIN screenroom sr ON s.roomid = sr.roomid
+    JOIN cinema c ON sr.cinemaid = c.cinemaid
+    WHERE CAST(s.starttime AS DATE) = p_viewdate
+    ORDER BY c.name, sr.name, s.starttime;
+END;
+$$;
+
+
+
+
+
+
+-- 1. Tạo bảng RoomTemplate (Thêm IF NOT EXISTS để không báo lỗi nếu đã tạo rồi)
+CREATE TABLE IF NOT EXISTS RoomTemplate (
+    TemplateId SERIAL PRIMARY KEY,
+    TemplateName VARCHAR(100) NOT NULL UNIQUE,
+    Description TEXT,
+    TotalSeats INT,
+    LayoutJson JSONB NOT NULL
+);
+
+-- 2. Cập nhật Function tạo dữ liệu mẫu
+-- Cập nhật Function để tạo 3 mẫu phòng khác nhau
+CREATE OR REPLACE FUNCTION usp_seed_room_templates() RETURNS VOID LANGUAGE plpgsql AS $$
+DECLARE
+    v_StandardJson JSONB;
+    v_VIPJson JSONB;
+    v_IMAXJson JSONB;
+BEGIN
+    -- =========================================================
+    -- 1. MẪU STANDARD (108 Ghế: 6 Thường, 2 VIP, 1 Sweetbox)
+    -- =========================================================
+    SELECT json_agg(row_to_json(t)) INTO v_StandardJson
+    FROM (
+        -- A-H: Đơn (8 hàng x 12 cột)
+        SELECT 
+            CASE WHEN row_char IN ('G', 'H') THEN 2 ELSE 1 END as "TypeId",
+            row_char as "Row", col_num as "Number",
+            ASCII(row_char) - 64 as "GridRow", col_num as "GridColumn"
+        FROM (VALUES ('A'),('B'),('C'),('D'),('E'),('F'),('G'),('H')) AS rows(row_char),
+             generate_series(1,12) AS col_num
+        UNION ALL
+        -- I: Đôi (6 ghế)
+        SELECT 3, 'I', sb_num, 9, (sb_num * 2) - 1
+        FROM generate_series(1, 6) AS sb_num
+    ) t;
+
+    INSERT INTO RoomTemplate (TemplateName, Description, TotalSeats, LayoutJson)
+    VALUES ('Standard 108 Ghế', 'Tiêu chuẩn: 6 hàng Thường, 2 hàng VIP, 1 hàng Đôi.', 108, v_StandardJson)
+    ON CONFLICT (TemplateName) DO UPDATE 
+    SET LayoutJson = EXCLUDED.LayoutJson, TotalSeats = EXCLUDED.TotalSeats;
+
+    -- =========================================================
+    -- 2. MẪU VIP (36 Ghế: 4 VIP, 1 Sweetbox)
+    -- =========================================================
+    SELECT json_agg(row_to_json(t)) INTO v_VIPJson
+    FROM (
+        -- A-D: Toàn bộ là VIP (4 hàng x 8 cột) - Phòng nhỏ, ghế rộng
+        SELECT 
+            2 as "TypeId", -- Type 2 = VIP
+            row_char as "Row", col_num as "Number",
+            ASCII(row_char) - 64 as "GridRow", col_num as "GridColumn"
+        FROM (VALUES ('A'),('B'),('C'),('D')) AS rows(row_char),
+             generate_series(1, 8) AS col_num -- Chỉ 8 ghế/hàng
+        UNION ALL
+        -- E: Đôi (4 ghế)
+        SELECT 3, 'E', sb_num, 5, (sb_num * 2) - 1
+        FROM generate_series(1, 4) AS sb_num
+    ) t;
+
+    INSERT INTO RoomTemplate (TemplateName, Description, TotalSeats, LayoutJson)
+    VALUES ('VIP Gold 36 Ghế', 'Cao cấp: 4 hàng ghế VIP rộng rãi, 1 hàng ghế Đôi.', 36, v_VIPJson)
+    ON CONFLICT (TemplateName) DO UPDATE 
+    SET LayoutJson = EXCLUDED.LayoutJson, TotalSeats = EXCLUDED.TotalSeats;
+
+    -- =========================================================
+    -- 3. MẪU IMAX (207 Ghế: 6 Thường, 5 VIP, 1 Sweetbox - Rộng 18 cột)
+    -- =========================================================
+    SELECT json_agg(row_to_json(t)) INTO v_IMAXJson
+    FROM (
+        -- A-K: Đơn (11 hàng x 18 cột)
+        SELECT 
+            -- A-F: Thường, G-K: VIP
+            CASE WHEN row_char IN ('G','H','I','J','K') THEN 2 ELSE 1 END as "TypeId",
+            row_char as "Row", col_num as "Number",
+            ASCII(row_char) - 64 as "GridRow", col_num as "GridColumn"
+        FROM (VALUES ('A'),('B'),('C'),('D'),('E'),('F'),('G'),('H'),('I'),('J'),('K')) AS rows(row_char),
+             generate_series(1, 18) AS col_num -- 18 ghế/hàng
+        UNION ALL
+        -- L: Đôi (9 ghế)
+        SELECT 3, 'L', sb_num, 12, (sb_num * 2) - 1
+        FROM generate_series(1, 9) AS sb_num
+    ) t;
+
+    INSERT INTO RoomTemplate (TemplateName, Description, TotalSeats, LayoutJson)
+    VALUES ('IMAX Super 207 Ghế', 'Siêu rộng: 12 hàng. Màn hình cong. 18 cột.', 207, v_IMAXJson)
+    ON CONFLICT (TemplateName) DO UPDATE 
+    SET LayoutJson = EXCLUDED.LayoutJson, TotalSeats = EXCLUDED.TotalSeats;
+
+END;
+$$;
+
+-- Thực thi để tạo dữ liệu
+SELECT usp_seed_room_templates();
+
+-- Kiểm tra kết quả
+SELECT TemplateId, TemplateName, TotalSeats, Description FROM RoomTemplate ORDER BY TemplateId;

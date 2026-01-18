@@ -6,16 +6,15 @@ namespace MovieBooking.Domain.DTOs
 {
     public class CreateRoomRequestDTO
     {
-        [Required]
+        [Required(ErrorMessage = "Vui lòng chọn rạp chiếu.")]
         public int CinemaId { get; set; }
 
+        [Required(ErrorMessage = "Tên phòng không được để trống.")]
+        public string Name { get; set; } = string.Empty;
 
-        [Required]
-        public string Name { get; set; }  = string.Empty;
-
-
-        [Required]
-        [MinLength(1)]
+        // [QUAN TRỌNG]: Bắt buộc phải có ghế (lấy từ Template gửi lên)
+        [Required(ErrorMessage = "Dữ liệu ghế bị thiếu.")]
+        [MinLength(1, ErrorMessage = "Danh sách ghế không được trống. Vui lòng chọn Mẫu phòng.")]
         public List<SeatDefinitionDTO> Seats { get; set; } = new List<SeatDefinitionDTO>();
     }
 

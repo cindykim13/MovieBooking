@@ -18,6 +18,7 @@ namespace MovieBookingClient.UI.UserControls.Admin
         private readonly int? _movieId;
         private readonly AdminService _adminService;
         private readonly MovieService _movieService;
+        private readonly CinemaService _cinemaService;
         private List<GenreDTO> _allGenres = new List<GenreDTO>(); // Biến lưu danh sách thể loại
 
         public UC_AddEditMovie(int? movieId)
@@ -26,6 +27,7 @@ namespace MovieBookingClient.UI.UserControls.Admin
             _movieId = movieId;
             _adminService = new AdminService();
             _movieService = new MovieService();
+            _cinemaService = new CinemaService();
 
             this.Load += async (s, e) => await InitializeForm();
             btnSave.Click += async (s, e) => await SaveMovie();

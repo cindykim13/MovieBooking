@@ -123,5 +123,20 @@ namespace MovieBookingAPI.Controllers
                 return StatusCode(500, new { Message = "Lỗi hệ thống: " + ex.Message });
             }
         }
+        // GET: api/admin/showtimes/by-date?date=2025-12-25
+        [HttpGet("by-date")]
+        public async Task<IActionResult> GetShowtimesByDate([FromQuery] DateTime date)
+        {
+            try
+            {
+                // Kết quả trả về sẽ là List<ShowtimeAdminDTO>
+                var result = await _service.GetShowtimesByDateAsync(date);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Message = "Lỗi hệ thống: " + ex.Message });
+            }
+        }
     }
 }

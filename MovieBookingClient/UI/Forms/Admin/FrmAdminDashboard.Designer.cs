@@ -78,7 +78,7 @@
             panelMenu.Margin = new Padding(5, 6, 5, 6);
             panelMenu.Name = "panelMenu";
             panelMenu.ShadowDecoration.CustomizableEdges = customizableEdges20;
-            panelMenu.Size = new Size(367, 1385);
+            panelMenu.Size = new Size(240, 850);
             panelMenu.TabIndex = 0;
             // 
             // btnPhong
@@ -92,13 +92,13 @@
             btnPhong.DisabledState.ForeColor = Color.FromArgb(141, 141, 141);
             btnPhong.Dock = DockStyle.Top;
             btnPhong.FillColor = Color.Transparent;
-            btnPhong.Font = new Font("Segoe UI", 14F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnPhong.Font = new Font("Segoe UI", 11F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnPhong.ForeColor = Color.OrangeRed;
-            btnPhong.Location = new Point(0, 614);
+            btnPhong.Location = new Point(0, 320);
             btnPhong.Margin = new Padding(5, 6, 5, 6);
             btnPhong.Name = "btnPhong";
             btnPhong.ShadowDecoration.CustomizableEdges = customizableEdges12;
-            btnPhong.Size = new Size(367, 115);
+            btnPhong.Size = new Size(240, 60);
             btnPhong.TabIndex = 4;
             btnPhong.Text = "Quản lý Phòng/Ghế";
             // 
@@ -113,13 +113,13 @@
             btnLichChieu.DisabledState.ForeColor = Color.FromArgb(141, 141, 141);
             btnLichChieu.Dock = DockStyle.Top;
             btnLichChieu.FillColor = Color.Transparent;
-            btnLichChieu.Font = new Font("Segoe UI", 14F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnLichChieu.Font = new Font("Segoe UI", 11F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnLichChieu.ForeColor = Color.OrangeRed;
-            btnLichChieu.Location = new Point(0, 499);
+            btnLichChieu.Location = new Point(0, 260);
             btnLichChieu.Margin = new Padding(5, 6, 5, 6);
             btnLichChieu.Name = "btnLichChieu";
             btnLichChieu.ShadowDecoration.CustomizableEdges = customizableEdges14;
-            btnLichChieu.Size = new Size(367, 115);
+            btnLichChieu.Size = new Size(240, 60);
             btnLichChieu.TabIndex = 3;
             btnLichChieu.Text = "Quản lý Lịch chiếu";
             // 
@@ -134,13 +134,13 @@
             btnPhim.DisabledState.ForeColor = Color.FromArgb(141, 141, 141);
             btnPhim.Dock = DockStyle.Top;
             btnPhim.FillColor = Color.Transparent;
-            btnPhim.Font = new Font("Segoe UI", 14F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnPhim.Font = new Font("Segoe UI", 11F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnPhim.ForeColor = Color.OrangeRed;
-            btnPhim.Location = new Point(0, 384);
+            btnPhim.Location = new Point(0, 200);
             btnPhim.Margin = new Padding(5, 6, 5, 6);
             btnPhim.Name = "btnPhim";
             btnPhim.ShadowDecoration.CustomizableEdges = customizableEdges16;
-            btnPhim.Size = new Size(367, 115);
+            btnPhim.Size = new Size(240, 60);
             btnPhim.TabIndex = 2;
             btnPhim.Text = "Quản lý Phim";
             // 
@@ -156,13 +156,13 @@
             btnTrangChu.DisabledState.ForeColor = Color.FromArgb(141, 141, 141);
             btnTrangChu.Dock = DockStyle.Top;
             btnTrangChu.FillColor = Color.Transparent;
-            btnTrangChu.Font = new Font("Segoe UI", 14F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnTrangChu.Font = new Font("Segoe UI", 11F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnTrangChu.ForeColor = Color.OrangeRed;
-            btnTrangChu.Location = new Point(0, 269);
+            btnTrangChu.Location = new Point(0, 140);
             btnTrangChu.Margin = new Padding(5, 6, 5, 6);
             btnTrangChu.Name = "btnTrangChu";
             btnTrangChu.ShadowDecoration.CustomizableEdges = customizableEdges18;
-            btnTrangChu.Size = new Size(367, 115);
+            btnTrangChu.Size = new Size(240, 60);
             btnTrangChu.TabIndex = 1;
             btnTrangChu.Text = "Trang chủ";
             // 
@@ -173,7 +173,7 @@
             panelLogo.Location = new Point(0, 0);
             panelLogo.Margin = new Padding(5, 6, 5, 6);
             panelLogo.Name = "panelLogo";
-            panelLogo.Size = new Size(367, 269);
+            panelLogo.Size = new Size(240, 140);
             panelLogo.TabIndex = 0;
             // 
             // pictureBoxLogo
@@ -183,7 +183,7 @@
             pictureBoxLogo.Location = new Point(5, 0);
             pictureBoxLogo.Margin = new Padding(5, 6, 5, 6);
             pictureBoxLogo.Name = "pictureBoxLogo";
-            pictureBoxLogo.Size = new Size(362, 269);
+            pictureBoxLogo.Size = new Size(230, 140);
             pictureBoxLogo.SizeMode = PictureBoxSizeMode.Zoom;
             pictureBoxLogo.TabIndex = 0;
             pictureBoxLogo.TabStop = false;
@@ -197,26 +197,25 @@
             panelHeader.Controls.Add(controlBoxClose);
             panelHeader.CustomizableEdges = customizableEdges9;
             panelHeader.Dock = DockStyle.Top;
-            panelHeader.Location = new Point(367, 0);
+            panelHeader.Location = new Point(240, 0);
             panelHeader.Margin = new Padding(5, 6, 5, 6);
             panelHeader.Name = "panelHeader";
             panelHeader.ShadowDecoration.CustomizableEdges = customizableEdges10;
-            panelHeader.Size = new Size(1766, 115);
+            panelHeader.Size = new Size(1160, 60);
             panelHeader.TabIndex = 1;
             // 
             // lblTitle
             // 
             lblTitle.AutoSize = true;
-            lblTitle.Font = new Font("Segoe UI", 15.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblTitle.Font = new Font("Segoe UI", 14F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblTitle.ForeColor = Color.FromArgb(64, 64, 64);
-            lblTitle.Image = Properties.Resources.home_icon;
             lblTitle.ImageAlign = ContentAlignment.MiddleLeft;
-            lblTitle.Location = new Point(58, 29);
+            lblTitle.Location = new Point(20, 15);
             lblTitle.Margin = new Padding(5, 0, 5, 0);
             lblTitle.Name = "lblTitle";
-            lblTitle.Size = new Size(253, 45);
+            lblTitle.Size = new Size(179, 38);
             lblTitle.TabIndex = 3;
-            lblTitle.Text = "     TRANG CHỦ";
+            lblTitle.Text = "TRANG CHỦ";
             // 
             // controlBoxMinimize
             // 
@@ -225,11 +224,11 @@
             controlBoxMinimize.CustomizableEdges = customizableEdges3;
             controlBoxMinimize.FillColor = Color.Transparent;
             controlBoxMinimize.IconColor = Color.Gray;
-            controlBoxMinimize.Location = new Point(1541, 0);
+            controlBoxMinimize.Location = new Point(1025, 0);
             controlBoxMinimize.Margin = new Padding(5, 6, 5, 6);
             controlBoxMinimize.Name = "controlBoxMinimize";
             controlBoxMinimize.ShadowDecoration.CustomizableEdges = customizableEdges4;
-            controlBoxMinimize.Size = new Size(75, 56);
+            controlBoxMinimize.Size = new Size(45, 40);
             controlBoxMinimize.TabIndex = 2;
             // 
             // controlBoxMaximize
@@ -239,11 +238,11 @@
             controlBoxMaximize.CustomizableEdges = customizableEdges5;
             controlBoxMaximize.FillColor = Color.Transparent;
             controlBoxMaximize.IconColor = Color.Gray;
-            controlBoxMaximize.Location = new Point(1616, 0);
+            controlBoxMaximize.Location = new Point(1070, 0);
             controlBoxMaximize.Margin = new Padding(5, 6, 5, 6);
             controlBoxMaximize.Name = "controlBoxMaximize";
             controlBoxMaximize.ShadowDecoration.CustomizableEdges = customizableEdges6;
-            controlBoxMaximize.Size = new Size(75, 56);
+            controlBoxMaximize.Size = new Size(45, 40);
             controlBoxMaximize.TabIndex = 1;
             // 
             // controlBoxClose
@@ -252,11 +251,11 @@
             controlBoxClose.CustomizableEdges = customizableEdges7;
             controlBoxClose.FillColor = Color.Transparent;
             controlBoxClose.IconColor = Color.Gray;
-            controlBoxClose.Location = new Point(1691, 0);
+            controlBoxClose.Location = new Point(1115, 0);
             controlBoxClose.Margin = new Padding(5, 6, 5, 6);
             controlBoxClose.Name = "controlBoxClose";
             controlBoxClose.ShadowDecoration.CustomizableEdges = customizableEdges8;
-            controlBoxClose.Size = new Size(75, 56);
+            controlBoxClose.Size = new Size(45, 40);
             controlBoxClose.TabIndex = 0;
             // 
             // pnMain
@@ -265,12 +264,12 @@
             pnMain.BackgroundImage = Properties.Resources.theme2;
             pnMain.CustomizableEdges = customizableEdges1;
             pnMain.Dock = DockStyle.Fill;
-            pnMain.Location = new Point(367, 115);
+            pnMain.Location = new Point(240, 60);
             pnMain.Margin = new Padding(5, 6, 5, 6);
             pnMain.Name = "pnMain";
             pnMain.Padding = new Padding(17, 19, 17, 19);
             pnMain.ShadowDecoration.CustomizableEdges = customizableEdges2;
-            pnMain.Size = new Size(1766, 1270);
+            pnMain.Size = new Size(1160, 790);
             pnMain.TabIndex = 2;
             // 
             // guna2DragControl1
@@ -287,7 +286,7 @@
             // 
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(2133, 1385);
+            ClientSize = new Size(1400, 850);
             Controls.Add(pnMain);
             Controls.Add(panelHeader);
             Controls.Add(panelMenu);

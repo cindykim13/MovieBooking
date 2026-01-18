@@ -24,7 +24,8 @@ namespace MovieBookingAPI.Data
         public DbSet<CinemaDTO> CinemaResults { get; set; }
         public DbSet<ScreenRoomRawResult> ScreenRoomRawResults { get; set; }
         public DbSet<ShowtimeDetailRawResult> ShowtimeDetailRawResults { get; set; }
-
+        public DbSet<AdminShowtimeRawResult> AdminShowtimeRawResults { get; set; }
+        public DbSet<RoomTemplate> RoomTemplates { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -43,6 +44,8 @@ namespace MovieBookingAPI.Data
             modelBuilder.Entity<CinemaDTO>().HasNoKey();
             modelBuilder.Entity<ScreenRoomRawResult>().HasNoKey();
             modelBuilder.Entity<ShowtimeDetailRawResult>().HasNoKey();
+            modelBuilder.Entity<AdminShowtimeRawResult>().HasNoKey();
+            modelBuilder.Entity<RoomTemplate>().ToTable("roomtemplate");
         }
     }
 }

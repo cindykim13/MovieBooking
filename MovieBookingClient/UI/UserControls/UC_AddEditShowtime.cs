@@ -45,6 +45,17 @@ namespace MovieBookingClient.UI.UserControls.Admin
                 }
             };
         }
+        private async void CboCinema_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (cboCinema.SelectedValue is int cinemaId && cinemaId > 0)
+            {
+                await LoadRoomsByCinema(cinemaId);
+            }
+            else
+            {
+                cboRoom.DataSource = null;
+            }
+        }
 
         private async Task InitializeForm()
         {
@@ -60,7 +71,9 @@ namespace MovieBookingClient.UI.UserControls.Admin
             else
             {
                 lblTitle.Text = "THÊM MỚI LỊCH CHIẾU";
-                dtpStartTime.Value = DateTime.Now.AddHours(1); // Mặc định 1h sau
+                DateTime defaultTime = DateTime.Now.AddHours(1);
+                dtpDate.Value = defaultTime.Date;
+                dtpTime.Value = defaultTime;
             }
         }
 
@@ -115,66 +128,115 @@ namespace MovieBookingClient.UI.UserControls.Admin
             var showtime = await _adminShowtimeService.GetShowtimeByIdAsync(id);
             if (showtime != null)
             {
-                // Tạm tắt sự kiện để tránh gọi LoadRoomsByCinema 2 lần
-                cboCinema.SelectedIndexChanged -= async (s, e) => { /*...*/ };
+                // [SỬA ĐỔI] Tắt/Bật sự kiện đúng cách
+                cboCinema.SelectedIndexChanged -= CboCinema_SelectedIndexChanged;
 
                 cboMovie.SelectedValue = showtime.MovieId;
                 cboCinema.SelectedValue = showtime.CinemaId;
 
+                // Tải danh sách phòng rồi mới gán giá trị
                 await LoadRoomsByCinema(showtime.CinemaId);
-
                 cboRoom.SelectedValue = showtime.RoomId;
-                dtpStartTime.Value = showtime.StartTime;
+
+                dtpDate.Value = showtime.StartTime.Date;
+                dtpTime.Value = showtime.StartTime;
                 txtBasePrice.Text = showtime.BasePrice.ToString("F0");
 
-                // Bật lại sự kiện
-                cboCinema.SelectedIndexChanged += async (s, e) => { /*...*/ };
+                cboCinema.SelectedIndexChanged += CboCinema_SelectedIndexChanged;
             }
         }
 
         private async Task SaveShowtime()
         {
-            // Validate
-            if (cboMovie.SelectedValue == null || cboRoom.SelectedValue == null)
+            // 1. Validate dữ liệu đầu vào từ Form
+            // [SỬA ĐỔI] Thêm cboCinema.SelectedValue vào validation
+            if (cboMovie.SelectedValue == null || cboCinema.SelectedValue == null || cboRoom.SelectedValue == null || string.IsNullOrWhiteSpace(txtBasePrice.Text))
             {
-                MessageBox.Show("Vui lòng chọn đầy đủ Phim và Phòng chiếu.", "Thiếu thông tin");
+                MessageBox.Show("Vui lòng điền đầy đủ thông tin (Phim, Rạp, Phòng, Giá vé).", "Thiếu thông tin");
                 return;
             }
 
-            bool success = false;
+            if (!decimal.TryParse(txtBasePrice.Text, out decimal basePrice) || basePrice < 0)
+            {
+                MessageBox.Show("Giá vé không hợp lệ.", "Lỗi Dữ liệu");
+                return;
+            }
+            // Gộp Ngày và Giờ lại thành 1 biến DateTime ---
+            // Lấy phần Ngày từ dtpDate
+            DateTime datePart = dtpDate.Value.Date;
+            // Lấy phần Giờ/Phút/Giây từ dtpTime
+            TimeSpan timePart = dtpTime.Value.TimeOfDay;
+            // Gộp lại
+            DateTime finalStartTime = datePart.Add(timePart);
+            // 2. Cập nhật giao diện để báo hiệu đang xử lý
+            btnSave.Enabled = false;
+            btnSave.Text = "Đang lưu...";
 
-            if (_showtimeId.HasValue) // Chế độ Sửa
+            try
             {
-                var dto = new UpdateShowtimeRequestDTO
+                bool success = false;
+                int movieId = (int)cboMovie.SelectedValue;
+                int cinemaId = (int)cboCinema.SelectedValue;
+                int roomId = (int)cboRoom.SelectedValue;
+                // 3. Phân biệt logic Thêm mới và Cập nhật
+                if (_showtimeId.HasValue)
                 {
-                    MovieId = (int)cboMovie.SelectedValue,
-                    RoomId = (int)cboRoom.SelectedValue,
-                    StartTime = dtpStartTime.Value,
-                    BasePrice = decimal.Parse(txtBasePrice.Text),
-                    Status = 1 // Giả sử mặc định là Open
-                };
-                success = await _adminShowtimeService.UpdateShowtimeAsync(_showtimeId.Value, dto);
-            }
-            else // Chế độ Thêm
-            {
-                var dto = new CreateShowtimeRequestDTO
+                    // --- LOGIC CẬP NHẬT ---
+                    var dto = new UpdateShowtimeRequestDTO
+                    {
+                        MovieId = (int)cboMovie.SelectedValue,
+                        RoomId = (int)cboRoom.SelectedValue,
+                        CinemaId = cinemaId,
+                        StartTime = finalStartTime,
+                        BasePrice = basePrice,
+                        Status = 1 // Mặc định giữ trạng thái Open
+                    };
+                    success = await _adminShowtimeService.UpdateShowtimeAsync(_showtimeId.Value, dto);
+                }
+                else
                 {
-                    MovieId = (int)cboMovie.SelectedValue,
-                    RoomId = (int)cboRoom.SelectedValue,
-                    StartTime = dtpStartTime.Value,
-                    BasePrice = decimal.Parse(txtBasePrice.Text)
-                };
-                success = await _adminShowtimeService.CreateShowtimeAsync(dto);
-            }
+                    // --- LOGIC THÊM MỚI ---
+                    var dto = new CreateShowtimeRequestDTO
+                    {
+                        MovieId = movieId,
+                        CinemaId = cinemaId,
+                        RoomId = roomId,
+                        StartTime = finalStartTime,
+                        BasePrice = basePrice
+                    };
+                    success = await _adminShowtimeService.CreateShowtimeAsync(dto);
+                }
 
-            if (success)
-            {
-                MessageBox.Show("Lưu lịch chiếu thành công!");
-                OnSaved?.Invoke(this, EventArgs.Empty); // Kích hoạt sự kiện để quay về
+                // 4. Xử lý kết quả trả về
+                if (success)
+                {
+                    MessageBox.Show("Lưu lịch chiếu thành công!", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    OnSaved?.Invoke(this, EventArgs.Empty); // Bắn sự kiện để quay về trang danh sách
+                }
+                else
+                {
+                    // Trường hợp này xảy ra khi API trả về false mà không ném lỗi
+                    MessageBox.Show("Lưu thất bại do lỗi không xác định.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
-            else
+            // [SỬA ĐỔI QUAN TRỌNG] Bắt các loại Exception cụ thể
+            catch (InvalidOperationException ex) // Bắt lỗi nghiệp vụ như Trùng lịch, Đã có vé bán
             {
-                MessageBox.Show("Lưu thất bại. Vui lòng kiểm tra lại thông tin (có thể bị trùng lịch).");
+                MessageBox.Show(ex.Message, "Lỗi Nghiệp vụ", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+            catch (ArgumentException ex) // Bắt lỗi validation dữ liệu như Phim không tồn tại
+            {
+                MessageBox.Show(ex.Message, "Dữ liệu không hợp lệ", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            catch (Exception ex) // Bắt các lỗi hệ thống khác (mất mạng, API sập...)
+            {
+                MessageBox.Show($"Đã xảy ra lỗi không mong muốn: {ex.Message}", "Lỗi Hệ Thống", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                // 5. Luôn trả lại trạng thái cho nút bấm dù thành công hay thất bại
+                btnSave.Enabled = true;
+                btnSave.Text = "LƯU";
             }
         }
     }

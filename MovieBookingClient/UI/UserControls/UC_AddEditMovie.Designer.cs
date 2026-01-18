@@ -106,11 +106,13 @@
             pnlMain.Controls.Add(btnCancel);
             pnlMain.CustomizableEdges = customizableEdges27;
             pnlMain.Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            pnlMain.Location = new Point(71, 50);
+            // Căn chỉnh vị trí PnlMain cho cân đối trong Form mới
+            pnlMain.Location = new Point(30, 20);
             pnlMain.Margin = new Padding(4, 5, 4, 5);
             pnlMain.Name = "pnlMain";
             pnlMain.ShadowDecoration.CustomizableEdges = customizableEdges28;
-            pnlMain.Size = new Size(1329, 991);
+            // Thu nhỏ kích thước Panel chứa nội dung
+            pnlMain.Size = new Size(940, 660);
             pnlMain.TabIndex = 0;
             // 
             // lblTitle
@@ -118,7 +120,7 @@
             lblTitle.AutoSize = true;
             lblTitle.Font = new Font("Segoe UI", 16F, FontStyle.Bold);
             lblTitle.ForeColor = Color.OrangeRed;
-            lblTitle.Location = new Point(43, 33);
+            lblTitle.Location = new Point(30, 20);
             lblTitle.Margin = new Padding(4, 0, 4, 0);
             lblTitle.Name = "lblTitle";
             lblTitle.Size = new Size(207, 45);
@@ -128,7 +130,7 @@
             // lblMovieTitle
             // 
             lblMovieTitle.AutoSize = true;
-            lblMovieTitle.Location = new Point(50, 133);
+            lblMovieTitle.Location = new Point(35, 75); // Dời lên trên
             lblMovieTitle.Margin = new Padding(4, 0, 4, 0);
             lblMovieTitle.Name = "lblMovieTitle";
             lblMovieTitle.Size = new Size(95, 28);
@@ -141,19 +143,19 @@
             txtTitle.CustomizableEdges = customizableEdges1;
             txtTitle.DefaultText = "";
             txtTitle.Font = new Font("Segoe UI", 9F);
-            txtTitle.Location = new Point(214, 125);
+            txtTitle.Location = new Point(160, 70); // X = 160
             txtTitle.Margin = new Padding(6, 8, 6, 8);
             txtTitle.Name = "txtTitle";
             txtTitle.PlaceholderText = "";
             txtTitle.SelectedText = "";
             txtTitle.ShadowDecoration.CustomizableEdges = customizableEdges2;
-            txtTitle.Size = new Size(1043, 60);
+            txtTitle.Size = new Size(740, 36); // Rộng hơn
             txtTitle.TabIndex = 2;
             // 
             // lblStoryLine
             // 
             lblStoryLine.AutoSize = true;
-            lblStoryLine.Location = new Point(50, 208);
+            lblStoryLine.Location = new Point(35, 125);
             lblStoryLine.Margin = new Padding(4, 0, 4, 0);
             lblStoryLine.Name = "lblStoryLine";
             lblStoryLine.Size = new Size(68, 28);
@@ -166,20 +168,20 @@
             txtStoryLine.CustomizableEdges = customizableEdges3;
             txtStoryLine.DefaultText = "";
             txtStoryLine.Font = new Font("Segoe UI", 9F);
-            txtStoryLine.Location = new Point(214, 200);
+            txtStoryLine.Location = new Point(160, 120);
             txtStoryLine.Margin = new Padding(6, 8, 6, 8);
             txtStoryLine.Multiline = true;
             txtStoryLine.Name = "txtStoryLine";
             txtStoryLine.PlaceholderText = "";
             txtStoryLine.SelectedText = "";
             txtStoryLine.ShadowDecoration.CustomizableEdges = customizableEdges4;
-            txtStoryLine.Size = new Size(1043, 117);
+            txtStoryLine.Size = new Size(740, 70); // Giảm chiều cao TextArea
             txtStoryLine.TabIndex = 4;
             // 
             // lblDirector
             // 
             lblDirector.AutoSize = true;
-            lblDirector.Location = new Point(50, 342);
+            lblDirector.Location = new Point(35, 205);
             lblDirector.Margin = new Padding(4, 0, 4, 0);
             lblDirector.Name = "lblDirector";
             lblDirector.Size = new Size(95, 28);
@@ -192,19 +194,19 @@
             txtDirector.CustomizableEdges = customizableEdges5;
             txtDirector.DefaultText = "";
             txtDirector.Font = new Font("Segoe UI", 9F);
-            txtDirector.Location = new Point(214, 333);
+            txtDirector.Location = new Point(160, 200);
             txtDirector.Margin = new Padding(6, 8, 6, 8);
             txtDirector.Name = "txtDirector";
             txtDirector.PlaceholderText = "";
             txtDirector.SelectedText = "";
             txtDirector.ShadowDecoration.CustomizableEdges = customizableEdges6;
-            txtDirector.Size = new Size(1043, 60);
+            txtDirector.Size = new Size(740, 36);
             txtDirector.TabIndex = 6;
             // 
             // lblDuration
             // 
             lblDuration.AutoSize = true;
-            lblDuration.Location = new Point(43, 417);
+            lblDuration.Location = new Point(35, 255);
             lblDuration.Margin = new Padding(4, 0, 4, 0);
             lblDuration.Name = "lblDuration";
             lblDuration.Size = new Size(169, 28);
@@ -217,19 +219,19 @@
             numDuration.BorderRadius = 5;
             numDuration.CustomizableEdges = customizableEdges7;
             numDuration.Font = new Font("Segoe UI", 9F);
-            numDuration.Location = new Point(214, 408);
+            numDuration.Location = new Point(160, 250);
             numDuration.Margin = new Padding(6, 8, 6, 8);
             numDuration.Maximum = new decimal(new int[] { 500, 0, 0, 0 });
             numDuration.Name = "numDuration";
             numDuration.ShadowDecoration.CustomizableEdges = customizableEdges8;
-            numDuration.Size = new Size(400, 60);
+            numDuration.Size = new Size(280, 36); // Chia đôi layout
             numDuration.TabIndex = 8;
             numDuration.UpDownButtonFillColor = Color.LightCoral;
             // 
             // lblReleaseYear
             // 
             lblReleaseYear.AutoSize = true;
-            lblReleaseYear.Location = new Point(686, 417);
+            lblReleaseYear.Location = new Point(480, 255); // X = 480
             lblReleaseYear.Margin = new Padding(4, 0, 4, 0);
             lblReleaseYear.Name = "lblReleaseYear";
             lblReleaseYear.Size = new Size(151, 28);
@@ -242,13 +244,13 @@
             numReleaseYear.BorderRadius = 5;
             numReleaseYear.CustomizableEdges = customizableEdges9;
             numReleaseYear.Font = new Font("Segoe UI", 9F);
-            numReleaseYear.Location = new Point(857, 408);
+            numReleaseYear.Location = new Point(620, 250); // X = 620
             numReleaseYear.Margin = new Padding(6, 8, 6, 8);
             numReleaseYear.Maximum = new decimal(new int[] { 2100, 0, 0, 0 });
             numReleaseYear.Minimum = new decimal(new int[] { 1900, 0, 0, 0 });
             numReleaseYear.Name = "numReleaseYear";
             numReleaseYear.ShadowDecoration.CustomizableEdges = customizableEdges10;
-            numReleaseYear.Size = new Size(400, 60);
+            numReleaseYear.Size = new Size(280, 36);
             numReleaseYear.TabIndex = 10;
             numReleaseYear.UpDownButtonFillColor = Color.LightCoral;
             numReleaseYear.Value = new decimal(new int[] { 2026, 0, 0, 0 });
@@ -256,7 +258,7 @@
             // lblAgeRating
             // 
             lblAgeRating.AutoSize = true;
-            lblAgeRating.Location = new Point(686, 492);
+            lblAgeRating.Location = new Point(480, 305);
             lblAgeRating.Margin = new Padding(4, 0, 4, 0);
             lblAgeRating.Name = "lblAgeRating";
             lblAgeRating.Size = new Size(129, 28);
@@ -269,19 +271,19 @@
             txtAgeRating.CustomizableEdges = customizableEdges11;
             txtAgeRating.DefaultText = "";
             txtAgeRating.Font = new Font("Segoe UI", 9F);
-            txtAgeRating.Location = new Point(857, 483);
+            txtAgeRating.Location = new Point(620, 300);
             txtAgeRating.Margin = new Padding(6, 8, 6, 8);
             txtAgeRating.Name = "txtAgeRating";
             txtAgeRating.PlaceholderText = "";
             txtAgeRating.SelectedText = "";
             txtAgeRating.ShadowDecoration.CustomizableEdges = customizableEdges12;
-            txtAgeRating.Size = new Size(400, 60);
+            txtAgeRating.Size = new Size(280, 36);
             txtAgeRating.TabIndex = 12;
             // 
             // lblRating
             // 
             lblRating.AutoSize = true;
-            lblRating.Location = new Point(50, 492);
+            lblRating.Location = new Point(35, 305);
             lblRating.Margin = new Padding(4, 0, 4, 0);
             lblRating.Name = "lblRating";
             lblRating.Size = new Size(143, 28);
@@ -296,19 +298,19 @@
             numRating.DecimalPlaces = 1;
             numRating.Font = new Font("Segoe UI", 9F);
             numRating.Increment = new decimal(new int[] { 1, 0, 0, 65536 });
-            numRating.Location = new Point(214, 483);
+            numRating.Location = new Point(160, 300);
             numRating.Margin = new Padding(6, 8, 6, 8);
             numRating.Maximum = new decimal(new int[] { 10, 0, 0, 0 });
             numRating.Name = "numRating";
             numRating.ShadowDecoration.CustomizableEdges = customizableEdges14;
-            numRating.Size = new Size(400, 60);
+            numRating.Size = new Size(280, 36);
             numRating.TabIndex = 14;
             numRating.UpDownButtonFillColor = Color.LightCoral;
             // 
             // lblPosterUrl
             // 
             lblPosterUrl.AutoSize = true;
-            lblPosterUrl.Location = new Point(50, 567);
+            lblPosterUrl.Location = new Point(35, 355);
             lblPosterUrl.Margin = new Padding(4, 0, 4, 0);
             lblPosterUrl.Name = "lblPosterUrl";
             lblPosterUrl.Size = new Size(110, 28);
@@ -321,19 +323,19 @@
             txtPosterUrl.CustomizableEdges = customizableEdges15;
             txtPosterUrl.DefaultText = "";
             txtPosterUrl.Font = new Font("Segoe UI", 9F);
-            txtPosterUrl.Location = new Point(214, 558);
+            txtPosterUrl.Location = new Point(160, 350);
             txtPosterUrl.Margin = new Padding(6, 8, 6, 8);
             txtPosterUrl.Name = "txtPosterUrl";
             txtPosterUrl.PlaceholderText = "";
             txtPosterUrl.SelectedText = "";
             txtPosterUrl.ShadowDecoration.CustomizableEdges = customizableEdges16;
-            txtPosterUrl.Size = new Size(1043, 60);
+            txtPosterUrl.Size = new Size(740, 36);
             txtPosterUrl.TabIndex = 16;
             // 
             // lblStatus
             // 
             lblStatus.AutoSize = true;
-            lblStatus.Location = new Point(50, 642);
+            lblStatus.Location = new Point(35, 405);
             lblStatus.Margin = new Padding(4, 0, 4, 0);
             lblStatus.Name = "lblStatus";
             lblStatus.Size = new Size(102, 28);
@@ -352,17 +354,17 @@
             cboStatus.ForeColor = Color.FromArgb(68, 88, 112);
             cboStatus.ItemHeight = 30;
             cboStatus.Items.AddRange(new object[] { "Coming Soon", "Now Showing", "Ended" });
-            cboStatus.Location = new Point(214, 633);
+            cboStatus.Location = new Point(160, 400);
             cboStatus.Margin = new Padding(4, 5, 4, 5);
             cboStatus.Name = "cboStatus";
             cboStatus.ShadowDecoration.CustomizableEdges = customizableEdges18;
-            cboStatus.Size = new Size(398, 36);
+            cboStatus.Size = new Size(280, 36);
             cboStatus.TabIndex = 18;
             // 
             // lblGenres
             // 
             lblGenres.AutoSize = true;
-            lblGenres.Location = new Point(50, 717);
+            lblGenres.Location = new Point(35, 455);
             lblGenres.Margin = new Padding(4, 0, 4, 0);
             lblGenres.Name = "lblGenres";
             lblGenres.Size = new Size(84, 28);
@@ -376,16 +378,16 @@
             clbGenres.CheckOnClick = true;
             clbGenres.Font = new Font("Segoe UI", 9F);
             clbGenres.FormattingEnabled = true;
-            clbGenres.Location = new Point(214, 708);
+            clbGenres.Location = new Point(160, 455); // X = 160, Y = 455
             clbGenres.Margin = new Padding(6, 8, 6, 8);
             clbGenres.Name = "clbGenres";
-            clbGenres.Size = new Size(1043, 100);
+            clbGenres.Size = new Size(740, 70); // Chiều cao 70
             clbGenres.TabIndex = 20;
             // 
             // lblCasts
             // 
             lblCasts.AutoSize = true;
-            lblCasts.Location = new Point(50, 832);
+            lblCasts.Location = new Point(35, 545);
             lblCasts.Margin = new Padding(4, 0, 4, 0);
             lblCasts.Name = "lblCasts";
             lblCasts.Size = new Size(97, 28);
@@ -398,13 +400,13 @@
             txtCasts.CustomizableEdges = customizableEdges21;
             txtCasts.DefaultText = "";
             txtCasts.Font = new Font("Segoe UI", 9F);
-            txtCasts.Location = new Point(214, 823);
+            txtCasts.Location = new Point(160, 540);
             txtCasts.Margin = new Padding(6, 8, 6, 8);
             txtCasts.Name = "txtCasts";
             txtCasts.PlaceholderText = "";
             txtCasts.SelectedText = "";
             txtCasts.ShadowDecoration.CustomizableEdges = customizableEdges22;
-            txtCasts.Size = new Size(1043, 60);
+            txtCasts.Size = new Size(740, 36);
             txtCasts.TabIndex = 22;
             // 
             // btnSave
@@ -414,11 +416,11 @@
             btnSave.FillColor = Color.OrangeRed;
             btnSave.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             btnSave.ForeColor = Color.White;
-            btnSave.Location = new Point(957, 900);
+            btnSave.Location = new Point(650, 600); // X = 650
             btnSave.Margin = new Padding(4, 5, 4, 5);
             btnSave.Name = "btnSave";
             btnSave.ShadowDecoration.CustomizableEdges = customizableEdges24;
-            btnSave.Size = new Size(143, 67);
+            btnSave.Size = new Size(120, 45);
             btnSave.TabIndex = 14;
             btnSave.Text = "LƯU";
             // 
@@ -429,11 +431,11 @@
             btnCancel.FillColor = Color.Gray;
             btnCancel.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             btnCancel.ForeColor = Color.White;
-            btnCancel.Location = new Point(1114, 900);
+            btnCancel.Location = new Point(780, 600); // X = 780
             btnCancel.Margin = new Padding(4, 5, 4, 5);
             btnCancel.Name = "btnCancel";
             btnCancel.ShadowDecoration.CustomizableEdges = customizableEdges26;
-            btnCancel.Size = new Size(143, 67);
+            btnCancel.Size = new Size(120, 45);
             btnCancel.TabIndex = 15;
             btnCancel.Text = "HỦY";
             // 
@@ -445,7 +447,7 @@
             Controls.Add(pnlMain);
             Margin = new Padding(4, 5, 4, 5);
             Name = "UC_AddEditMovie";
-            Size = new Size(1471, 1068);
+            Size = new Size(1000, 700); // Kích thước tổng thể cho Laptop
             pnlMain.ResumeLayout(false);
             pnlMain.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)numDuration).EndInit();
@@ -488,7 +490,7 @@
         private Guna.UI2.WinForms.Guna2ComboBox cboStatus;
 
         private System.Windows.Forms.Label lblGenres;
-        private System.Windows.Forms.CheckedListBox clbGenres; 
+        private System.Windows.Forms.CheckedListBox clbGenres;
 
         private System.Windows.Forms.Label lblCasts;
         private Guna.UI2.WinForms.Guna2TextBox txtCasts;

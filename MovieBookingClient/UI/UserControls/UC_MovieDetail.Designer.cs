@@ -64,6 +64,7 @@ namespace MovieBookingClient.UI.UserControls
             // pnlContainer
             // 
             pnlContainer.AutoScroll = true;
+            pnlContainer.BackColor = Color.LightCoral;
             pnlContainer.Controls.Add(pnlContent);
             pnlContainer.Dock = DockStyle.Fill;
             pnlContainer.Location = new Point(0, 0);

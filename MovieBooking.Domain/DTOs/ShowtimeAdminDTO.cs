@@ -6,7 +6,9 @@
         public int MovieId { get; set; }
         public int RoomId { get; set; }
         public int CinemaId { get; set; }
-        public string MovieTitle { get; set; } = string.Empty; 
+        public string MovieTitle { get; set; } = string.Empty;
+        public string PosterUrl { get; set; } = string.Empty;
+
         public string RoomName { get; set; } = string.Empty;
         public string CinemaName { get; set; } = string.Empty;
         public DateTime StartTime { get; set; }

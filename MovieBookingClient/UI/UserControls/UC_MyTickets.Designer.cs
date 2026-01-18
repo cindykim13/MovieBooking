@@ -14,54 +14,44 @@
 
         private void InitializeComponent()
         {
-            this.lblTitle = new System.Windows.Forms.Label();
-            this.flowPanelTickets = new System.Windows.Forms.FlowLayoutPanel();
-            this.SuspendLayout();
-
-            // 
-            // UC_MyTickets Setup
-            // 
-            this.Size = new System.Drawing.Size(1200, 700);
-            this.BackColor = System.Drawing.Color.FromArgb(245, 245, 245);
-
+            lblTitle = new Label();
+            flowPanelTickets = new FlowLayoutPanel();
+            SuspendLayout();
             // 
             // lblTitle
             // 
-            this.lblTitle.Text = "VÉ CỦA TÔI";
-            this.lblTitle.Font = new System.Drawing.Font("Segoe UI", 20F, System.Drawing.FontStyle.Bold);
-            this.lblTitle.ForeColor = System.Drawing.Color.FromArgb(212, 33, 33);
-            this.lblTitle.Location = new System.Drawing.Point(30, 20);
-            this.lblTitle.AutoSize = true;
-
+            lblTitle.AutoSize = true;
+            lblTitle.Font = new Font("Segoe UI", 20F, FontStyle.Bold);
+            lblTitle.ForeColor = Color.FromArgb(212, 33, 33);
+            lblTitle.Location = new Point(30, 20);
+            lblTitle.Name = "lblTitle";
+            lblTitle.Size = new Size(240, 54);
+            lblTitle.TabIndex = 0;
+            lblTitle.Text = "VÉ CỦA TÔI";
             // 
             // flowPanelTickets
             // 
-            this.flowPanelTickets.AutoScroll = true; // Bắt buộc để hiện thanh cuộn
-
-            // Quan trọng: TopDown + NoWrap = List dọc chuẩn
-            this.flowPanelTickets.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.flowPanelTickets.WrapContents = false;
-
-            this.flowPanelTickets.Location = new System.Drawing.Point(30, 80);
-            this.flowPanelTickets.Size = new System.Drawing.Size(1140, 600);
-
-            // Anchor 4 chiều: Giúp panel tự co giãn khi form chính thay đổi kích thước
-            this.flowPanelTickets.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
-            | System.Windows.Forms.AnchorStyles.Right)));
-
-            // Padding bên phải 10 để thanh cuộn không đè lên nội dung
-            this.flowPanelTickets.Padding = new System.Windows.Forms.Padding(0, 0, 10, 0);
-
-            this.flowPanelTickets.BackColor = System.Drawing.Color.Transparent;
-
+            flowPanelTickets.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            flowPanelTickets.AutoScroll = true;
+            flowPanelTickets.BackColor = Color.White;
+            flowPanelTickets.FlowDirection = FlowDirection.TopDown;
+            flowPanelTickets.Location = new Point(30, 80);
+            flowPanelTickets.Name = "flowPanelTickets";
+            flowPanelTickets.Padding = new Padding(0, 0, 10, 0);
+            flowPanelTickets.Size = new Size(1128, 476);
+            flowPanelTickets.TabIndex = 1;
+            flowPanelTickets.WrapContents = false;
             // 
-            // Adding Controls
+            // UC_MyTickets
             // 
-            this.Controls.Add(this.lblTitle);
-            this.Controls.Add(this.flowPanelTickets);
-
-            this.Load += new System.EventHandler(this.UC_MyTickets_Load);
+            BackColor = SystemColors.Info;
+            Controls.Add(lblTitle);
+            Controls.Add(flowPanelTickets);
+            Name = "UC_MyTickets";
+            Size = new Size(1183, 590);
+            Load += UC_MyTickets_Load;
+            ResumeLayout(false);
+            PerformLayout();
         }
     }
 }

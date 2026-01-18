@@ -52,7 +52,8 @@
             guna2ShadowPanel1.ShadowColor = Color.Black;
             guna2ShadowPanel1.ShadowDepth = 30;
             guna2ShadowPanel1.ShadowShift = 4;
-            guna2ShadowPanel1.Size = new Size(260, 460);
+            // GIẢM KÍCH THƯỚC PANEL
+            guna2ShadowPanel1.Size = new Size(220, 380);
             guna2ShadowPanel1.TabIndex = 0;
             // 
             // picPoster
@@ -64,7 +65,8 @@
             picPoster.Location = new Point(10, 10);
             picPoster.Name = "picPoster";
             picPoster.ShadowDecoration.CustomizableEdges = customizableEdges2;
-            picPoster.Size = new Size(240, 340);
+            // GIẢM KÍCH THƯỚC ẢNH
+            picPoster.Size = new Size(200, 270);
             picPoster.SizeMode = PictureBoxSizeMode.StretchImage;
             picPoster.TabIndex = 0;
             picPoster.TabStop = false;
@@ -79,31 +81,37 @@
             btnBuyTicket.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
             btnBuyTicket.DisabledState.ForeColor = Color.FromArgb(141, 141, 141);
             btnBuyTicket.FillColor = Color.FromArgb(212, 33, 33);
-            btnBuyTicket.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            // GIẢM FONT NÚT
+            btnBuyTicket.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             btnBuyTicket.ForeColor = Color.White;
-            btnBuyTicket.Location = new Point(10, 405);
+            // ĐIỀU CHỈNH VỊ TRÍ Y
+            btnBuyTicket.Location = new Point(10, 335);
             btnBuyTicket.Name = "btnBuyTicket";
             btnBuyTicket.ShadowDecoration.CustomizableEdges = customizableEdges4;
-            btnBuyTicket.Size = new Size(240, 40);
+            // GIẢM CHIỀU CAO NÚT
+            btnBuyTicket.Size = new Size(200, 35);
             btnBuyTicket.TabIndex = 3;
             btnBuyTicket.Text = "MUA VÉ";
             // 
             // lblGenre
             // 
-            lblGenre.Font = new Font("Segoe UI", 9F);
+            // GIẢM FONT CHỮ
+            lblGenre.Font = new Font("Segoe UI", 8.5F);
             lblGenre.ForeColor = Color.Gray;
-            lblGenre.Location = new Point(10, 379);
+            // ĐIỀU CHỈNH VỊ TRÍ Y
+            lblGenre.Location = new Point(10, 310);
             lblGenre.Name = "lblGenre";
-            lblGenre.Size = new Size(240, 23);
+            lblGenre.Size = new Size(200, 20);
             lblGenre.TabIndex = 2;
             lblGenre.Text = "Thể loại";
             // 
             // lblTitle
             // 
-            lblTitle.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
-            lblTitle.Location = new Point(10, 353);
+            // GIẢM FONT CHỮ
+            lblTitle.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            lblTitle.Location = new Point(10, 285);
             lblTitle.Name = "lblTitle";
-            lblTitle.Size = new Size(240, 29);
+            lblTitle.Size = new Size(200, 25);
             lblTitle.TabIndex = 1;
             lblTitle.Text = "Tên Phim";
             // 
@@ -114,7 +122,8 @@
             Controls.Add(guna2ShadowPanel1);
             Margin = new Padding(10);
             Name = "UCMovieCard";
-            Size = new Size(260, 460);
+            // GIẢM KÍCH THƯỚC UC
+            Size = new Size(220, 380);
             guna2ShadowPanel1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)picPoster).EndInit();
             ResumeLayout(false);

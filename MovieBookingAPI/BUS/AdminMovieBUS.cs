@@ -95,6 +95,13 @@ namespace MovieBookingAPI.BUS
                 {
                     throw new KeyNotFoundException($"Không tìm thấy phim với ID = {movieId}");
                 }
+
+                // [MỚI] Bắt lỗi trùng lặp khi update
+                if (ex.Message.Contains("đã tồn tại ở một bộ phim khác") || ex.SqlState == "23505")
+                {
+                    throw new ArgumentException("Tên phim và năm phát hành này bị trùng với một phim khác trong hệ thống.");
+                }
+
                 throw new Exception("Lỗi cơ sở dữ liệu khi cập nhật phim.", ex);
             }
         }

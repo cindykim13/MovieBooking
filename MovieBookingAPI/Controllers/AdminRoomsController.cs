@@ -72,5 +72,19 @@ namespace MovieBookingAPI.Controllers
                 return StatusCode(500, new { Message = "Lỗi hệ thống: " + ex.Message });
             }
         }
+        // GET: api/admin/rooms/templates
+        [HttpGet("templates")]
+        public async Task<IActionResult> GetRoomTemplates()
+        {
+            try
+            {
+                var templates = await _service.GetAllTemplatesAsync();
+                return Ok(templates);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Message = "Lỗi hệ thống: " + ex.Message });
+            }
+        }
     }
 }

@@ -36,7 +36,8 @@
             btnSave = new Guna.UI2.WinForms.Guna2Button();
             txtBasePrice = new Guna.UI2.WinForms.Guna2TextBox();
             lblBasePrice = new Label();
-            dtpStartTime = new Guna.UI2.WinForms.Guna2DateTimePicker();
+            dtpDate = new Guna.UI2.WinForms.Guna2DateTimePicker();
+            dtpTime = new DateTimePicker();
             lblStartTime = new Label();
             cboRoom = new Guna.UI2.WinForms.Guna2ComboBox();
             lblRoom = new Label();
@@ -55,7 +56,8 @@
             pnlMain.Controls.Add(btnSave);
             pnlMain.Controls.Add(txtBasePrice);
             pnlMain.Controls.Add(lblBasePrice);
-            pnlMain.Controls.Add(dtpStartTime);
+            pnlMain.Controls.Add(dtpDate);
+            pnlMain.Controls.Add(dtpTime);
             pnlMain.Controls.Add(lblStartTime);
             pnlMain.Controls.Add(cboRoom);
             pnlMain.Controls.Add(lblRoom);
@@ -66,7 +68,7 @@
             pnlMain.Controls.Add(lblTitle);
             pnlMain.FillColor = Color.White;
             pnlMain.Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            pnlMain.Location = new Point(215, 50);
+            pnlMain.Location = new Point(103, 25);
             pnlMain.Name = "pnlMain";
             pnlMain.Radius = 6;
             pnlMain.ShadowColor = Color.Black;
@@ -128,23 +130,35 @@
             lblBasePrice.TabIndex = 9;
             lblBasePrice.Text = "Giá vé (VND):";
             // 
-            // dtpStartTime
+            // dtpDate
             // 
-            dtpStartTime.BorderRadius = 4;
-            dtpStartTime.Checked = true;
-            dtpStartTime.CustomFormat = "dd/MM/yyyy HH:mm";
-            dtpStartTime.CustomizableEdges = customizableEdges7;
-            dtpStartTime.FillColor = Color.White;
-            dtpStartTime.Font = new Font("Segoe UI", 9F);
-            dtpStartTime.Format = DateTimePickerFormat.Custom;
-            dtpStartTime.Location = new Point(32, 422);
-            dtpStartTime.MaxDate = new DateTime(9998, 12, 31, 0, 0, 0, 0);
-            dtpStartTime.MinDate = new DateTime(2020, 1, 1, 0, 0, 0, 0);
-            dtpStartTime.Name = "dtpStartTime";
-            dtpStartTime.ShadowDecoration.CustomizableEdges = customizableEdges8;
-            dtpStartTime.Size = new Size(530, 36);
-            dtpStartTime.TabIndex = 8;
-            dtpStartTime.Value = new DateTime(2026, 1, 15, 18, 26, 8, 927);
+            dtpDate.BorderRadius = 4;
+            dtpDate.Checked = true;
+            dtpDate.CustomizableEdges = customizableEdges7;
+            dtpDate.FillColor = Color.White;
+            dtpDate.Font = new Font("Segoe UI", 9F);
+            dtpDate.Format = DateTimePickerFormat.Short;
+            dtpDate.Location = new Point(32, 422);
+            dtpDate.MaxDate = new DateTime(9998, 12, 31, 0, 0, 0, 0);
+            dtpDate.MinDate = new DateTime(2020, 1, 1, 0, 0, 0, 0);
+            dtpDate.Name = "dtpDate";
+            dtpDate.ShadowDecoration.CustomizableEdges = customizableEdges8;
+            dtpDate.Size = new Size(300, 36);
+            dtpDate.TabIndex = 8;
+            dtpDate.Value = new DateTime(2026, 1, 18, 22, 14, 35, 741);
+            // 
+            // dtpTime
+            // 
+            dtpTime.CalendarFont = new Font("Segoe UI", 10F);
+            dtpTime.CustomFormat = "HH:mm";
+            dtpTime.Font = new Font("Segoe UI", 11F);
+            dtpTime.Format = DateTimePickerFormat.Custom;
+            dtpTime.Location = new Point(342, 422);
+            dtpTime.Name = "dtpTime";
+            dtpTime.ShowUpDown = true;
+            dtpTime.Size = new Size(220, 37);
+            dtpTime.TabIndex = 9;
+            dtpTime.Value = new DateTime(2026, 1, 18, 22, 14, 35, 744);
             // 
             // lblStartTime
             // 
@@ -152,9 +166,9 @@
             lblStartTime.Font = new Font("Segoe UI", 9.75F);
             lblStartTime.Location = new Point(30, 379);
             lblStartTime.Name = "lblStartTime";
-            lblStartTime.Size = new Size(169, 28);
+            lblStartTime.Size = new Size(261, 28);
             lblStartTime.TabIndex = 7;
-            lblStartTime.Text = "Thời gian bắt đầu:";
+            lblStartTime.Text = "Thời gian chiếu (Ngày - Giờ):";
             // 
             // cboRoom
             // 
@@ -255,11 +269,10 @@
             BackColor = SystemColors.Info;
             Controls.Add(pnlMain);
             Name = "UC_AddEditShowtime";
-            Size = new Size(1030, 739);
+            Size = new Size(861, 727);
             pnlMain.ResumeLayout(false);
             pnlMain.PerformLayout();
             ResumeLayout(false);
-
         }
 
         #endregion
@@ -273,7 +286,11 @@
         private System.Windows.Forms.Label lblRoom;
         private Guna.UI2.WinForms.Guna2ComboBox cboRoom;
         private System.Windows.Forms.Label lblStartTime;
-        private Guna.UI2.WinForms.Guna2DateTimePicker dtpStartTime;
+
+        // 2 Control riêng biệt:
+        private Guna.UI2.WinForms.Guna2DateTimePicker dtpDate;
+        private System.Windows.Forms.DateTimePicker dtpTime; // Control chuẩn để hỗ trợ typing tốt nhất
+
         private System.Windows.Forms.Label lblBasePrice;
         private Guna.UI2.WinForms.Guna2TextBox txtBasePrice;
         private Guna.UI2.WinForms.Guna2Button btnSave;

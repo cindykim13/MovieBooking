@@ -8,6 +8,6 @@ namespace MovieBookingAPI.DAO
     public interface ICinemaDAO
     {
         Task<List<CinemaDTO>> GetAllCinemasAsync();
-        Task<List<RoomDTO>> GetRoomsByCinemaAsync(int cinemaId);
+        Task<List<RoomDTO>> GetRoomsAsync(int? cinemaId);
     }
 }

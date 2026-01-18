@@ -12,5 +12,6 @@ namespace MovieBookingAPI.DAO
         Task<string> DeleteShowtimeAsync(int showtimeId); 
         Task<bool> IsRoomInCinemaAsync(int roomId, int cinemaId);
         Task<ShowtimeDetailDTO?> GetShowtimeDetailAsync(int showtimeId);
+        Task<List<ShowtimeAdminDTO>> GetShowtimesByDateAsync(DateTime date);
     }
 }

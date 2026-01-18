@@ -5,6 +5,7 @@ using MovieBookingAPI.DAO;
 using MovieBookingAPI.Data;
 using MovieBookingAPI.Domain.DTOs;
 using Npgsql;
+using NpgsqlTypes;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
@@ -42,7 +43,7 @@ namespace MovieBookingAPI.DAO
             {
                 new NpgsqlParameter("p_movieid", request.MovieId),
                 new NpgsqlParameter("p_roomid", request.RoomId),
-                // [FIX]: Chỉ định rõ kiểu Timestamp (Without Time Zone)
+                new NpgsqlParameter("p_cinemaid", request.CinemaId),
                 new NpgsqlParameter("p_starttime", NpgsqlTypes.NpgsqlDbType.Timestamp) { Value = request.StartTime },
                 new NpgsqlParameter("p_baseprice", request.BasePrice),
                 new NpgsqlParameter("p_cleaningtimeminutes", 15)
@@ -50,7 +51,7 @@ namespace MovieBookingAPI.DAO
 
             var result = await _context.Database
                 .SqlQueryRaw<int>(
-                    "SELECT usp_createshowtime(@p_movieid, @p_roomid, @p_starttime, @p_baseprice, @p_cleaningtimeminutes)",
+                    "SELECT usp_createshowtime(@p_movieid, @p_roomid, @p_cinemaid, @p_starttime, @p_baseprice, @p_cleaningtimeminutes)",
                     parameters
                 )
                 .ToListAsync();
@@ -116,6 +117,32 @@ namespace MovieBookingAPI.DAO
                 BasePrice = rawResult.baseprice,
                 Status = rawResult.status
             };
+        }
+        public async Task<List<ShowtimeAdminDTO>> GetShowtimesByDateAsync(DateTime date)
+        {
+            var p_date = new NpgsqlParameter("p_date", NpgsqlDbType.Date) { Value = date };
+
+            // Gọi Function lấy dữ liệu thô
+            var rawResult = await _context.Set<AdminShowtimeRawResult>()
+                .FromSqlRaw("SELECT * FROM usp_getshowtimesbydate(@p_date)", p_date)
+                .ToListAsync();
+
+            // Mapping sang DTO có sẵn
+            return rawResult.Select(r => new ShowtimeAdminDTO
+            {
+                ShowtimeId = r.showtimeid,
+                MovieId = r.movieid,
+                MovieTitle = r.movietitle,
+                PosterUrl = r.posterurl,
+                CinemaId = r.cinemaid,
+                CinemaName = r.cinemaname,
+                RoomId = r.roomid,
+                RoomName = r.roomname,
+                StartTime = r.starttime,
+                EndTime = r.endtime,
+                BasePrice = r.baseprice,
+                Status = r.status
+            }).ToList();
         }
     }
 }

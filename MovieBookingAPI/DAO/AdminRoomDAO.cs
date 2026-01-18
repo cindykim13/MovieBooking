@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using MovieBooking.Domain.DTOs;
 using MovieBookingAPI.Data;
+using MovieBookingAPI.Models.DTOs;
 using Newtonsoft.Json;
 using Npgsql;
 using NpgsqlTypes;
@@ -55,6 +56,20 @@ namespace MovieBookingAPI.DAO
                 "SELECT usp_deletescreenroom(@p_roomid)",
                 parameter
             );
+        }
+        public async Task<List<RoomTemplateDTO>> GetAllTemplatesAsync()
+        {
+            var templates = await _context.RoomTemplates.ToListAsync();
+
+            return templates.Select(t => new RoomTemplateDTO
+            {
+                TemplateId = t.TemplateId,
+                TemplateName = t.TemplateName,
+                TotalSeats = t.TotalSeats,
+                // Deserialize JSON từ DB thành List Object
+                Seats = JsonConvert.DeserializeObject<List<SeatDefinitionDTO>>(t.LayoutJson)
+                        ?? new List<SeatDefinitionDTO>()
+            }).ToList();
         }
     }
 }

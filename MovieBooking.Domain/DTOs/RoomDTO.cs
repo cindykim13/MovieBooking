@@ -5,5 +5,7 @@
         public int RoomId { get; set; }
         public string Name { get; set; } = string.Empty;
         public int TotalSeats { get; set; }
+        public int CinemaId { get; set; }
+        public string CinemaName { get; set; } = string.Empty;
     }
 }

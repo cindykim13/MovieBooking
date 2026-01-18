@@ -11,5 +11,6 @@ namespace MovieBookingAPI.BUS
         Task UpdateShowtimeAsync(int showtimeId, UpdateShowtimeRequestDTO request);
         Task<string> DeleteShowtimeAsync(int showtimeId);
         Task<ShowtimeDetailDTO?> GetShowtimeDetailAsync(int showtimeId);
+        Task<List<ShowtimeAdminDTO>> GetShowtimesByDateAsync(DateTime date);
     }
 }

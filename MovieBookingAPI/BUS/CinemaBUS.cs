@@ -20,10 +20,9 @@ namespace MovieBookingAPI.BUS
             // Logic nghiệp vụ có thể thêm ở đây, ví dụ: gom nhóm
             return await _cinemaDAO.GetAllCinemasAsync();
         }
-        public async Task<List<RoomDTO>> GetRoomsByCinemaAsync(int cinemaId)
+        public async Task<List<RoomDTO>> GetRoomsAsync(int? cinemaId)
         {
-            // Có thể thêm logic kiểm tra cinemaId > 0 nếu cần
-            return await _cinemaDAO.GetRoomsByCinemaAsync(cinemaId);
+            return await _cinemaDAO.GetRoomsAsync(cinemaId);
         }
     }
 }

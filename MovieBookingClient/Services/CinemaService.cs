@@ -20,7 +20,12 @@ namespace MovieBookingClient.Services
         }
         public async Task<List<RoomDTO>> GetRoomsByCinemaAsync(int cinemaId)
         {
-            var request = CreateRequest($"/api/cinemas/{cinemaId}/rooms", Method.Get);
+            // Endpoint mới
+            var request = CreateRequest("/api/cinemas/rooms", Method.Get);
+
+            // Thêm cinemaId vào Query String
+            request.AddParameter("cinemaId", cinemaId);
+
             return await ExecuteAsync<List<RoomDTO>>(request);
         }
     }
