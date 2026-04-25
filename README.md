@@ -1,7 +1,7 @@
-# Báo cáo Khoa học: Hệ thống Quản lý và Đặt vé Xem phim (MovieBooking System)
+# Hệ thống Quản lý và Đặt vé Xem phim 
 
 ## Tóm tắt (Abstract)
-Dự án **MovieBooking System** là một hệ thống phần mềm toàn diện phục vụ công tác quản lý rạp chiếu phim và đặt vé trực tuyến. Hệ thống được thiết kế dựa trên kiến trúc hướng dịch vụ (Service-Oriented Architecture - SOA) kết hợp với mô hình ứng dụng phân tán, đảm bảo tính mở rộng, bảo mật và hiệu năng cao. Hệ thống bao gồm một Backend API mạnh mẽ xây dựng trên nền tảng .NET 8 (C#) và cơ sở dữ liệu PostgreSQL, cùng với Frontend là ứng dụng Desktop (Windows Forms) dành cho quản trị viên và nhân viên phòng vé.
+Dự án là một hệ thống phần mềm toàn diện phục vụ công tác quản lý rạp chiếu phim và đặt vé trực tuyến. Hệ thống được thiết kế dựa trên kiến trúc hướng dịch vụ (Service-Oriented Architecture - SOA) kết hợp với mô hình ứng dụng phân tán, đảm bảo tính mở rộng, bảo mật và hiệu năng cao. Hệ thống bao gồm một Backend API mạnh mẽ xây dựng trên nền tảng .NET 8 (C#) và cơ sở dữ liệu PostgreSQL, cùng với Frontend là ứng dụng Desktop (Windows Forms) dành cho quản trị viên và nhân viên phòng vé.
 
 ## 1. Giới thiệu tổng quan (Introduction)
 Trong bối cảnh chuyển đổi số mạnh mẽ, việc tối ưu hóa quy trình quản lý rạp chiếu phim là vô cùng cấp thiết. Dự án MovieBooking giải quyết bài toán cốt lõi trong việc số hóa dữ liệu phim, quản lý suất chiếu, phòng chiếu, quản lý rạp phim và đặc biệt là quy trình bán vé (Booking). 
@@ -57,4 +57,4 @@ Hệ thống được thiết kế sẵn sàng cho môi trường chứa hóa (C
    - Build và khởi động ứng dụng `MovieBookingClient` để thao tác trực tiếp trên giao diện Desktop.
 
 ## 5. Kết luận (Conclusion)
-Dự án MovieBooking System đã hoàn thành mục tiêu xây dựng một nền tảng quản lý rạp phim chuyên nghiệp. Sự kết hợp giữa ASP.NET Core 8 mạnh mẽ, cấu trúc CSDL PostgreSQL tối ưu, cùng kiến trúc Clean Architecture giúp sản phẩm có khả năng duy trì, nâng cấp linh hoạt và mở rộng ổn định trong tương lai, đáp ứng tốt các yêu cầu khắt khe của mô hình nghiệp vụ thực tế.
+Dự án đã hoàn thành mục tiêu xây dựng một nền tảng quản lý rạp phim chuyên nghiệp. Sự kết hợp giữa ASP.NET Core 8 mạnh mẽ, cấu trúc CSDL PostgreSQL tối ưu, cùng kiến trúc Clean Architecture giúp sản phẩm có khả năng duy trì, nâng cấp linh hoạt và mở rộng ổn định trong tương lai, đáp ứng tốt các yêu cầu khắt khe của mô hình nghiệp vụ thực tế.
